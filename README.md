@@ -1,9 +1,11 @@
+👉 **Accéder à l'application :** [https://ggaillard.github.io/emoji-code-mood/](https://ggaillard.github.io/emoji-code-mood/)
+
+🔗 **Voir le code sur GitHub :** [https://github.com/ggaillard/emoji-code-mood](https://github.com/ggaillard/emoji-code-mood)
 # 🎭 Emoji Code Mood
 
 *Un petit brise-glace sympa pour vos cours de programmation*
 
-[![Demo](https://img.shields.io/badge/✨_essayer-maintenant-blue)](https://votre-username.github.io/emoji-code-mood)
-[![Licence](https://img.shields.io/badge/licence-MIT-green)](LICENSE)
+[![Licence](https://img.shields.io/badge/Licence-GNU_GPL_v3-blue)](LICENSE)
 
 ---
 
@@ -43,10 +45,6 @@ String mood = "🤔"; // en mode réflexion intense
 - **Après les vacances** (transition en douceur) 
 - **Avant un gros projet** (voir le niveau de motivation)
 
-## 🚀 Essayer rapidement
-
-**👉 [Cliquez ici pour tester](https://votre-username.github.io/emoji-code-mood)**
-
 Aucune installation nécessaire, ça fonctionne directement dans votre navigateur.
 
 ## 💻 Créer votre propre version
@@ -56,10 +54,12 @@ Aucune installation nécessaire, ça fonctionne directement dans votre navigateu
 2. Dans votre nouveau repository : **Settings** → **Pages** → **Source: Branch main**
 3. Votre version sera disponible à `https://votre-nom.github.io/emoji-code-mood`
 
-### Option avec données partagées (10 minutes de plus)
-Si vous voulez que tous vos étudiants voient les réponses en temps réel :
-- 📖 **Guide Supabase** (recommandé) : [docs/supabase-setup.md](docs/supabase-setup.md)
-- 📖 **Guide Firebase** (alternative) : [docs/firebase.md](docs/firebase.md)
+### Option collaborative (temps réel)
+Pour que tous vos étudiants voient les réponses en temps réel :
+- 📖 **Guide Supabase** : [docs/supabase-setup.md](docs/supabase-setup.md)
+
+> ⚡ **Configuration automatique et sécurisée** :
+> Les paramètres Supabase (`SUPABASE_URL` et `SUPABASE_ANON_KEY`) sont injectés automatiquement via les secrets GitHub du repository. Aucune configuration manuelle n'est nécessaire côté client.
 
 ## 🎨 Personnaliser
 
@@ -109,7 +109,7 @@ Vous pouvez facilement adapter l'outil à votre contexte :
 ## 🚀 Technologies utilisées
 
 - **HTML/CSS/JavaScript** - Simple et efficace
-- **Supabase** ou **Firebase** - Pour la synchronisation temps réel (optionnel)
+- **Supabase** - Pour la synchronisation temps réel (configuration automatique via secrets GitHub)
 - **GitHub Pages** - Hébergement gratuit
 
 ## 🤝 Contributions bienvenues
