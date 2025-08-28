@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Emoji Code Mood 🎭 - Supabase Edition</title>
+    <title>Emoji Code Mood 🎭 - Version Sécurisée</title>
     <style>
         * {
             margin: 0;
@@ -45,10 +45,10 @@
             margin-bottom: 20px;
         }
         
-        .supabase-badge {
+        .security-badge {
             display: inline-flex;
             align-items: center;
-            background: #3ECF8E;
+            background: #28a745;
             color: white;
             padding: 5px 12px;
             border-radius: 15px;
@@ -57,29 +57,32 @@
             margin-bottom: 15px;
         }
         
-        .connection-status {
-            padding: 10px;
+        .mode-indicator {
+            padding: 10px 15px;
             border-radius: 8px;
             margin-bottom: 15px;
             font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         
-        .status-connected {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
+        .mode-demo {
+            background: #e3f2fd;
+            color: #1976d2;
+            border: 1px solid #bbdefb;
         }
         
-        .status-disconnected {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
+        .mode-collaborative {
+            background: #e8f5e8;
+            color: #2e7d32;
+            border: 1px solid #c8e6c9;
         }
         
-        .status-connecting {
-            background: #d1ecf1;
-            color: #0c5460;
-            border: 1px solid #bee5eb;
+        .mode-config {
+            background: #fff3e0;
+            color: #f57c00;
+            border: 1px solid #ffcc02;
         }
         
         .stats {
@@ -125,6 +128,36 @@
             color: #3ECF8E;
             margin-bottom: 20px;
             font-size: 1.8em;
+        }
+        
+        .config-panel {
+            background: #f8f9fa;
+            border: 2px dashed #dee2e6;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .config-panel h3 {
+            color: #6c757d;
+            margin-bottom: 10px;
+        }
+        
+        .config-button {
+            background: #ffc107;
+            color: #333;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 5px;
+            transition: transform 0.2s;
+        }
+        
+        .config-button:hover {
+            transform: translateY(-1px);
         }
         
         .form-group {
@@ -312,26 +345,59 @@
             background: #3182ce;
         }
         
-        .realtime-indicator {
-            display: inline-flex;
+        .config-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: flex;
             align-items: center;
-            gap: 5px;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .config-modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .config-modal h3 {
+            color: #3ECF8E;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .config-option {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .config-option:hover {
+            border-color: #3ECF8E;
+            background: #f0fff4;
+        }
+        
+        .config-option h4 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .config-option p {
+            color: #666;
             font-size: 0.9em;
-            margin-left: 10px;
-        }
-        
-        .pulse {
-            width: 8px;
-            height: 8px;
-            background: #3ECF8E;
-            border-radius: 50%;
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.7; transform: scale(1.1); }
-            100% { opacity: 1; transform: scale(1); }
+            line-height: 1.4;
         }
         
         @media (max-width: 768px) {
@@ -353,6 +419,10 @@
                 font-size: 1.5em;
                 min-height: 45px;
                 padding: 8px;
+            }
+            
+            .config-modal-content {
+                padding: 20px;
             }
         }
         
@@ -390,41 +460,37 @@
             padding: 20px;
         }
         
-        .error-message {
-            background: #f8d7da;
-            color: #721c24;
+        .setup-guide {
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            border-radius: 10px;
             padding: 15px;
-            border-radius: 8px;
-            margin: 15px 0;
-            border: 1px solid #f5c6cb;
+            margin-bottom: 20px;
         }
         
-        .connection-info {
-            background: #e8f4fd;
-            border: 1px solid #b8daff;
-            color: #004085;
-            padding: 10px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            font-size: 0.9em;
+        .setup-guide h4 {
+            color: #1976d2;
+            margin-bottom: 10px;
+        }
+        
+        .setup-guide a {
+            color: #1976d2;
+            font-weight: 600;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <div class="supabase-badge">
-                ⚡ Powered by Supabase
+            <div class="security-badge">
+                🔐 Version Sécurisée - Clés API Protégées
             </div>
             <h1>🎭 Emoji Code Mood</h1>
             <p>Exprime ton humeur de rentrée avec une ligne de code !</p>
             
-            <div class="connection-status" id="connectionStatus">
-                <span id="statusText">🔄 Connexion à Supabase...</span>
-                <span class="realtime-indicator" id="realtimeIndicator">
-                    <div class="pulse"></div>
-                    Temps réel
-                </span>
+            <div class="mode-indicator" id="modeIndicator">
+                <span id="modeIcon">⚙️</span>
+                <span id="modeText">Initialisation...</span>
             </div>
             
             <div class="stats">
@@ -449,8 +515,20 @@
             <div class="form-section">
                 <h2>📝 Code ton humeur</h2>
                 
-                <div class="connection-info" id="connectionInfo">
-                    ℹ️ Mode démo - Configurez Supabase pour la synchronisation temps réel
+                <div class="config-panel" id="configPanel">
+                    <h3>🔧 Configuration</h3>
+                    <p>Choisissez votre mode d'utilisation :</p>
+                    <button class="config-button" onclick="showConfigModal()">⚙️ Configurer</button>
+                    <button class="config-button" onclick="useDemoMode()">🎮 Mode Démo</button>
+                </div>
+                
+                <div class="setup-guide" id="setupGuide" style="display: none;">
+                    <h4>📚 Comment configurer Supabase ?</h4>
+                    <p>
+                        Pour utiliser la synchronisation temps réel : 
+                        <a href="docs/supabase-setup.md" target="_blank">Guide Supabase</a> 
+                        (5 minutes de configuration)
+                    </p>
                 </div>
                 
                 <form id="moodForm">
@@ -548,77 +626,14 @@
                         <label for="comment">Commentaire (optionnel) :</label>
                         <input type="text" id="comment" placeholder="Clique pour des idées..." list="commentSuggestions" maxlength="100">
                         <datalist id="commentSuggestions">
-                            <!-- Énergie et motivation -->
                             <option value="prêt pour attaquer les projets">
-                            <option value="mode guerrier activé">
-                            <option value="à fond les ballons">
-                            <option value="j'ai mangé du lion au petit-déj">
-                            <option value="100% motivé">
-                            <option value="let's gooo">
-                            <option value="énergie de super-héros">
-                            
-                            <!-- Fatigue -->
-                            <option value="vacances pas encore digérées">
                             <option value="besoin d'un deuxième café">
-                            <option value="mode zombie ON">
-                            <option value="réveil difficile ce matin">
-                            <option value="batterie à 5%">
-                            <option value="hibernation en cours">
-                            <option value="sommeil.exe has stopped working">
-                            
-                            <!-- Stress/Défi -->
-                            <option value="trop d'infos dès le premier cours">
                             <option value="cerveau en surchauffe">
-                            <option value="mode panique contrôlée">
-                            <option value="ça va être chaud cette année">
-                            <option value="help me please">
-                            <option value="syndrome de l'imposteur activé">
-                            <option value="CPU overload detected">
-                            
-                            <!-- Confiance -->
                             <option value="easy peasy lemon squeezy">
-                            <option value="je gère comme un boss">
-                            <option value="born ready">
-                            <option value="cool comme Baptiste">
-                            <option value="zen attitude">
-                            <option value="tout sous contrôle">
-                            <option value="confidence level: maximum">
-                            
-                            <!-- Réflexion -->
                             <option value="mode réflexion intense">
-                            <option value="en train de calculer">
-                            <option value="cerveau en ébullition">
-                            <option value="loading...">
-                            <option value="j'analyse la situation">
-                            <option value="ça cogite là-dedans">
-                            <option value="processing thoughts...">
-                            
-                            <!-- Humour -->
                             <option value="je fais semblant de comprendre">
-                            <option value="ça va le faire... je crois">
-                            <option value="plot twist incoming">
-                            <option value="prêt pour l'aventure">
-                            <option value="YOLO coding">
-                            <option value="on va rigoler">
-                            <option value="humour.exe loaded successfully">
-                            
-                            <!-- Tech -->
                             <option value="404 motivation not found">
-                            <option value="git commit -m 'nouvelle année'">
-                            <option value="printf('hello world');">
-                            <option value="while(motivation) { code(); }">
-                            <option value="système opérationnel">
-                            <option value="variable mood initialisée">
-                            <option value="sudo apt install motivation">
-                            <option value="import happiness from 'vacation'">
-                            
-                            <!-- Créatifs -->
                             <option value="mood de licorne cosmique">
-                            <option value="humeur arc-en-ciel">
-                            <option value="vibe extraterrestre">
-                            <option value="pouvoir pizza activé">
-                            <option value="mode rock'n'roll">
-                            <option value="unicorn mode: activated">
                         </datalist>
                     </div>
                     
@@ -630,7 +645,7 @@
                 <h2>💻 Mood Board de la classe</h2>
                 <div class="mood-list" id="moodList">
                     <div class="loading">
-                        <p>🔄 Chargement des mood codes...</p>
+                        <p>🤖 En attente de configuration...</p>
                     </div>
                 </div>
             </div>
@@ -645,520 +660,69 @@
         </div>
     </div>
 
-    <!-- Supabase Client -->
-    <script type="module">
-        import { createClient } from 'https://cdn.skypack.dev/@supabase/supabase-js@2'
-        
-        // ⚠️ CONFIGURATION À REMPLACER - Récupérez ces valeurs depuis votre dashboard Supabase
-        const SUPABASE_URL = 'https://VOTRE_PROJECT_REF.supabase.co'
-        const SUPABASE_ANON_KEY = 'VOTRE_ANON_KEY'
-        
-        // ⚠️ CONFIGURATION ALTERNATIVE - Si Supabase n'est pas configuré
-        const USE_SUPABASE = SUPABASE_URL !== 'https://VOTRE_PROJECT_REF.supabase.co'
-        
-        let supabase = null
-        let moods = []
-        let selectedEmoji = ''
-        let isConnected = false
-        let sessionStartTime = new Date()
-        
-        // Initialisation
-        if (USE_SUPABASE) {
-            try {
-                supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
-                await initSupabase()
-            } catch (error) {
-                console.error('Erreur Supabase:', error)
-                updateConnectionStatus(false, 'Erreur de configuration Supabase')
-                initLocalMode()
-            }
-        } else {
-            updateConnectionStatus(false, 'Mode démo - Configurez Supabase pour la synchronisation')
-            initLocalMode()
-        }
-        
-        async function initSupabase() {
-            try {
-                // Test de connexion
-                const { data, error } = await supabase.from('moods').select('count').limit(1)
-                if (error) throw error
-                
-                updateConnectionStatus(true)
-                await loadMoodsFromSupabase()
-                setupRealtimeSubscription()
-                document.getElementById('connectionInfo').style.display = 'none'
-            } catch (error) {
-                console.error('Erreur initialisation Supabase:', error)
-                updateConnectionStatus(false, `Erreur: ${error.message}`)
-                initLocalMode()
-            }
-        }
-        
-        function setupRealtimeSubscription() {
-            if (!supabase) return
+    <!-- Configuration Modal -->
+    <div id="configModal" class="config-modal" style="display: none;">
+        <div class="config-modal-content">
+            <h3>⚙️ Configuration Emoji Code Mood</h3>
             
-            supabase
-                .channel('moods_channel')
-                .on('postgres_changes', 
-                    { event: '*', schema: 'public', table: 'moods' },
-                    (payload) => {
-                        console.log('Changement temps réel:', payload)
-                        if (payload.eventType === 'INSERT') {
-                            moods.unshift(payload.new)
-                            updateDisplay()
-                        } else if (payload.eventType === 'DELETE') {
-                            loadMoodsFromSupabase() // Recharge complète
-                        }
-                    }
-                )
-                .subscribe((status) => {
-                    console.log('Status subscription:', status)
-                    if (status === 'SUBSCRIBED') {
-                        document.getElementById('realtimeIndicator').style.display = 'flex'
-                    }
-                })
-        }
-        
-        async function loadMoodsFromSupabase() {
-            if (!supabase) return
+            <div class="config-option" onclick="selectDemoMode()">
+                <h4>🎮 Mode Démo</h4>
+                <p><strong>Recommandé pour débuter</strong><br>
+                • Fonctionne immédiatement<br>
+                • Données stockées localement<br>
+                • Idéal pour tester l'application</p>
+            </div>
             
-            try {
-                const { data, error } = await supabase
-                    .from('moods')
-                    .select('*')
-                    .order('created_at', { ascending: false })
-                    .limit(100) // Limite pour la performance
-                
-                if (error) throw error
-                
-                moods = data || []
-                updateDisplay()
-            } catch (error) {
-                console.error('Erreur chargement moods:', error)
-            }
-        }
-        
-        function updateConnectionStatus(connected, message = '') {
-            isConnected = connected
-            const statusEl = document.getElementById('connectionStatus')
-            const statusTextEl = document.getElementById('statusText')
+            <div class="config-option" onclick="selectSupabaseMode()">
+                <h4>⚡ Mode Collaboratif (Supabase)</h4>
+                <p><strong>Pour usage en classe</strong><br>
+                • Synchronisation temps réel<br>
+                • Tous les étudiants voient les résultats<br>
+                • Configuration requise (5 minutes)</p>
+            </div>
             
-            if (connected) {
-                statusEl.className = 'connection-status status-connected'
-                statusTextEl.textContent = '✅ Connecté à Supabase - Synchronisation temps réel active'
-            } else {
-                statusEl.className = 'connection-status status-disconnected'
-                statusTextEl.textContent = message || '❌ Mode local - Configuration Supabase requise pour la sync'
-            }
-        }
-        
-        function initLocalMode() {
-            // Mode local sans Supabase
-            moods = JSON.parse(localStorage.getItem('emojiCodeMoodsSupabase') || '[]')
-            updateDisplay()
-            document.getElementById('realtimeIndicator').style.display = 'none'
+            <div class="config-option" onclick="showSupabaseConfig()">
+                <h4>🔧 J'ai déjà une configuration Supabase</h4>
+                <p>Saisir directement mes clés URL et API</p>
+            </div>
             
-            const info = document.getElementById('connectionInfo')
-            info.innerHTML = `
-                ℹ️ <strong>Mode démo local</strong> - 
-                <a href="docs/supabase-setup.md" target="_blank">Configurez Supabase</a> 
-                pour la synchronisation temps réel entre tous les participants
-            `
-        }
-        
-        function saveToLocalStorage() {
-            localStorage.setItem('emojiCodeMoodsSupabase', JSON.stringify(moods))
-        }
-        
-        // Timer de session
-        setInterval(() => {
-            const minutes = Math.floor((new Date() - sessionStartTime) / 60000)
-            document.getElementById('sessionTime').textContent = minutes
-        }, 60000)
-        
-        // Gestion de la sélection d'emoji
-        document.querySelectorAll('.emoji-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('selected'))
-                btn.classList.add('selected')
-                selectedEmoji = btn.dataset.emoji
-            })
-        })
-        
-        // Gestion du formulaire
-        document.getElementById('moodForm').addEventListener('submit', async (e) => {
-            e.preventDefault()
-            
-            const name = document.getElementById('studentName').value.trim()
-            const language = document.getElementById('language').value
-            const comment = document.getElementById('comment').value.trim()
-            const submitBtn = document.getElementById('submitBtn')
-            
-            // Validations
-            if (!selectedEmoji) {
-                alert('N\'oublie pas de choisir un emoji ! 😊')
-                return
-            }
-            
-            if (name.length < 2) {
-                alert('Le prénom doit contenir au moins 2 caractères')
-                return
-            }
-            
-            const mood = {
-                name: name,
-                emoji: selectedEmoji,
-                language: language,
-                comment: comment,
-                created_at: new Date().toISOString()
-            }
-            
-            // Animation de chargement
-            submitBtn.textContent = '🔄 Envoi en cours...'
-            submitBtn.disabled = true
-            
-            let success = false
-            
-            if (USE_SUPABASE && isConnected && supabase) {
-                success = await addMoodToSupabase(mood)
-            } else {
-                // Mode local
-                mood.id = Date.now()
-                moods.unshift(mood)
-                saveToLocalStorage()
-                updateDisplay()
-                success = true
-            }
-            
-            if (success) {
-                resetForm()
-                submitBtn.textContent = '✅ Envoyé avec succès !'
-                setTimeout(() => {
-                    submitBtn.textContent = 'Envoyer mon code mood ! 🚀'
-                    submitBtn.disabled = false
-                }, 2500)
-            } else {
-                submitBtn.textContent = '❌ Erreur - Réessayer'
-                setTimeout(() => {
-                    submitBtn.textContent = 'Envoyer mon code mood ! 🚀'
-                    submitBtn.disabled = false
-                }, 3000)
-            }
-        })
-        
-        async function addMoodToSupabase(mood) {
-            if (!supabase) return false
-            
-            try {
-                const { data, error } = await supabase
-                    .from('moods')
-                    .insert([mood])
-                    .select()
-                
-                if (error) throw error
-                
-                console.log('Mood ajouté:', data)
-                return true
-            } catch (error) {
-                console.error('Erreur ajout mood:', error)
-                
-                // Fallback vers le mode local en cas d'erreur
-                mood.id = Date.now()
-                moods.unshift(mood)
-                saveToLocalStorage()
-                updateDisplay()
-                
-                updateConnectionStatus(false, 'Erreur Supabase - Basculement en mode local')
-                return true
-            }
-        }
-        
-        function resetForm() {
-            document.getElementById('moodForm').reset()
-            document.querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('selected'))
-            selectedEmoji = ''
-        }
-        
-        function updateDisplay() {
-            updateStats()
-            updateMoodList()
-            updateVisualization()
-        }
-        
-        function updateStats() {
-            document.getElementById('totalParticipants').textContent = moods.length
-            
-            const uniqueEmojis = new Set(moods.map(m => m.emoji))
-            document.getElementById('moodVariety').textContent = uniqueEmojis.size
-            
-            const minutes = Math.floor((new Date() - sessionStartTime) / 60000)
-            document.getElementById('sessionTime').textContent = minutes
-        }
-        
-        function updateMoodList() {
-            const listContainer = document.getElementById('moodList')
-            
-            if (moods.length === 0) {
-                listContainer.innerHTML = `
-                    <div class="loading">
-                        <p>🤖 En attente des premiers codes mood...</p>
-                        <p style="font-size: 0.9em; margin-top: 10px; color: #666;">
-                            ${isConnected ? 'Synchronisation temps réel active' : 'Mode démo local'}
-                        </p>
-                    </div>
-                `
-                return
-            }
-            
-            listContainer.innerHTML = moods.map(mood => {
-                const codeSnippet = generateCodeSnippet(mood)
-                const timeDisplay = formatTime(mood.created_at)
-                
-                return `
-                    <div class="mood-item">
-                        <div class="mood-header">
-                            <span class="student-name">${escapeHtml(mood.name)}</span>
-                            <span class="timestamp">${timeDisplay}</span>
-                        </div>
-                        <div class="code-display">
-                            <div class="language-tag">${mood.language}</div>
-                            ${codeSnippet}
-                        </div>
-                    </div>
-                `
-            }).join('')
-        }
-        
-        function generateCodeSnippet(mood) {
-            const templates = {
-                javascript: `let mood = "${mood.emoji}";${mood.comment ? ` <span class="comment">// ${escapeHtml(mood.comment)}</span>` : ''}`,
-                typescript: `const mood: string = "${mood.emoji}";${mood.comment ? ` <span class="comment">// ${escapeHtml(mood.comment)}</span>` : ''}`,
-                python: `humeur = "${mood.emoji}"${mood.comment ? `  <span class="comment"># ${escapeHtml(mood.comment)}</span>` : ''}`,
-                java: `String mood = "${mood.emoji}";${mood.comment ? ` <span class="comment">// ${escapeHtml(mood.comment)}</span>` : ''}`,
-                csharp: `string mood = "${mood.emoji}";${mood.comment ? ` <span class="comment">// ${escapeHtml(mood.comment)}</span>` : ''}`,
-                php: `$mood = "${mood.emoji}";${mood.comment ? ` <span class="comment">// ${escapeHtml(mood.comment)}</span>` : ''}`,
-                cpp: `std::string mood = "${mood.emoji}";${mood.comment ? ` <span class="comment">// ${escapeHtml(mood.comment)}</span>` : ''}`,
-                rust: `let mood = "${mood.emoji}";${mood.comment ? ` <span class="comment">// ${escapeHtml(mood.comment)}</span>` : ''}`,
-                go: `mood := "${mood.emoji}"${mood.comment ? ` <span class="comment">// ${escapeHtml(mood.comment)}</span>` : ''}`
-            }
-            
-            return templates[mood.language] || `mood = "${mood.emoji}";${mood.comment ? ` // ${escapeHtml(mood.comment)}` : ''}`
-        }
-        
-        function formatTime(timestamp) {
-            const date = new Date(timestamp)
-            const now = new Date()
-            const diffMinutes = Math.floor((now - date) / 60000)
-            
-            if (diffMinutes < 1) return 'À l\'instant'
-            if (diffMinutes < 60) return `${diffMinutes}min`
-            if (diffMinutes < 1440) return `${Math.floor(diffMinutes / 60)}h${diffMinutes % 60}`
-            return date.toLocaleDateString() + ' ' + date.toLocaleTimeString()
-        }
-        
-        function escapeHtml(text) {
-            const div = document.createElement('div')
-            div.textContent = text
-            return div.innerHTML
-        }
-        
-        function updateVisualization() {
-            const container = document.getElementById('moodVisualization')
-            
-            if (moods.length === 0) {
-                container.innerHTML = ''
-                return
-            }
-            
-            const emojiCounts = {}
-            moods.forEach(mood => {
-                emojiCounts[mood.emoji] = (emojiCounts[mood.emoji] || 0) + 1
-            })
-            
-            container.innerHTML = Object.entries(emojiCounts)
-                .sort((a, b) => b[1] - a[1])
-                .slice(0, 10) // Top 10 seulement
-                .map(([emoji, count]) => `
-                    <div class="mood-bubble">
-                        <span>${emoji}</span>
-                        <span class="mood-count">${count}</span>
-                    </div>
-                `).join('')
-        }
-        
-        // Fonctions globales pour les contrôles enseignant
-        window.loadMoods = async function() {
-            const btn = event.target
-            const originalText = btn.textContent
-            btn.textContent = '🔄 Actualisation...'
-            btn.disabled = true
-            
-            try {
-                if (USE_SUPABASE && isConnected && supabase) {
-                    await loadMoodsFromSupabase()
-                } else {
-                    moods = JSON.parse(localStorage.getItem('emojiCodeMoodsSupabase') || '[]')
-                    updateDisplay()
-                }
-                btn.textContent = '✅ Actualisé'
-            } catch (error) {
-                btn.textContent = '❌ Erreur'
-                console.error('Erreur actualisation:', error)
-            }
-            
-            setTimeout(() => {
-                btn.textContent = originalText
-                btn.disabled = false
-            }, 2000)
-        }
-        
-        window.clearAllMoods = async function() {
-            if (!confirm('⚠️ Êtes-vous sûr de vouloir effacer TOUS les mood codes de la session ?')) {
-                return
-            }
-            
-            const btn = event.target
-            const originalText = btn.textContent
-            btn.textContent = '🗑️ Suppression...'
-            btn.disabled = true
-            
-            try {
-                if (USE_SUPABASE && isConnected && supabase) {
-                    const { error } = await supabase
-                        .from('moods')
-                        .delete()
-                        .neq('id', 0) // Supprime tous les enregistrements
-                    
-                    if (error) throw error
-                } else {
-                    moods = []
-                    saveToLocalStorage()
-                    updateDisplay()
-                }
-                btn.textContent = '✅ Effacé'
-            } catch (error) {
-                btn.textContent = '❌ Erreur'
-                console.error('Erreur suppression:', error)
-                alert('Erreur lors de la suppression: ' + error.message)
-            }
-            
-            setTimeout(() => {
-                btn.textContent = originalText
-                btn.disabled = false
-            }, 2000)
-        }
-        
-        window.exportMoods = function() {
-            if (moods.length === 0) {
-                alert('Aucun mood code à exporter !')
-                return
-            }
-            
-            const exportData = moods.map(mood => ({
-                Prénom: mood.name,
-                Emoji: mood.emoji,
-                Langage: mood.language,
-                Commentaire: mood.comment || '',
-                'Date/Heure': formatTime(mood.created_at),
-                Timestamp: mood.created_at
-            }))
-            
-            const headers = Object.keys(exportData[0])
-            const csvContent = [
-                headers.join(','),
-                ...exportData.map(row => 
-                    headers.map(header => `"${(row[header] || '').toString().replace(/"/g, '""')}"`).join(',')
-                )
-            ].join('\n')
-            
-            downloadFile(csvContent, `emoji-code-mood-${new Date().toISOString().split('T')[0]}.csv`, 'text/csv')
-        }
-        
-        window.exportMoodsJSON = function() {
-            if (moods.length === 0) {
-                alert('Aucun mood code à exporter !')
-                return
-            }
-            
-            const exportData = {
-                session: {
-                    date: new Date().toISOString(),
-                    duration_minutes: Math.floor((new Date() - sessionStartTime) / 60000),
-                    total_participants: moods.length,
-                    unique_emojis: new Set(moods.map(m => m.emoji)).size,
-                    platform: 'Supabase Edition'
-                },
-                moods: moods.map(mood => ({
-                    name: mood.name,
-                    emoji: mood.emoji,
-                    language: mood.language,
-                    comment: mood.comment,
-                    timestamp: mood.created_at
-                })),
-                analytics: generateAnalytics()
-            }
-            
-            const jsonContent = JSON.stringify(exportData, null, 2)
-            downloadFile(jsonContent, `emoji-code-mood-session-${new Date().toISOString().split('T')[0]}.json`, 'application/json')
-        }
-        
-        function generateAnalytics() {
-            const emojiStats = {}
-            const languageStats = {}
-            const hourlyStats = {}
-            
-            moods.forEach(mood => {
-                // Stats par emoji
-                emojiStats[mood.emoji] = (emojiStats[mood.emoji] || 0) + 1
-                
-                // Stats par langage
-                languageStats[mood.language] = (languageStats[mood.language] || 0) + 1
-                
-                // Stats par heure
-                const hour = new Date(mood.created_at).getHours()
-                hourlyStats[hour] = (hourlyStats[hour] || 0) + 1
-            })
-            
-            return {
-                emoji_distribution: emojiStats,
-                language_preferences: languageStats,
-                hourly_activity: hourlyStats,
-                top_emojis: Object.entries(emojiStats)
-                    .sort((a, b) => b[1] - a[1])
-                    .slice(0, 5)
-                    .map(([emoji, count]) => ({ emoji, count }))
-            }
-        }
-        
-        function downloadFile(content, filename, mimeType) {
-            const blob = new Blob([content], { type: mimeType + ';charset=utf-8;' })
-            const url = URL.createObjectURL(blob)
-            const link = document.createElement('a')
-            link.href = url
-            link.download = filename
-            link.style.display = 'none'
-            document.body.appendChild(link)
-            link.click()
-            document.body.removeChild(link)
-            URL.revokeObjectURL(url)
-        }
-        
-        // Chargement initial
-        updateDisplay()
-        
-        // Auto-refresh périodique en mode local (toutes les 30 secondes)
-        if (!USE_SUPABASE || !isConnected) {
-            setInterval(() => {
-                if (!USE_SUPABASE) {
-                    const savedMoods = JSON.parse(localStorage.getItem('emojiCodeMoodsSupabase') || '[]')
-                    if (savedMoods.length !== moods.length) {
-                        moods = savedMoods
-                        updateDisplay()
-                    }
-                }
-            }, 30000)
-        }
+            <div style="text-align: center; margin-top: 20px;">
+                <button class="config-button" onclick="closeConfigModal()" style="background: #6c757d;">Annuler</button>
+            </div>
+        </div>
+    </div>
 
-    </script>
-</body>
-</html>
+    <!-- Supabase Config Form -->
+    <div id="supabaseConfigForm" class="config-modal" style="display: none;">
+        <div class="config-modal-content">
+            <h3>🔧 Configuration Supabase</h3>
+            <form id="supabaseForm">
+                <div class="form-group">
+                    <label>URL Supabase :</label>
+                    <input type="url" id="supabaseUrl" placeholder="https://xxx.supabase.co" required>
+                </div>
+                <div class="form-group">
+                    <label>Clé Publique (anon) :</label>
+                    <input type="text" id="supabaseKey" placeholder="eyJhbGciOiJIUzI1NiIs..." required>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button type="submit" class="config-button" style="flex: 1;">Sauvegarder</button>
+                    <button type="button" class="config-button" onclick="closeSupabaseConfig()" style="background: #6c757d; flex: 1;">Annuler</button>
+                </div>
+            </form>
+            <div style="margin-top: 15px; font-size: 0.9em; color: #666;">
+                <p>🔒 <strong>Sécurité :</strong> Vos clés sont stockées localement dans votre navigateur uniquement.</p>
+                <p>📚 <a href="docs/supabase-setup.md" target="_blank">Guide de configuration Supabase</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        // ========================================
+        // CONFIGURATION SÉCURISÉE
+        // ========================================
+        
+        // Configuration par défaut (mode démo)
+        const DEFAULT_CONFIG = {
+            mode: 'demo',
+            supabaseUrl: null,
