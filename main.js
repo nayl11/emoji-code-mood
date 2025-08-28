@@ -470,13 +470,8 @@ async function initApp() {
     // Configuration des event listeners d'abord
     setupEventListeners();
 
-    // Tentative d'initialisation Supabase
-    const supabaseSuccess = await initSupabase();
-
-    if (!supabaseSuccess) {
-        console.log('🔄 Basculement en mode local...');
-        initLocalMode();
-    }
+    // Initialisation Supabase obligatoire
+    await initSupabase();
 
     // Mise à jour initiale de l'affichage
     updateDisplay();
