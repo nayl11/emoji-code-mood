@@ -67,23 +67,6 @@
             gap: 10px;
         }
         
-        .mode-demo {
-            background: #e3f2fd;
-            color: #1976d2;
-            border: 1px solid #bbdefb;
-        }
-        
-        .mode-collaborative {
-            background: #e8f5e8;
-            color: #2e7d32;
-            border: 1px solid #c8e6c9;
-        }
-        
-        .mode-config {
-            background: #fff3e0;
-            color: #f57c00;
-            border: 1px solid #ffcc02;
-        }
         
         .stats {
             display: flex;
@@ -130,35 +113,6 @@
             font-size: 1.8em;
         }
         
-        .config-panel {
-            background: #f8f9fa;
-            border: 2px dashed #dee2e6;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        
-        .config-panel h3 {
-            color: #6c757d;
-            margin-bottom: 10px;
-        }
-        
-        .config-button {
-            background: #ffc107;
-            color: #333;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            margin: 5px;
-            transition: transform 0.2s;
-        }
-        
-        .config-button:hover {
-            transform: translateY(-1px);
-        }
         
         .form-group {
             margin-bottom: 20px;
@@ -345,61 +299,6 @@
             background: #3182ce;
         }
         
-        .config-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.8);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
-        
-        .config-modal-content {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            max-width: 500px;
-            width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
-        }
-        
-        .config-modal h3 {
-            color: #3ECF8E;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        
-        .config-option {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 15px;
-            cursor: pointer;
-            border: 2px solid transparent;
-            transition: all 0.3s;
-        }
-        
-        .config-option:hover {
-            border-color: #3ECF8E;
-            background: #f0fff4;
-        }
-        
-        .config-option h4 {
-            color: #333;
-            margin-bottom: 10px;
-        }
-        
-        .config-option p {
-            color: #666;
-            font-size: 0.9em;
-            line-height: 1.4;
-        }
-        
         @media (max-width: 768px) {
             .main-content {
                 grid-template-columns: 1fr;
@@ -419,10 +318,6 @@
                 font-size: 1.5em;
                 min-height: 45px;
                 padding: 8px;
-            }
-            
-            .config-modal-content {
-                padding: 20px;
             }
         }
         
@@ -488,10 +383,7 @@
             <h1>🎭 Emoji Code Mood</h1>
             <p>Exprime ton humeur de rentrée avec une ligne de code !</p>
             
-            <div class="mode-indicator" id="modeIndicator">
-                <span id="modeIcon">⚙️</span>
-                <span id="modeText">Initialisation...</span>
-            </div>
+
             
             <div class="stats">
                 <div class="stat-item">
@@ -515,15 +407,6 @@
             <div class="form-section">
                 <h2>📝 Code ton humeur</h2>
                 
-                <!-- Mode unique : Supabase, configuration automatique -->
-                <div class="setup-guide" id="setupGuide" style="display: block;">
-                    <h4>⚡ Mode collaboratif Supabase</h4>
-                    <p>
-                        La synchronisation temps réel est activée.<br>
-                        Les paramètres de connexion sont injectés automatiquement et de façon sécurisée.<br>
-                        <a href="docs/supabase-setup.md" target="_blank">En savoir plus sur Supabase</a>
-                    </p>
-                </div>
                 
                 <form id="moodForm">
                     <div class="form-group">
@@ -638,9 +521,7 @@
             <div class="display-section">
                 <h2>💻 Mood Board de la classe</h2>
                 <div class="mood-list" id="moodList">
-                    <div class="loading">
-                        <p>🤖 En attente de configuration...</p>
-                    </div>
+
                 </div>
             </div>
         </div>
@@ -654,14 +535,7 @@
         </div>
     </div>
 
-    <!-- Plus de configuration manuelle : tout est géré côté serveur/GitHub -->
+
 
     <script type="module">
-        // ========================================
-        // CONFIGURATION SÉCURISÉE
-        // ========================================
-        
-        // Configuration par défaut (mode démo)
-        const DEFAULT_CONFIG = {
-            mode: 'demo',
-            supabaseUrl: null,
+
