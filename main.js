@@ -5,9 +5,9 @@
 
 console.log('🎭 Emoji Code Mood - Version Sécurisée v2.0');
 
-// Configuration par défaut (mode local)
+// Configuration par défaut (Supabase uniquement)
 let CONFIG = {
-    mode: 'local',
+    mode: 'supabase',
     supabaseUrl: null,
     supabaseAnonKey: null,
     useRealtime: false
@@ -17,8 +17,6 @@ let CONFIG = {
 if (typeof window.PRIVATE_CONFIG !== 'undefined') {
     CONFIG = { ...CONFIG, ...window.PRIVATE_CONFIG };
     console.log('✅ Configuration privée détectée - Mode Supabase activé');
-} else {
-    console.log('📦 Mode local activé - Données stockées dans le navigateur');
 }
 
 // Variables globales
@@ -109,29 +107,8 @@ function setupRealtimeSubscription() {
 }
 
 // ========================================
-// MODE LOCAL
+// MODE LOCAL SUPPRIMÉ : L'application fonctionne uniquement avec Supabase
 // ========================================
-
-function initLocalMode() {
-    console.log('💾 Mode local initialisé');
-    moods = JSON.parse(localStorage.getItem('emoji-mood-local') || '[]');
-    updateDisplay();
-
-    // Mise à jour de l'interface
-    const modeIndicator = document.getElementById('modeIndicator');
-    const modeIcon = document.getElementById('modeIcon');
-    const modeText = document.getElementById('modeText');
-
-    modeIndicator.style.background = '#fff3e0';
-    modeIndicator.style.color = '#f57c00';
-    modeIndicator.style.borderColor = '#ffcc02';
-    modeIcon.textContent = '💾';
-    modeText.textContent = 'Mode Local - Données stockées dans ce navigateur';
-}
-
-function saveLocalMoods() {
-    localStorage.setItem('emoji-mood-local', JSON.stringify(moods));
-}
 
 // ========================================
 // GESTION DES MOOD CODES
@@ -152,21 +129,10 @@ async function addMood(mood) {
             return true;
         } catch (error) {
             console.error('❌ Erreur ajout Supabase:', error);
-            // Fallback local
-            mood.id = Date.now();
-            moods.unshift(mood);
-            saveLocalMoods();
-            updateDisplay();
-            return true;
+            return false;
         }
-    } else {
-        // Mode local
-        mood.id = Date.now();
-        moods.unshift(mood);
-        saveLocalMoods();
-        updateDisplay();
-        return true;
     }
+    return false;
 }
 
 // ========================================
@@ -273,14 +239,10 @@ function updateMoodList() {
     const listContainer = document.getElementById('moodList');
 
     if (moods.length === 0) {
-        const modeText = CONFIG.mode === 'supabase' ? 
-            'Synchronisation temps réel active' : 
-            'Mode local - Données dans ce navigateur';
-
         listContainer.innerHTML = `
             <div class="loading">
                 <p>🤖 En attente des premiers codes mood...</p>
-                <p style="font-size: 0.9em; margin-top: 10px; color: #666;">${modeText}</p>
+                <p style="font-size: 0.9em; margin-top: 10px; color: #666;">Synchronisation temps réel active</p>
             </div>
         `;
         return;
@@ -374,12 +336,7 @@ window.loadMoods = async function() {
     btn.disabled = true;
 
     try {
-        if (CONFIG.mode === 'supabase' && supabase) {
-            await loadMoodsFromSupabase();
-        } else {
-            moods = JSON.parse(localStorage.getItem('emoji-mood-local') || '[]');
-            updateDisplay();
-        }
+        await loadMoodsFromSupabase();
         btn.textContent = '✅ Actualisé';
     } catch (error) {
         btn.textContent = '❌ Erreur';
@@ -403,18 +360,12 @@ window.clearAllMoods = async function() {
     btn.disabled = true;
 
     try {
-        if (CONFIG.mode === 'supabase' && supabase) {
-            const { error } = await supabase
-                .from('moods')
-                .delete()
-                .neq('id', 0);
+        const { error } = await supabase
+            .from('moods')
+            .delete()
+            .neq('id', 0);
 
-            if (error) throw error;
-        } else {
-            moods = [];
-            saveLocalMoods();
-            updateDisplay();
-        }
+        if (error) throw error;
         btn.textContent = '✅ Effacé';
     } catch (error) {
         btn.textContent = '❌ Erreur';
@@ -564,30 +515,11 @@ window.PRIVATE_CONFIG = {
 */
 
 // Debug helper - Vous pouvez supprimer cette section en production
+// Debug helper - Supprime les fonctions liées au mode local
 window.debugEmojiMood = {
-    addTestMood: () => {
-        const testMood = {
-            name: 'Test User',
-            emoji: '🧪',
-            language: 'javascript',
-            comment: 'Test mood code',
-            id: Date.now(),
-            created_at: new Date().toISOString()
-        };
-        moods.unshift(testMood);
-        if (CONFIG.mode === 'local') saveLocalMoods();
-        updateDisplay();
-        console.log('✅ Mood de test ajouté');
-    },
     getConfig: () => CONFIG,
-    getMoods: () => moods,
-    clearMoods: () => {
-        moods = [];
-        if (CONFIG.mode === 'local') saveLocalMoods();
-        updateDisplay();
-    }
+    getMoods: () => moods
 };
 
 // Message de debug dans la console
 console.log('🎭 Emoji Code Mood chargé !');
-console.log('🔧 Pour tester: window.debugEmojiMood.addTestMood()');
