@@ -515,19 +515,13 @@
             <div class="form-section">
                 <h2>📝 Code ton humeur</h2>
                 
-                <div class="config-panel" id="configPanel">
-                    <h3>🔧 Configuration</h3>
-                    <p>Choisissez votre mode d'utilisation :</p>
-                    <button class="config-button" onclick="showConfigModal()">⚙️ Configurer</button>
-                    <button class="config-button" onclick="useDemoMode()">🎮 Mode Démo</button>
-                </div>
-                
-                <div class="setup-guide" id="setupGuide" style="display: none;">
-                    <h4>📚 Comment configurer Supabase ?</h4>
+                <!-- Mode unique : Supabase, configuration automatique -->
+                <div class="setup-guide" id="setupGuide" style="display: block;">
+                    <h4>⚡ Mode collaboratif Supabase</h4>
                     <p>
-                        Pour utiliser la synchronisation temps réel : 
-                        <a href="docs/supabase-setup.md" target="_blank">Guide Supabase</a> 
-                        (5 minutes de configuration)
+                        La synchronisation temps réel est activée.<br>
+                        Les paramètres de connexion sont injectés automatiquement et de façon sécurisée.<br>
+                        <a href="docs/supabase-setup.md" target="_blank">En savoir plus sur Supabase</a>
                     </p>
                 </div>
                 
@@ -660,62 +654,7 @@
         </div>
     </div>
 
-    <!-- Configuration Modal -->
-    <div id="configModal" class="config-modal" style="display: none;">
-        <div class="config-modal-content">
-            <h3>⚙️ Configuration Emoji Code Mood</h3>
-            
-            <div class="config-option" onclick="selectDemoMode()">
-                <h4>🎮 Mode Démo</h4>
-                <p><strong>Recommandé pour débuter</strong><br>
-                • Fonctionne immédiatement<br>
-                • Données stockées localement<br>
-                • Idéal pour tester l'application</p>
-            </div>
-            
-            <div class="config-option" onclick="selectSupabaseMode()">
-                <h4>⚡ Mode Collaboratif (Supabase)</h4>
-                <p><strong>Pour usage en classe</strong><br>
-                • Synchronisation temps réel<br>
-                • Tous les étudiants voient les résultats<br>
-                • Configuration requise (5 minutes)</p>
-            </div>
-            
-            <div class="config-option" onclick="showSupabaseConfig()">
-                <h4>🔧 J'ai déjà une configuration Supabase</h4>
-                <p>Saisir directement mes clés URL et API</p>
-            </div>
-            
-            <div style="text-align: center; margin-top: 20px;">
-                <button class="config-button" onclick="closeConfigModal()" style="background: #6c757d;">Annuler</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Supabase Config Form -->
-    <div id="supabaseConfigForm" class="config-modal" style="display: none;">
-        <div class="config-modal-content">
-            <h3>🔧 Configuration Supabase</h3>
-            <form id="supabaseForm">
-                <div class="form-group">
-                    <label>URL Supabase :</label>
-                    <input type="url" id="supabaseUrl" placeholder="https://xxx.supabase.co" required>
-                </div>
-                <div class="form-group">
-                    <label>Clé Publique (anon) :</label>
-                    <input type="text" id="supabaseKey" placeholder="eyJhbGciOiJIUzI1NiIs..." required>
-                </div>
-                <div style="display: flex; gap: 10px;">
-                    <button type="submit" class="config-button" style="flex: 1;">Sauvegarder</button>
-                    <button type="button" class="config-button" onclick="closeSupabaseConfig()" style="background: #6c757d; flex: 1;">Annuler</button>
-                </div>
-            </form>
-            <div style="margin-top: 15px; font-size: 0.9em; color: #666;">
-                <p>🔒 <strong>Sécurité :</strong> Vos clés sont stockées localement dans votre navigateur uniquement.</p>
-                <p>📚 <a href="docs/supabase-setup.md" target="_blank">Guide de configuration Supabase</a></p>
-            </div>
-        </div>
-    </div>
+    <!-- Plus de configuration manuelle : tout est géré côté serveur/GitHub -->
 
     <script type="module">
         // ========================================

@@ -120,9 +120,10 @@ Des idées d'amélioration ? Une traduction ? Un bug à signaler ?
 - 💡 **[Proposer une idée](../../issues)**
 - 🔧 **[Contribuer au code](CONTRIBUTING.md)**
 
+
 ## 📄 Licence
 
-Ce projet est sous licence MIT - vous êtes libre de l'utiliser, le modifier et le partager.
+Ce projet est sous licence [GNU GPL v3](https://www.gnu.org/licenses/gpl-3.0.fr.html) – vous êtes libre de l'utiliser, le modifier et le partager dans le respect de cette licence. Voir le fichier [LICENSE](LICENSE) pour plus de détails.
 
 ---
 
