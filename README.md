@@ -1,10 +1,7 @@
-👉 **Accéder à l'application :** [https://ggaillard.github.io/emoji-code-mood/](https://ggaillard.github.io/emoji-code-mood/)
-
-🔗 **Voir le code sur GitHub :** [https://github.com/ggaillard/emoji-code-mood](https://github.com/ggaillard/emoji-code-mood)
 # 🎭 Emoji Code Mood
 
 *Un petit brise-glace sympa pour vos cours de programmation*
-
+👉 **Accéder à l'application :** [https://ggaillard.github.io/emoji-code-mood/](https://ggaillard.github.io/emoji-code-mood/)
 [![Licence](https://img.shields.io/badge/Licence-GNU_GPL_v3-blue)](LICENSE)
 
 ---
