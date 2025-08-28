@@ -97,16 +97,6 @@ Vous pouvez facilement adapter l'outil à votre contexte :
 - 🎓 **[Guide enseignant](docs/teacher-guide.md)** - Conseils pédagogiques
 - 🔧 **[Dépannage](docs/troubleshooting.md)** - Résoudre les petits soucis
 
-## 🤝 Témoignages
-
-> *"Mes étudiants ont adoré ! Ça a créé une super ambiance dès le premier cours."*  
-> **Marie, IUT Informatique**
-
-> *"Pratique pour voir l'état d'esprit de la classe et adapter mon cours."*  
-> **Thomas, École d'Ingénieurs**
-
-> *"Simple à utiliser, mes élèves demandent maintenant à faire le 'mood du jour' !"*  
-> **Sarah, BTS SIO**
 
 ## 💡 Idées d'utilisation
 
