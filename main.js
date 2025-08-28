@@ -26,33 +26,29 @@ let selectedEmoji = '';
 let sessionStartTime = new Date();
 
 // ========================================
-// INITIALISATION SUPABASE
+// INITIALISATION SUPABASE VIA MODULE
 // ========================================
+import { getSupabaseClient } from './supabaseClient.js';
 
 async function initSupabase() {
+    // Charger dynamiquement la lib si besoin (pour navigateur)
+    if (!window.supabaseLib) {
+        window.supabaseLib = await import('https://cdn.skypack.dev/@supabase/supabase-js@2');
+    }
     try {
-        if (CONFIG.mode === 'supabase' && CONFIG.supabaseUrl && CONFIG.supabaseAnonKey) {
-            const { createClient } = await import('https://cdn.skypack.dev/@supabase/supabase-js@2');
-
-            supabase = createClient(CONFIG.supabaseUrl, CONFIG.supabaseAnonKey);
-
-            // Test de connexion
-            const { data, error } = await supabase.from('moods').select('count').limit(1);
-            if (error) {
-                console.warn('⚠️ Erreur Supabase, basculement en mode local:', error.message);
-                CONFIG.mode = 'local';
-                return false;
-            }
-
-            console.log('🚀 Supabase connecté avec succès');
-            await loadMoodsFromSupabase();
-            setupRealtimeSubscription();
-            return true;
+        supabase = getSupabaseClient();
+        // Test de connexion
+        const { error } = await supabase.from('moods').select('count').limit(1);
+        if (error) {
+            throw error;
         }
-        return false;
+        console.log('🚀 Supabase connecté avec succès');
+        await loadMoodsFromSupabase();
+        setupRealtimeSubscription();
+        return true;
     } catch (error) {
-        console.warn('⚠️ Erreur d\'initialisation Supabase:', error);
-        CONFIG.mode = 'local';
+        console.error('❌ Erreur de connexion Supabase :', error.message || error);
+        alert('Connexion à Supabase impossible. Vérifiez la configuration.');
         return false;
     }
 }
