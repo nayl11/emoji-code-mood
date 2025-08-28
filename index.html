@@ -64,9 +64,12 @@
             font-weight: 600;
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 10px;
+            background: #e3f2fd;
+            color: #1976d2;
+            border: 1px solid #bbdefb;
         }
-        
         
         .stats {
             display: flex;
@@ -112,7 +115,6 @@
             margin-bottom: 20px;
             font-size: 1.8em;
         }
-        
         
         .form-group {
             margin-bottom: 20px;
@@ -354,24 +356,6 @@
             color: #666;
             padding: 20px;
         }
-        
-        .setup-guide {
-            background: #e3f2fd;
-            border: 1px solid #2196f3;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 20px;
-        }
-        
-        .setup-guide h4 {
-            color: #1976d2;
-            margin-bottom: 10px;
-        }
-        
-        .setup-guide a {
-            color: #1976d2;
-            font-weight: 600;
-        }
     </style>
 </head>
 <body>
@@ -383,7 +367,10 @@
             <h1>🎭 Emoji Code Mood</h1>
             <p>Exprime ton humeur de rentrée avec une ligne de code !</p>
             
-
+            <div class="mode-indicator" id="modeIndicator">
+                <span id="modeIcon">⚡</span>
+                <span id="modeText">Mode Collaboratif - Synchronisation temps réel</span>
+            </div>
             
             <div class="stats">
                 <div class="stat-item">
@@ -406,7 +393,6 @@
         <div class="main-content">
             <div class="form-section">
                 <h2>📝 Code ton humeur</h2>
-                
                 
                 <form id="moodForm">
                     <div class="form-group">
@@ -511,6 +497,13 @@
                             <option value="je fais semblant de comprendre">
                             <option value="404 motivation not found">
                             <option value="mood de licorne cosmique">
+                            <option value="while(motivation) { code(); }">
+                            <option value="git commit -m 'nouvelle année'">
+                            <option value="printf('hello world');">
+                            <option value="sudo apt install motivation">
+                            <option value="import happiness from 'vacation'">
+                            <option value="let mood = 'awesome'">
+                            <option value="humeur = 'super'">
                         </datalist>
                     </div>
                     
@@ -521,7 +514,12 @@
             <div class="display-section">
                 <h2>💻 Mood Board de la classe</h2>
                 <div class="mood-list" id="moodList">
-
+                    <div class="loading">
+                        <p>🤖 En attente des premiers codes mood...</p>
+                        <p style="font-size: 0.9em; margin-top: 10px; color: #666;">
+                            Mode collaboratif activé - Synchronisation temps réel
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -535,7 +533,201 @@
         </div>
     </div>
 
-
+    <!-- Configuration privée injectée automatiquement par GitHub Actions -->
+    <!-- PRIVATE_CONFIG_PLACEHOLDER -->
 
     <script type="module">
-
+        // ========================================
+        // CONFIGURATION ET INITIALISATION
+        // ========================================
+        
+        console.log('🎭 Emoji Code Mood - Version Sécurisée v2.0');
+        
+        // Configuration par défaut (mode local)
+        let CONFIG = {
+            mode: 'local',
+            supabaseUrl: null,
+            supabaseAnonKey: null,
+            useRealtime: false
+        };
+        
+        // Détection automatique de la configuration privée
+        if (typeof window.PRIVATE_CONFIG !== 'undefined') {
+            CONFIG = { ...CONFIG, ...window.PRIVATE_CONFIG };
+            console.log('✅ Configuration privée détectée - Mode Supabase activé');
+        } else {
+            console.log('📦 Mode local activé - Données stockées dans le navigateur');
+        }
+        
+        // Variables globales
+        let supabase = null;
+        let moods = [];
+        let selectedEmoji = '';
+        let sessionStartTime = new Date();
+        
+        // ========================================
+        // INITIALISATION SUPABASE
+        // ========================================
+        
+        async function initSupabase() {
+            try {
+                if (CONFIG.mode === 'supabase' && CONFIG.supabaseUrl && CONFIG.supabaseAnonKey) {
+                    const { createClient } = await import('https://cdn.skypack.dev/@supabase/supabase-js@2');
+                    
+                    supabase = createClient(CONFIG.supabaseUrl, CONFIG.supabaseAnonKey);
+                    
+                    // Test de connexion
+                    const { data, error } = await supabase.from('moods').select('count').limit(1);
+                    if (error) {
+                        console.warn('⚠️ Erreur Supabase, basculement en mode local:', error.message);
+                        CONFIG.mode = 'local';
+                        return false;
+                    }
+                    
+                    console.log('🚀 Supabase connecté avec succès');
+                    await loadMoodsFromSupabase();
+                    setupRealtimeSubscription();
+                    return true;
+                }
+                return false;
+            } catch (error) {
+                console.warn('⚠️ Erreur d\'initialisation Supabase:', error);
+                CONFIG.mode = 'local';
+                return false;
+            }
+        }
+        
+        async function loadMoodsFromSupabase() {
+            if (!supabase) return;
+            
+            try {
+                const { data, error } = await supabase
+                    .from('moods')
+                    .select('*')
+                    .order('created_at', { ascending: false })
+                    .limit(100);
+                
+                if (error) throw error;
+                
+                moods = data || [];
+                updateDisplay();
+                console.log(`📊 ${moods.length} mood codes chargés depuis Supabase`);
+            } catch (error) {
+                console.error('❌ Erreur chargement Supabase:', error);
+            }
+        }
+        
+        function setupRealtimeSubscription() {
+            if (!supabase) return;
+            
+            supabase
+                .channel('moods_realtime')
+                .on('postgres_changes', 
+                    { event: '*', schema: 'public', table: 'moods' },
+                    (payload) => {
+                        console.log('🔄 Changement temps réel:', payload.eventType);
+                        
+                        if (payload.eventType === 'INSERT') {
+                            moods.unshift(payload.new);
+                            updateDisplay();
+                            
+                            // Animation d'arrivée
+                            setTimeout(() => {
+                                const newItem = document.querySelector('.mood-item');
+                                if (newItem) newItem.style.animation = 'slideIn 0.5s ease';
+                            }, 100);
+                        } else if (payload.eventType === 'DELETE') {
+                            loadMoodsFromSupabase();
+                        }
+                    }
+                )
+                .subscribe((status) => {
+                    console.log('📡 Realtime status:', status);
+                });
+        }
+        
+        // ========================================
+        // MODE LOCAL
+        // ========================================
+        
+        function initLocalMode() {
+            console.log('💾 Mode local initialisé');
+            moods = JSON.parse(localStorage.getItem('emoji-mood-local') || '[]');
+            updateDisplay();
+            
+            // Mise à jour de l'interface
+            const modeIndicator = document.getElementById('modeIndicator');
+            const modeIcon = document.getElementById('modeIcon');
+            const modeText = document.getElementById('modeText');
+            
+            modeIndicator.style.background = '#fff3e0';
+            modeIndicator.style.color = '#f57c00';
+            modeIndicator.style.borderColor = '#ffcc02';
+            modeIcon.textContent = '💾';
+            modeText.textContent = 'Mode Local - Données stockées dans ce navigateur';
+        }
+        
+        function saveLocalMoods() {
+            localStorage.setItem('emoji-mood-local', JSON.stringify(moods));
+        }
+        
+        // ========================================
+        // GESTION DES MOOD CODES
+        // ========================================
+        
+        async function addMood(mood) {
+            mood.created_at = new Date().toISOString();
+            
+            if (CONFIG.mode === 'supabase' && supabase) {
+                try {
+                    const { data, error } = await supabase
+                        .from('moods')
+                        .insert([mood])
+                        .select();
+                    
+                    if (error) throw error;
+                    console.log('✅ Mood ajouté à Supabase');
+                    return true;
+                } catch (error) {
+                    console.error('❌ Erreur ajout Supabase:', error);
+                    // Fallback local
+                    mood.id = Date.now();
+                    moods.unshift(mood);
+                    saveLocalMoods();
+                    updateDisplay();
+                    return true;
+                }
+            } else {
+                // Mode local
+                mood.id = Date.now();
+                moods.unshift(mood);
+                saveLocalMoods();
+                updateDisplay();
+                return true;
+            }
+        }
+        
+        // ========================================
+        // INTERFACE UTILISATEUR
+        // ========================================
+        
+        function setupEventListeners() {
+            // Gestion de la sélection d'emoji
+            document.querySelectorAll('.emoji-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('selected'));
+                    btn.classList.add('selected');
+                    selectedEmoji = btn.dataset.emoji;
+                });
+            });
+            
+            // Gestion du formulaire
+            document.getElementById('moodForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                await submitMood();
+            });
+            
+            // Timer de session
+            setInterval(() => {
+                const minutes = Math.floor((new Date() - sessionStartTime) / 60000);
+                document.getElementById('sessionTime').textContent = minutes;
