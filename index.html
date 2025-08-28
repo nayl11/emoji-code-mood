@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emoji Code Mood 🎭 - Supabase Edition</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #3ECF8E 0%, #2B7EC8 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: #3ECF8E;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 1.1em;
+            margin-bottom: 20px;
+        }
+        
+        .supabase-badge {
+            display: inline-flex;
+            align-items: center;
+            background: #3ECF8E;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.9em;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .connection-status {
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .status-connected {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status-disconnected {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .status-connecting {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+        }
+        
+        .stat-item {
+            background: #f8fffc;
+            padding: 15px 25px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #3ECF8E;
+        }
+        
+        .stat-label {
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .form-section, .display-section {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .form-section h2 {
+            color: #3ECF8E;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e8ed;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #3ECF8E;
+        }
+        
+        .emoji-selector {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 8px;
+            margin-bottom: 15px;
+            max-height: 300px;
+            overflow-y: auto;
+            padding: 10px;
+            border: 2px solid #e1e8ed;
+            border-radius: 10px;
+            background: #fafbfc;
+        }
+        
+        .emoji-btn {
+            padding: 12px;
+            border: 2px solid #e1e8ed;
+            background: white;
+            border-radius: 8px;
+            font-size: 1.8em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .emoji-btn:hover {
+            transform: scale(1.1);
+            border-color: #3ECF8E;
+        }
+        
+        .emoji-btn.selected {
+            border-color: #3ECF8E;
+            background: #f8fffc;
+            transform: scale(1.1);
+        }
+        
+        .submit-btn {
+            background: linear-gradient(135deg, #3ECF8E 0%, #2B7EC8 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            width: 100%;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .mood-list {
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        
+        .mood-item {
+            background: #f8fffc;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 4px solid #3ECF8E;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .mood-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .student-name {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .timestamp {
+            font-size: 0.9em;
+            color: #666;
+        }
+        
+        .code-display {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin-top: 10px;
+            position: relative;
+        }
+        
+        .language-tag {
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            background: #3ECF8E;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+        }
+        
+        .comment {
+            color: #a0aec0;
+        }
+        
+        .teacher-controls {
+            background: white;
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+        
+        .control-btn {
+            background: #e53e3e;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            margin: 0 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+        
+        .control-btn:hover {
+            transform: translateY(-1px);
+        }
+        
+        .export-btn {
+            background: #38a169;
+        }
+        
+        .refresh-btn {
+            background: #3182ce;
+        }
+        
+        .realtime-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9em;
+            margin-left: 10px;
+        }
+        
+        .pulse {
+            width: 8px;
+            height: 8px;
+            background: #3ECF8E;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.1); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .emoji-selector {
+                grid-template-columns: repeat(4, 1fr);
+                max-height: 250px;
+            }
+            
+            .emoji-btn {
+                font-size: 1.5em;
+                min-height: 45px;
+                padding: 8px;
+            }
+        }
+        
+        .mood-visualization {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        
+        .mood-bubble {
+            display: flex;
+            align-items: center;
+            background: #f8fffc;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 1.2em;
+            border: 2px solid #e1e8ed;
+        }
+        
+        .mood-count {
+            margin-left: 8px;
+            background: #3ECF8E;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+        
+        .loading {
+            text-align: center;
+            color: #666;
+            padding: 20px;
+        }
+        
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .connection-info {
+            background: #e8f4fd;
+            border: 1px solid #b8daff;
+            color: #004085;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="supabase-badge">
+                ⚡ Powered by Supabase
+            </div>
+            <h1>🎭 Emoji Code Mood</h1>
+            <p>Exprime ton humeur de rentrée avec une ligne de code !</p>
+            
+            <div class="connection-status" id="connectionStatus">
+                <span id="statusText">🔄 Connexion à Supabase...</span>
+                <span class="realtime-indicator" id="realtimeIndicator">
+                    <div class="pulse"></div>
+                    Temps réel
+                </span>
+            </div>
+            
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-number" id="totalParticipants">0</div>
+                    <div class="stat-label">Participants</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="moodVariety">0</div>
+                    <div class="stat-label">Humeurs différentes</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="sessionTime">0</div>
+                    <div class="stat-label">Minutes</div>
+                </div>
+            </div>
+            
+            <div class="mood-visualization" id="moodVisualization"></div>
+        </div>
+        
+        <div class="main-content">
+            <div class="form-section">
+                <h2>📝 Code ton humeur</h2>
+                
+                <div class="connection-info" id="connectionInfo">
+                    ℹ️ Mode démo - Configurez Supabase pour la synchronisation temps réel
+                </div>
+                
+                <form id="moodForm">
+                    <div class="form-group">
+                        <label for="studentName">Ton prénom :</label>
+                        <input type="text" id="studentName" required placeholder="Ex: Alex" maxlength="30">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Choisis ton emoji :</label>
+                        <div class="emoji-selector">
+                            <!-- Énergie et motivation -->
+                            <button type="button" class="emoji-btn" data-emoji="🔥" title="Feu - Motivé à fond">🔥</button>
+                            <button type="button" class="emoji-btn" data-emoji="💪" title="Muscle - Prêt au combat">💪</button>
+                            <button type="button" class="emoji-btn" data-emoji="🚀" title="Fusée - Décollage immédiat">🚀</button>
+                            <button type="button" class="emoji-btn" data-emoji="⚡" title="Éclair - Énergie électrique">⚡</button>
+                            <button type="button" class="emoji-btn" data-emoji="🌟" title="Étoile - Brillant aujourd'hui">🌟</button>
+                            <button type="button" class="emoji-btn" data-emoji="✨" title="Étincelles - Magique">✨</button>
+                            
+                            <!-- Fatigue et repos -->
+                            <button type="button" class="emoji-btn" data-emoji="😴" title="Endormi - Mode sieste">😴</button>
+                            <button type="button" class="emoji-btn" data-emoji="🥱" title="Bâillement - Fatigue">🥱</button>
+                            <button type="button" class="emoji-btn" data-emoji="☕" title="Café - Besoin de caféine">☕</button>
+                            <button type="button" class="emoji-btn" data-emoji="🛌" title="Lit - Envie de dormir">🛌</button>
+                            <button type="button" class="emoji-btn" data-emoji="💤" title="ZZZ - Assoupi">💤</button>
+                            <button type="button" class="emoji-btn" data-emoji="🧟" title="Zombie - Mode survie">🧟</button>
+                            
+                            <!-- Stress et défi -->
+                            <button type="button" class="emoji-btn" data-emoji="🤯" title="Explosion - Cerveau overload">🤯</button>
+                            <button type="button" class="emoji-btn" data-emoji="😰" title="Sueur - Stress intensif">😰</button>
+                            <button type="button" class="emoji-btn" data-emoji="🥵" title="Chaud - Pression maximum">🥵</button>
+                            <button type="button" class="emoji-btn" data-emoji="😓" title="Goutte sueur - Inquiet">😓</button>
+                            <button type="button" class="emoji-btn" data-emoji="🤪" title="Fou - Complètement perché">🤪</button>
+                            <button type="button" class="emoji-btn" data-emoji="🙃" title="À l'envers - Monde inversé">🙃</button>
+                            
+                            <!-- Confiance et cool -->
+                            <button type="button" class="emoji-btn" data-emoji="😎" title="Cool - Maître de l'univers">😎</button>
+                            <button type="button" class="emoji-btn" data-emoji="😏" title="Smirk - Je sais tout">😏</button>
+                            <button type="button" class="emoji-btn" data-emoji="🤓" title="Geek - Mode intellectuel">🤓</button>
+                            <button type="button" class="emoji-btn" data-emoji="😌" title="Zen - Parfaitement serein">😌</button>
+                            <button type="button" class="emoji-btn" data-emoji="😊" title="Sourire - Bonne humeur">😊</button>
+                            <button type="button" class="emoji-btn" data-emoji="😁" title="Grand sourire - Joie">😁</button>
+                            
+                            <!-- Réflexion et questionnement -->
+                            <button type="button" class="emoji-btn" data-emoji="🤔" title="Réflexion - En train de cogiter">🤔</button>
+                            <button type="button" class="emoji-btn" data-emoji="🧐" title="Monocle - Analyse poussée">🧐</button>
+                            <button type="button" class="emoji-btn" data-emoji="👀" title="Yeux - J'observe tout">👀</button>
+                            <button type="button" class="emoji-btn" data-emoji="🤨" title="Sourcil levé - Sceptique">🤨</button>
+                            <button type="button" class="emoji-btn" data-emoji="😬" title="Grimace - Pas très sûr">😬</button>
+                            <button type="button" class="emoji-btn" data-emoji="😕" title="Déçu - Un peu triste">😕</button>
+                            
+                            <!-- Humour et légèreté -->
+                            <button type="button" class="emoji-btn" data-emoji="😅" title="Rire nerveux - Ça va aller">😅</button>
+                            <button type="button" class="emoji-btn" data-emoji="😂" title="Larmes de joie - Mort de rire">😂</button>
+                            <button type="button" class="emoji-btn" data-emoji="🤣" title="Rire aux éclats - Explosion">🤣</button>
+                            <button type="button" class="emoji-btn" data-emoji="😄" title="Sourire éclatant - Super content">😄</button>
+                            <button type="button" class="emoji-btn" data-emoji="🥳" title="Fête - Mode célébration">🥳</button>
+                            <button type="button" class="emoji-btn" data-emoji="🎉" title="Confettis - Party time">🎉</button>
+                            
+                            <!-- Tech et geek -->
+                            <button type="button" class="emoji-btn" data-emoji="💻" title="Laptop - Mode développeur">💻</button>
+                            <button type="button" class="emoji-btn" data-emoji="🖥️" title="Desktop - Workstation ready">🖥️</button>
+                            <button type="button" class="emoji-btn" data-emoji="⌨️" title="Clavier - Ready to code">⌨️</button>
+                            <button type="button" class="emoji-btn" data-emoji="🤖" title="Robot - IA activated">🤖</button>
+                            <button type="button" class="emoji-btn" data-emoji="👾" title="Alien - Mode gaming">👾</button>
+                            <button type="button" class="emoji-btn" data-emoji="🎯" title="Cible - Objectif lock">🎯</button>
+                            
+                            <!-- Spéciaux -->
+                            <button type="button" class="emoji-btn" data-emoji="🦄" title="Licorne - Mood magique">🦄</button>
+                            <button type="button" class="emoji-btn" data-emoji="🎭" title="Masques - Humeur théâtrale">🎭</button>
+                            <button type="button" class="emoji-btn" data-emoji="🎲" title="Dé - Mood aléatoire">🎲</button>
+                            <button type="button" class="emoji-btn" data-emoji="🌈" title="Arc-en-ciel - Toutes les couleurs">🌈</button>
+                            <button type="button" class="emoji-btn" data-emoji="🍕" title="Pizza - Mood gourmand">🍕</button>
+                            <button type="button" class="emoji-btn" data-emoji="🎸" title="Guitare - Rock'n'code">🎸</button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="language">Langage de programmation :</label>
+                        <select id="language" required>
+                            <option value="">Choisis un langage</option>
+                            <option value="javascript">JavaScript</option>
+                            <option value="typescript">TypeScript</option>
+                            <option value="python">Python</option>
+                            <option value="java">Java</option>
+                            <option value="csharp">C#</option>
+                            <option value="php">PHP</option>
+                            <option value="cpp">C++</option>
+                            <option value="rust">Rust</option>
+                            <option value="go">Go</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="comment">Commentaire (optionnel) :</label>
+                        <input type="text" id="comment" placeholder="Clique pour des idées..." list="commentSuggestions" maxlength="100">
+                        <datalist id="commentSuggestions">
+                            <!-- Énergie et motivation -->
+                            <option value="prêt pour attaquer les projets">
+                            <option value="mode guerrier activé">
+                            <option value="à fond les ballons">
+                            <option value="j'ai mangé du lion au petit-déj">
+                            <option value="100% motivé">
+                            <option value="let's gooo">
+                            <option value="énergie de super-héros">
+                            
+                            <!-- Fatigue -->
+                            <option value="vacances pas encore digérées">
+                            <option value="besoin d'un deuxième café">
+                            <option value="mode zombie ON">
+                            <option value="réveil difficile ce matin">
+                            <option value="batterie à 5%">
+                            <option value="hibernation en cours">
+                            <option value="sommeil.exe has stopped working">
+                            
+                            <!-- Stress/Défi -->
+                            <option value="trop d'infos dès le premier cours">
+                            <option value="cerveau en surchauffe">
+                            <option value="mode panique contrôlée">
+                            <option value="ça va être chaud cette année">
+                            <option value="help me please">
+                            <option value="syndrome de l'imposteur activé">
+                            <option value="CPU overload detected">
+                            
+                            <!-- Confiance -->
+                            <option value="easy peasy lemon squeezy">
+                            <option value="je gère comme un boss">
+                            <option value="born ready">
+                            <option value="cool comme Baptiste">
+                            <option value="zen attitude">
+                            <option value="tout sous contrôle">
+                            <option value="confidence level: maximum">
+                            
+                            <!-- Réflexion -->
+                            <option value="mode réflexion intense">
+                            <option value="en train de calculer">
+                            <option value="cerveau en ébullition">
+                            <option value="loading...">
+                            <option value="j'analyse la situation">
+                            <option value="ça cogite là-dedans">
+                            <option value="processing thoughts...">
+                            
+                            <!-- Humour -->
+                            <option value="je fais semblant de comprendre">
+                            <option value="ça va le faire... je crois">
+                            <option value="plot twist incoming">
+                            <option value="prêt pour l'aventure">
+                            <option value="YOLO coding">
+                            <option value="on va rigoler">
+                            <option value="humour.exe loaded successfully">
+                            
+                            <!-- Tech -->
+                            <option value="404 motivation not found">
+                            <option value="git commit -m 'nouvelle année'">
+                            <option value="printf('hello world');">
+                            <option value="while(motivation) { code(); }">
+                            <option value="système opérationnel">
+                            <option value="variable mood initialisée">
+                            <option value="sudo apt install motivation">
+                            <option value="import happiness from 'vacation'">
+                            
+                            <!-- Créatifs -->
+                            <option value="mood de licorne cosmique">
+                            <option value="humeur arc-en-ciel">
+                            <option value="vibe extraterrestre">
+                            <option value="pouvoir pizza activé">
+                            <option value="mode rock'n'roll">
+                            <option value="unicorn mode: activated">
+                        </datalist>
+                    </div>
+                    
+                    <button type="submit" class="submit-btn" id="submitBtn">Envoyer mon code mood ! 🚀</button>
+                </form>
+            </div>
+            
+            <div class="display-section">
+                <h2>💻 Mood Board de la classe</h2>
+                <div class="mood-list" id="moodList">
+                    <div class="loading">
+                        <p>🔄 Chargement des mood codes...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="teacher-controls">
+            <h3 style="margin-bottom: 15px; color: #3ECF8E;">🎓 Contrôles enseignant</h3>
+            <button class="control-btn refresh-btn" onclick="loadMoods()">🔄 Actualiser</button>
+            <button class="control-btn" onclick="clearAllMoods()">🗑️ Effacer tout</button>
+            <button class="control-btn export-btn" onclick="exportMoods()">📄 Exporter CSV</button>
+            <button class="control-btn export-btn" onclick="exportMoodsJSON()">💾 Export JSON</button>
+        </div>
+    </div>
+
+    <!-- Supabase Client -->
+    <script type="module">
+        import { createClient } from 'https://cdn.skypack.dev/@supabase/supabase-js@2'
+        
+        // ⚠️ CONFIGURATION À REMPLACER - Récupérez ces valeurs depuis votre dashboard Supabase
+        const SUPABASE_URL = 'https://VOTRE_PROJECT_REF.supabase.co'
+        const SUPABASE_ANON_KEY = 'VOTRE_ANON_KEY'
+        
+        // ⚠️ CONFIGURATION ALTERNATIVE - Si Supabase n'est pas configuré
+        const USE_SUPABASE = SUPABASE_URL !== 'https://VOTRE_PROJECT_REF.supabase.co'
+        
+        let supabase = null
+        let moods = []
+        let selectedEmoji = ''
+        let isConnected = false
+        let sessionStartTime = new Date()
+        
+        // Initialisation
+        if (USE_SUPABASE) {
+            try {
+                supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+                await initSupabase()
+            } catch (error) {
+                console.error('Erreur Supabase:', error)
+                updateConnectionStatus(false, 'Erreur de configuration Supabase')
+                initLocalMode()
+            }
+        } else {
+            updateConnectionStatus(false, 'Mode démo - Configurez Supabase pour la synchronisation')
+            initLocalMode()
+        }
+        
+        async function initSupabase() {
+            try {
+                // Test de connexion
+                const { data, error } = await supabase.from('moods').select('count').limit(1)
+                if (error) throw error
+                
+                updateConnectionStatus(true)
+                await loadMoodsFromSupabase()
+                setupRealtimeSubscription()
+                document.getElementById('connectionInfo').style.display = 'none'
+            } catch (error) {
+                console.error('Erreur initialisation Supabase:', error)
+                updateConnectionStatus(false, `Erreur: ${error.message}`)
+                initLocalMode()
+            }
+        }
+        
+        function setupRealtimeSubscription() {
+            if (!supabase) return
+            
+            supabase
+                .channel('moods_channel')
+                .on('postgres_changes', 
+                    { event: '*', schema: 'public', table: 'moods' },
+                    (payload) => {
+                        console.log('Changement temps réel:', payload)
+                        if (payload.eventType === 'INSERT') {
+                            moods.unshift(payload.new)
+                            updateDisplay()
+                        } else if (payload.eventType === 'DELETE') {
+                            loadMoodsFromSupabase() // Recharge complète
+                        }
+                    }
+                )
+                .subscribe((status) => {
+                    console.log('Status subscription:', status)
+                    if (status === 'SUBSCRIBED') {
+                        document.getElementById('realtimeIndicator').style.display = 'flex'
+                    }
+                })
+        }
+        
+        async function loadMoodsFromSupabase() {
+            if (!supabase) return
+            
+            try {
+                const { data, error } = await supabase
+                    .from('moods')
+                    .select('*')
+                    .order('created_at', { ascending: false })
+                    .limit(100) // Limite pour la performance
+                
+                if (error) throw error
+                
+                moods = data || []
+                updateDisplay()
+            } catch (error) {
+                console.error('Erreur chargement moods:', error)
+            }
+        }
+        
+        function updateConnectionStatus(connected, message = '') {
+            isConnected = connected
+            const statusEl = document.getElementById('connectionStatus')
+            const statusTextEl = document.getElementById('statusText')
+            
+            if (connected) {
+                statusEl.className = 'connection-status status-connected'
+                statusTextEl.textContent = '✅ Connecté à Supabase - Synchronisation temps réel active'
+            } else {
+                statusEl.className = 'connection-status status-disconnected'
+                statusTextEl.textContent = message || '❌ Mode local - Configuration Supabase requise pour la sync'
+            }
+        }
+        
+        function initLocalMode() {
+            // Mode local sans Supabase
+            moods = JSON.parse(localStorage.getItem('emojiCodeMoodsSupabase') || '[]')
+            updateDisplay()
+            document.getElementById('realtimeIndicator').style.display = 'none'
+            
+            const info = document.getElementById('connectionInfo')
+            info.innerHTML = `
+                ℹ️ <strong>Mode démo local</strong> - 
+                <a href="docs/supabase-setup.md" target="_blank">Configurez Supabase</a> 
+                pour la synchronisation temps réel entre tous les participants
+            `
+        }
+        
+        function saveToLocalStorage() {
+            localStorage.setItem('emojiCodeMoodsSupabase', JSON.stringify(moods))
+        }
+        
+        // Timer de session
+        setInterval(() => {
+            const minutes = Math.floor((new Date() - sessionStartTime) / 60000)
+            document.getElementById('sessionTime').textContent = minutes
+        }, 60000)
+        
+        // Gestion de la sélection d'emoji
+        document.querySelectorAll('.emoji-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('selected'))
+                btn.classList.add('selected')
+                selectedEmoji = btn.dataset.emoji
+            })
+        })
+        
+        // Gestion du formulaire
+        document.getElementById('moodForm').addEventListener('submit', async (e) => {
+            e.preventDefault()
+            
+            const name = document.getElementById('studentName').value.trim()
+            const language = document.getElementById('language').value
+            const comment = document.getElementById('comment').value.trim()
+            const submitBtn = document.getElementById('submitBtn')
+            
+            // Validations
+            if (!selectedEmoji) {
+                alert('N\'oublie pas de choisir un emoji ! 😊')
+                return
+            }
+            
+            if (name.length < 2) {
+                alert('Le prénom doit contenir au moins 2 caractères')
+                return
+            }
+            
+            const mood = {
+                name: name,
+                emoji: selectedEmoji,
+                language: language,
+                comment: comment,
+                created_at: new Date().toISOString()
+            }
+            
+            // Animation de chargement
+            submitBtn.textContent = '🔄 Envoi en cours...'
+            submitBtn.disabled = true
+            
+            let success = false
+            
+            if (USE_SUPABASE && isConnected && supabase) {
+                success = await addMoodToSupabase(mood)
+            } else {
+                // Mode local
+                mood.id = Date.now()
+                moods.unshift(mood)
+                saveToLocalStorage()
+                updateDisplay()
+                success = true
+            }
+            
+            if (success) {
+                resetForm()
+                submitBtn.textContent = '✅ Envoyé avec succès !'
+                setTimeout(() => {
+                    submitBtn.textContent = 'Envoyer mon code mood ! 🚀'
+                    submitBtn.disabled = false
+                }, 2500)
+            } else {
+                submitBtn.textContent = '❌ Erreur - Réessayer'
+                setTimeout(() => {
+                    submitBtn.textContent = 'Envoyer mon code mood ! 🚀'
+                    submitBtn.disabled = false
+                }, 3000)
+            }
+        })
+        
+        async function addMoodToSupabase(mood) {
+            if (!supabase) return false
+            
+            try {
+                const { data, error } = await supabase
+                    .from('moods')
+                    .insert([mood])
+                    .select()
+                
+                if (error) throw error
+                
+                console.log('Mood ajouté:', data)
+                return true
+            } catch (error) {
+                console.error('Erreur ajout mood:', error)
+                
+                // Fallback vers le mode local en cas d'erreur
+                mood.id = Date.now()
+                moods.unshift(mood)
+                saveToLocalStorage()
+                updateDisplay()
+                
+                updateConnectionStatus(false, 'Erreur Supabase - Basculement en mode local')
+                return true
+            }
+        }
+        
+        function resetForm() {
+            document.getElementById('moodForm').reset()
+            document.querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('selected'))
+            selectedEmoji = ''
+        }
+        
+        function updateDisplay() {
+            updateStats()
+            updateMoodList()
+            updateVisualization()
+        }
+        
+        function updateStats() {
+            document.getElementById('totalParticipants').textContent = moods.length
+            
+            const uniqueEmojis = new Set(moods.map(m => m.emoji))
+            document.getElementById('moodVariety').textContent = uniqueEmojis.size
+            
+            const minutes = Math.floor((new Date() - sessionStartTime) / 60000)
+            document.getElementById('sessionTime').textContent = minutes
+        }
+        
+        function updateMoodList() {
+            const listContainer = document.getElementById('moodList')
+            
+            if (moods.length === 0) {
+                listContainer.innerHTML = `
+                    <div class="loading">
+                        <p>🤖 En attente des premiers codes mood...</p>
+                        <p style="font-size: 0.9em; margin-top: 10px; color: #666;">
+                            ${isConnected ? 'Synchronisation temps réel active' : 'Mode démo local'}
+                        </p>
+                    </div>
+                `
+                return
+            }
+            
+            listContainer.innerHTML = moods.map(mood => {
+                const codeSnippet = generateCodeSnippet(mood)
+                const timeDisplay = formatTime(mood.created_at)
+                
+                return `
+                    <div class="mood-item">
+                        <div class="mood-header">
+                            <span class="student-name">${escapeHtml(mood.name)}</span>
+                            <span class="timestamp">${timeDisplay}</span>
+                        </div>
+                        <div class="code-display">
+                            <div class="language-tag">${mood.language}</div>
+                            ${codeSnippet}
+                        </div>
+                    </div>
+                `
+            }).join('')
+        }
+        
+        function generateCodeSnippet(mood) {
+            const templates = {
+                javascript: `let mood = "${mood.emoji}";${mood.comment ? ` <span class="comment">// ${escapeHtml(mood.comment)}</span>` : ''}`,
+                typescript: `const mood: string = "${mood.emoji}";${mood.comment ? ` <span class="comment">// ${escapeHtml(mood.comment)}</span>` : ''}`,
+                python: `humeur = "${mood.emoji}"${mood.comment ? `  <span class="comment"># ${escapeHtml(mood.comment)}</span>` : ''}`,
+                java: `String mood = "${mood.emoji}";${mood.comment ? ` <span class="comment">// ${escapeHtml(mood.comment)}</span>` : ''}`,
+                csharp: `string mood = "${mood.emoji}";${mood.comment ? ` <span class="comment">// ${escapeHtml(mood.comment)}</span>` : ''}`,
+                php: `$mood = "${mood.emoji}";${mood.comment ? ` <span class="comment">// ${escapeHtml(mood.comment)}</span>` : ''}`,
+                cpp: `std::string mood = "${mood.emoji}";${mood.comment ? ` <span class="comment">// ${escapeHtml(mood.comment)}</span>` : ''}`,
+                rust: `let mood = "${mood.emoji}";${mood.comment ? ` <span class="comment">// ${escapeHtml(mood.comment)}</span>` : ''}`,
+                go: `mood := "${mood.emoji}"${mood.comment ? ` <span class="comment">// ${escapeHtml(mood.comment)}</span>` : ''}`
+            }
+            
+            return templates[mood.language] || `mood = "${mood.emoji}";${mood.comment ? ` // ${escapeHtml(mood.comment)}` : ''}`
+        }
+        
+        function formatTime(timestamp) {
+            const date = new Date(timestamp)
+            const now = new Date()
+            const diffMinutes = Math.floor((now - date) / 60000)
+            
+            if (diffMinutes < 1) return 'À l\'instant'
+            if (diffMinutes < 60) return `${diffMinutes}min`
+            if (diffMinutes < 1440) return `${Math.floor(diffMinutes / 60)}h${diffMinutes % 60}`
+            return date.toLocaleDateString() + ' ' + date.toLocaleTimeString()
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div')
+            div.textContent = text
+            return div.innerHTML
+        }
+        
+        function updateVisualization() {
+            const container = document.getElementById('moodVisualization')
+            
+            if (moods.length === 0) {
+                container.innerHTML = ''
+                return
+            }
+            
+            const emojiCounts = {}
+            moods.forEach(mood => {
+                emojiCounts[mood.emoji] = (emojiCounts[mood.emoji] || 0) + 1
+            })
+            
+            container.innerHTML = Object.entries(emojiCounts)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 10) // Top 10 seulement
+                .map(([emoji, count]) => `
+                    <div class="mood-bubble">
+                        <span>${emoji}</span>
+                        <span class="mood-count">${count}</span>
+                    </div>
+                `).join('')
+        }
+        
+        // Fonctions globales pour les contrôles enseignant
+        window.loadMoods = async function() {
+            const btn = event.target
+            const originalText = btn.textContent
+            btn.textContent = '🔄 Actualisation...'
+            btn.disabled = true
+            
+            try {
+                if (USE_SUPABASE && isConnected && supabase) {
+                    await loadMoodsFromSupabase()
+                } else {
+                    moods = JSON.parse(localStorage.getItem('emojiCodeMoodsSupabase') || '[]')
+                    updateDisplay()
+                }
+                btn.textContent = '✅ Actualisé'
+            } catch (error) {
+                btn.textContent = '❌ Erreur'
+                console.error('Erreur actualisation:', error)
+            }
+            
+            setTimeout(() => {
+                btn.textContent = originalText
+                btn.disabled = false
+            }, 2000)
+        }
+        
+        window.clearAllMoods = async function() {
+            if (!confirm('⚠️ Êtes-vous sûr de vouloir effacer TOUS les mood codes de la session ?')) {
+                return
+            }
+            
+            const btn = event.target
+            const originalText = btn.textContent
+            btn.textContent = '🗑️ Suppression...'
+            btn.disabled = true
+            
+            try {
+                if (USE_SUPABASE && isConnected && supabase) {
+                    const { error } = await supabase
+                        .from('moods')
+                        .delete()
+                        .neq('id', 0) // Supprime tous les enregistrements
+                    
+                    if (error) throw error
+                } else {
+                    moods = []
+                    saveToLocalStorage()
+                    updateDisplay()
+                }
+                btn.textContent = '✅ Effacé'
+            } catch (error) {
+                btn.textContent = '❌ Erreur'
+                console.error('Erreur suppression:', error)
+                alert('Erreur lors de la suppression: ' + error.message)
+            }
+            
+            setTimeout(() => {
+                btn.textContent = originalText
+                btn.disabled = false
+            }, 2000)
+        }
+        
+        window.exportMoods = function() {
+            if (moods.length === 0) {
+                alert('Aucun mood code à exporter !')
+                return
+            }
+            
+            const exportData = moods.map(mood => ({
+                Prénom: mood.name,
+                Emoji: mood.emoji,
+                Langage: mood.language,
+                Commentaire: mood.comment || '',
+                'Date/Heure': formatTime(mood.created_at),
+                Timestamp: mood.created_at
+            }))
+            
+            const headers = Object.keys(exportData[0])
+            const csvContent = [
+                headers.join(','),
+                ...exportData.map(row => 
+                    headers.map(header => `"${(row[header] || '').toString().replace(/"/g, '""')}"`).join(',')
+                )
+            ].join('\n')
+            
+            downloadFile(csvContent, `emoji-code-mood-${new Date().toISOString().split('T')[0]}.csv`, 'text/csv')
+        }
+        
+        window.exportMoodsJSON = function() {
+            if (moods.length === 0) {
+                alert('Aucun mood code à exporter !')
+                return
+            }
+            
+            const exportData = {
+                session: {
+                    date: new Date().toISOString(),
+                    duration_minutes: Math.floor((new Date() - sessionStartTime) / 60000),
+                    total_participants: moods.length,
+                    unique_emojis: new Set(moods.map(m => m.emoji)).size,
+                    platform: 'Supabase Edition'
+                },
+                moods: moods.map(mood => ({
+                    name: mood.name,
+                    emoji: mood.emoji,
+                    language: mood.language,
+                    comment: mood.comment,
+                    timestamp: mood.created_at
+                })),
+                analytics: generateAnalytics()
+            }
+            
+            const jsonContent = JSON.stringify(exportData, null, 2)
+            downloadFile(jsonContent, `emoji-code-mood-session-${new Date().toISOString().split('T')[0]}.json`, 'application/json')
+        }
+        
+        function generateAnalytics() {
+            const emojiStats = {}
+            const languageStats = {}
+            const hourlyStats = {}
+            
+            moods.forEach(mood => {
+                // Stats par emoji
+                emojiStats[mood.emoji] = (emojiStats[mood.emoji] || 0) + 1
+                
+                // Stats par langage
+                languageStats[mood.language] = (languageStats[mood.language] || 0) + 1
+                
+                // Stats par heure
+                const hour = new Date(mood.created_at).getHours()
+                hourlyStats[hour] = (hourlyStats[hour] || 0) + 1
+            })
+            
+            return {
+                emoji_distribution: emojiStats,
+                language_preferences: languageStats,
+                hourly_activity: hourlyStats,
+                top_emojis: Object.entries(emojiStats)
+                    .sort((a, b) => b[1] - a[1])
+                    .slice(0, 5)
+                    .map(([emoji, count]) => ({ emoji, count }))
+            }
+        }
+        
+        function downloadFile(content, filename, mimeType) {
+            const blob = new Blob([content], { type: mimeType + ';charset=utf-8;' })
+            const url = URL.createObjectURL(blob)
+            const link = document.createElement('a')
+            link.href = url
+            link.download = filename
+            link.style.display = 'none'
+            document.body.appendChild(link)
+            link.click()
+            document.body.removeChild(link)
+            URL.revokeObjectURL(url)
+        }
+        
+        // Chargement initial
+        updateDisplay()
+        
+        // Auto-refresh périodique en mode local (toutes les 30 secondes)
+        if (!USE_SUPABASE || !isConnected) {
+            setInterval(() => {
+                if (!USE_SUPABASE) {
+                    const savedMoods = JSON.parse(localStorage.getItem('emojiCodeMoodsSupabase') || '[]')
+                    if (savedMoods.length !== moods.length) {
+                        moods = savedMoods
+                        updateDisplay()
+                    }
+                }
+            }, 30000)
+        }
+
+    </script>
+</body>
+</html>
