@@ -82,7 +82,7 @@ jobs:
           echo "🔍 Vérification finale de sécurité..."
           
           # Vérifier qu'aucun placeholder n'est resté
-          if grep -r "VOTRE_PROJECT_REF\|VOTRE_ANON_KEY" . --exclude-dir=.git; then
+          if grep -r "VOTRE_PROJECT_REF\|VOTRE_ANON_KEY\|your-project\|your-anon-key" . --exclude-dir=.git; then
             echo "❌ ERREUR: Des placeholders ont été détectés !"
             exit 1
           fi
@@ -90,6 +90,12 @@ jobs:
           # Vérifier que la configuration est bien injectée
           if ! grep -q "window.PRIVATE_CONFIG" private-config.js; then
             echo "❌ ERREUR: Configuration non injectée !"
+            exit 1
+          fi
+          
+          # Vérifier que les secrets sont bien remplacés
+          if grep -q "SUPABASE_URL\|SUPABASE_ANON_KEY" private-config.js; then
+            echo "❌ ERREUR: Les secrets n'ont pas été remplacés !"
             exit 1
           fi
           

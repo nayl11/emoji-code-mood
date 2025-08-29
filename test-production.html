@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧪 Test Production - Emoji Code Mood</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="security-badge" style="background: #28a745; color: white;">
+                🚀 Test Production
+            </div>
+            <h1>🎭 Emoji Code Mood - Test Production</h1>
+            <p>Test de l'application en mode production avec Supabase</p>
+        </div>
+        
+        <div class="main-content">
+            <div class="form-section">
+                <h2>📝 Test du formulaire complet</h2>
+                
+                <form id="moodForm">
+                    <div class="form-group">
+                        <label for="studentName">Prénom :</label>
+                        <input type="text" id="studentName" required placeholder="Test Production" maxlength="30">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Emoji :</label>
+                        <div class="emoji-selector">
+                            <button type="button" class="emoji-btn" data-emoji="🚀">🚀</button>
+                            <button type="button" class="emoji-btn" data-emoji="💻">💻</button>
+                            <button type="button" class="emoji-btn" data-emoji="🎯">🎯</button>
+                            <button type="button" class="emoji-btn" data-emoji="🔥">🔥</button>
+                            <button type="button" class="emoji-btn" data-emoji="✨">✨</button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="language">Langage :</label>
+                        <select id="language" required>
+                            <option value="">Choisis</option>
+                            <option value="javascript">JavaScript</option>
+                            <option value="python">Python</option>
+                            <option value="typescript">TypeScript</option>
+                            <option value="java">Java</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="comment">Commentaire :</label>
+                        <textarea id="comment" placeholder="Test production - Protection anti-doublon" rows="3"></textarea>
+                    </div>
+                    
+                    <button type="submit" id="submitBtn" class="submit-btn">Tester Production ! 🚀</button>
+                </form>
+            </div>
+            
+            <div class="display-section">
+                <h2>📊 Résultats du test</h2>
+                <div id="testResults">
+                    <p>Cliquez sur "Tester Production !" pour vérifier le fonctionnement complet</p>
+                </div>
+                
+                <div class="stats-section">
+                    <h3>📈 Statistiques</h3>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <span class="stat-label">Total participants :</span>
+                            <span id="totalParticipants" class="stat-value">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Variété d'emojis :</span>
+                            <span id="moodVariety" class="stat-value">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Temps de session :</span>
+                            <span id="sessionTime" class="stat-value">0</span> min
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="moodList">
+                    <h3>📝 Moods ajoutés :</h3>
+                    <div class="loading">
+                        <p>🤖 En attente des premiers codes mood...</p>
+                        <p style="font-size: 0.9em; margin-top: 10px; color: #666;">Synchronisation temps réel active</p>
+                    </div>
+                </div>
+                
+                <div id="moodVisualization">
+                    <h3>📊 Visualisation des emojis</h3>
+                    <div class="visualization-placeholder">
+                        <p>Les emojis les plus populaires apparaîtront ici</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="teacher-controls">
+                <h3>👨‍🏫 Contrôles Enseignant</h3>
+                <div class="control-buttons">
+                    <button onclick="window.loadMoods(event)" class="control-btn">🔄 Actualiser</button>
+                    <button onclick="window.exportMoods()" class="control-btn">📊 Exporter CSV</button>
+                    <button onclick="window.exportMoodsJSON()" class="control-btn">📄 Exporter JSON</button>
+                    <button onclick="window.clearAllMoods(event)" class="control-btn danger">🗑️ Tout effacer</button>
+                </div>
+            </div>
+            
+            <div class="production-info">
+                <h3>🔧 Informations de production</h3>
+                <div id="productionStatus">
+                    <p>Vérification de la configuration...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Configuration privée (générée par GitHub Actions) -->
+    <script src="private-config.js"></script>
+    
+    <!-- Bibliothèque Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script type="module" src="main.js"></script>
+    
+    <script>
+        // Test de production
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🧪 Test de production initialisé');
+            
+            // Vérifier la configuration
+            if (window.PRIVATE_CONFIG) {
+                console.log('✅ Configuration détectée:', {
+                    mode: window.PRIVATE_CONFIG.mode,
+                    hasUrl: !!window.PRIVATE_CONFIG.supabaseUrl,
+                    hasKey: !!window.PRIVATE_CONFIG.supabaseAnonKey
+                });
+                
+                document.getElementById('productionStatus').innerHTML = `
+                    <div style="background: #d4edda; padding: 15px; border-radius: 8px; color: #155724;">
+                        <h4>✅ Configuration valide</h4>
+                        <p><strong>Mode :</strong> ${window.PRIVATE_CONFIG.mode}</p>
+                        <p><strong>Supabase :</strong> Configuré et sécurisé</p>
+                        <p><strong>Déploiement :</strong> GitHub Actions</p>
+                    </div>
+                `;
+            } else {
+                console.error('❌ Configuration manquante');
+                document.getElementById('productionStatus').innerHTML = `
+                    <div style="background: #f8d7da; padding: 15px; border-radius: 8px; color: #721c24;">
+                        <h4>❌ Configuration manquante</h4>
+                        <p>Vérifiez que le déploiement GitHub Actions s'est bien exécuté.</p>
+                        <p>Consultez <a href="docs/github-actions-setup.md">le guide de configuration</a>.</p>
+                    </div>
+                `;
+            }
+            
+            // Vérifier que Supabase est chargé
+            if (window.supabase) {
+                console.log('✅ Bibliothèque Supabase chargée');
+            } else {
+                console.warn('⚠️ Bibliothèque Supabase non encore chargée');
+            }
+        });
+        
+        // Fonction de test de la protection anti-doublon
+        window.testAntiDuplication = async function() {
+            console.log('🧪 Test de la protection anti-doublon...');
+            
+            const testMood = {
+                name: 'Test Anti-Doublon',
+                emoji: '🧪',
+                language: 'javascript',
+                comment: 'Test de protection en production'
+            };
+            
+            // Premier ajout
+            console.log('📝 Premier ajout...');
+            const firstResult = await window.addMood(testMood);
+            console.log('Premier résultat:', firstResult);
+            
+            // Deuxième ajout (devrait être rejeté)
+            console.log('📝 Deuxième ajout (devrait être rejeté)...');
+            const secondResult = await window.addMood(testMood);
+            console.log('Deuxième résultat:', secondResult);
+            
+            if (firstResult && !secondResult) {
+                console.log('✅ Protection anti-doublon fonctionne !');
+                alert('✅ Test réussi : Protection anti-doublon active en production');
+            } else {
+                console.log('❌ Protection anti-doublon ne fonctionne pas');
+                alert('❌ Test échoué : Vérifiez la console');
+            }
+        };
+        
+        // Ajouter un bouton de test anti-doublon
+        setTimeout(() => {
+            const testBtn = document.createElement('button');
+            testBtn.textContent = '🧪 Tester Anti-Doublon';
+            testBtn.onclick = window.testAntiDuplication;
+            testBtn.style.cssText = 'background: #17a2b8; color: white; padding: 10px; margin: 10px; border: none; border-radius: 5px; cursor: pointer;';
+            document.querySelector('.teacher-controls').appendChild(testBtn);
+        }, 2000);
+    </script>
+</body>
+</html>

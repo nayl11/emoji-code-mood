@@ -54,10 +54,23 @@ Aucune installation nécessaire, ça fonctionne directement dans votre navigateu
 
 ### Option collaborative (temps réel)
 Pour que tous vos étudiants voient les réponses en temps réel :
-- 📖 **Guide Supabase** : [docs/supabase-setup.md](docs/supabase-setup.md)
+
+#### 🚀 **Déploiement automatique avec GitHub Actions (Recommandé)**
+1. **Forkez** ce repository
+2. **Configurez vos secrets GitHub** :
+   - Allez dans `Settings` → `Secrets and variables` → `Actions`
+   - Ajoutez `SUPABASE_URL` avec votre URL Supabase
+   - Ajoutez `SUPABASE_ANON_KEY` avec votre clé anonyme
+3. **Poussez votre code** - Le déploiement se fait automatiquement !
+4. **Votre app est déployée** sur GitHub Pages avec Supabase configuré
+
+#### 📖 **Guide détaillé** : 
+- [Configuration GitHub Actions](docs/github-actions-setup.md) - Déploiement automatique
+- [Configuration Supabase](docs/supabase-setup.md) - Base de données
 
 > ⚡ **Configuration automatique et sécurisée** :
-> Les paramètres Supabase (`SUPABASE_URL` et `SUPABASE_ANON_KEY`) sont injectés automatiquement via les secrets GitHub du repository. Aucune configuration manuelle n'est nécessaire côté client.
+> Les paramètres Supabase sont injectés automatiquement via GitHub Actions. 
+> Aucune configuration manuelle n'est nécessaire côté client.
 
 ## 🎨 Personnaliser
 

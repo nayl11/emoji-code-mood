@@ -106,9 +106,23 @@ function setupRealtimeSubscription() {
 // ========================================
 
 async function addMood(mood) {
+    // Vérifier si un mood similaire a déjà été soumis récemment (protection anti-doublon)
+    const recentMood = moods.find(m => 
+        m.name === mood.name && 
+        m.emoji === mood.emoji && 
+        m.language === mood.language &&
+        Date.now() - new Date(m.created_at).getTime() < 30000 // 30 secondes
+    );
+    
+    if (recentMood) {
+        console.warn('⚠️ Mood similaire déjà soumis récemment, évitons le doublon');
+        return false;
+    }
+    
     mood.created_at = new Date().toISOString();
 
-    if (CONFIG.mode === 'supabase' && supabase) {
+    // Mode Supabase
+    if (supabase) {
         try {
             const { data, error } = await supabase
                 .from('moods')
@@ -120,10 +134,46 @@ async function addMood(mood) {
             return true;
         } catch (error) {
             console.error('❌ Erreur ajout Supabase:', error);
+            // Fallback vers le mode local seulement si c'est une erreur de réseau
+            if (error.code === 'NETWORK_ERROR' || error.message.includes('fetch')) {
+                console.log('🔄 Basculement vers le mode local (erreur réseau)');
+                return addMoodLocal(mood);
+            }
             return false;
         }
     }
-    return false;
+    
+    // Mode local (fallback)
+    return addMoodLocal(mood);
+}
+
+function addMoodLocal(mood) {
+    try {
+        // Vérifier si un mood identique existe déjà en local
+        const existingMood = moods.find(m => 
+            m.name === mood.name && 
+            m.emoji === mood.emoji && 
+            m.language === mood.language &&
+            m.comment === mood.comment
+        );
+        
+        if (existingMood) {
+            console.warn('⚠️ Mood identique déjà présent en local');
+            return false;
+        }
+        
+        mood.id = Date.now(); // ID unique simple
+        moods.unshift(mood);
+        
+        // Sauvegarder en localStorage
+        localStorage.setItem('emojiMoodLocal', JSON.stringify(moods));
+        
+        console.log('✅ Mood ajouté en local');
+        return true;
+    } catch (error) {
+        console.error('❌ Erreur ajout local:', error);
+        return false;
+    }
 }
 
 // ========================================
@@ -131,20 +181,27 @@ async function addMood(mood) {
 // ========================================
 
 function setupEventListeners() {
+    console.log('🔧 Configuration des event listeners...');
+    
     // Gestion de la sélection d'emoji
-    document.querySelectorAll('.emoji-btn').forEach(btn => {
+    const emojiButtons = document.querySelectorAll('.emoji-btn');
+    console.log(`🎯 ${emojiButtons.length} boutons emoji trouvés`);
+    
+    emojiButtons.forEach((btn, index) => {
         btn.addEventListener('click', () => {
+            console.log(`🎯 Emoji cliqué: ${btn.dataset.emoji}`);
             document.querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('selected'));
             btn.classList.add('selected');
             selectedEmoji = btn.dataset.emoji;
+            console.log(`✅ Emoji sélectionné: ${selectedEmoji}`);
         });
     });
 
-    // Gestion du formulaire
-    document.getElementById('moodForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        await submitMood();
-    });
+    // Timer de session
+    setInterval(() => {
+        const minutes = Math.floor((new Date() - sessionStartTime) / 60000);
+        document.getElementById('sessionTime').textContent = minutes;
+    }, 60000);
 
     // Timer de session
     setInterval(() => {
@@ -161,7 +218,13 @@ async function submitMood() {
 
     // Empêcher double soumission
     if (submitBtn.disabled) return;
+    
+    // Désactiver le bouton et tous les champs du formulaire
     submitBtn.disabled = true;
+    document.getElementById('studentName').disabled = true;
+    document.getElementById('language').disabled = true;
+    document.getElementById('comment').disabled = true;
+    document.querySelectorAll('.emoji-btn').forEach(btn => btn.disabled = true);
 
     // Validations
     if (!selectedEmoji) {
@@ -194,13 +257,13 @@ async function submitMood() {
         submitBtn.textContent = '✅ Envoyé avec succès !';
         setTimeout(() => {
             submitBtn.textContent = originalText;
-            submitBtn.disabled = false;
+            enableForm();
         }, 2500);
     } else {
         submitBtn.textContent = '❌ Erreur - Réessayer';
         setTimeout(() => {
             submitBtn.textContent = originalText;
-            submitBtn.disabled = false;
+            enableForm();
         }, 3000);
     }
 }
@@ -209,6 +272,14 @@ function resetForm() {
     document.getElementById('moodForm').reset();
     document.querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('selected'));
     selectedEmoji = '';
+}
+
+function enableForm() {
+    document.getElementById('submitBtn').disabled = false;
+    document.getElementById('studentName').disabled = false;
+    document.getElementById('language').disabled = false;
+    document.getElementById('comment').disabled = false;
+    document.querySelectorAll('.emoji-btn').forEach(btn => btn.disabled = false);
 }
 
 // ========================================
@@ -463,18 +534,73 @@ function downloadFile(content, filename, mimeType) {
 async function initApp() {
     console.log('🚀 Initialisation Emoji Code Mood...');
 
-    // Configuration des event listeners d'abord
+    try {
+        // Configuration des event listeners d'abord (toujours nécessaire)
+        setupEventListeners();
+
+        // Initialisation Supabase obligatoire
+        const supabaseSuccess = await initSupabase();
+        
+        if (!supabaseSuccess) {
+            console.warn('⚠️ Mode développement local activé (Supabase non disponible)');
+            // Mode local pour le développement
+            setupLocalMode();
+        }
+
+        // Mise à jour initiale de l'affichage
+        updateDisplay();
+
+        console.log('✅ Application initialisée avec succès');
+        console.log('📊 Mode actuel:', supabaseSuccess ? 'Supabase' : 'Local');
+        console.log('📈 Mood codes chargés:', moods.length);
+    } catch (error) {
+        console.error('❌ Erreur lors de l\'initialisation:', error);
+        console.log('🔄 Tentative de récupération en mode local...');
+        
+        // En cas d'erreur, essayer au moins de configurer le mode local
+        try {
+            setupLocalMode();
+            updateDisplay();
+            console.log('✅ Récupération en mode local réussie');
+        } catch (localError) {
+            console.error('❌ Échec de la récupération en mode local:', localError);
+            alert('Erreur lors de l\'initialisation de l\'application. Vérifiez la console.');
+        }
+    }
+}
+
+// Mode local pour le développement
+function setupLocalMode() {
+    console.log('🔧 Mode local activé - Données stockées en localStorage');
+    
+    // Charger les moods depuis localStorage
+    const savedMoods = localStorage.getItem('emojiMoodLocal');
+    if (savedMoods) {
+        try {
+            moods = JSON.parse(savedMoods);
+            console.log(`📊 ${moods.length} mood codes chargés depuis localStorage`);
+        } catch (error) {
+            console.error('Erreur chargement localStorage:', error);
+            moods = [];
+        }
+    }
+    
+    // Modifier la fonction addMood pour le mode local
+    window.addMoodLocal = function(mood) {
+        mood.id = Date.now(); // ID unique simple
+        mood.created_at = new Date().toISOString();
+        moods.unshift(mood);
+        
+        // Sauvegarder en localStorage
+        localStorage.setItem('emojiMoodLocal', JSON.stringify(moods));
+        
+        updateDisplay();
+        return true;
+    };
+    
+    // S'assurer que les event listeners sont configurés en mode local
+    console.log('🔧 Configuration des event listeners en mode local...');
     setupEventListeners();
-
-    // Initialisation Supabase obligatoire
-    await initSupabase();
-
-    // Mise à jour initiale de l'affichage
-    updateDisplay();
-
-    console.log('✅ Application initialisée avec succès');
-    console.log('📊 Mode actuel:', CONFIG.mode);
-    console.log('📈 Mood codes chargés:', moods.length);
 }
 
 // Démarrage automatique - Multiple méthodes pour assurer le chargement
