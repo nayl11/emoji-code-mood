@@ -64,11 +64,8 @@ jobs:
         run: |
           echo "🔧 Injection de la référence au fichier de configuration..."
           
-          # Ajouter la référence au fichier de config dans l'HTML
-          sed -i 's|<!-- PRIVATE_CONFIG_PLACEHOLDER -->|<script src="private-config.js"></script>|g' index-supabase-secure.html
-          
-          # Renommer le fichier HTML principal
-          cp index-supabase-secure.html index.html
+          # Ajouter la référence au fichier de config dans l'HTML directement
+          sed -i 's|<!-- PRIVATE_CONFIG_PLACEHOLDER -->|<script src="private-config.js"></script>|g' index.html
           
           echo "✅ HTML modifié pour utiliser la configuration sécurisée"
           
