@@ -5,19 +5,14 @@
 
 console.log('🎭 Emoji Code Mood - Version Sécurisée v2.0');
 
-// Configuration par défaut (Supabase uniquement)
-let CONFIG = {
-    mode: 'supabase',
-    supabaseUrl: null,
-    supabaseAnonKey: null,
-    useRealtime: false
-};
-
-// Détection automatique de la configuration privée
-if (typeof window.PRIVATE_CONFIG !== 'undefined') {
-    CONFIG = { ...CONFIG, ...window.PRIVATE_CONFIG };
-    console.log('✅ Configuration privée détectée - Mode Supabase activé');
+// Vérification stricte de la configuration Supabase
+if (!window.PRIVATE_CONFIG || !window.PRIVATE_CONFIG.supabaseUrl || !window.PRIVATE_CONFIG.supabaseAnonKey) {
+    alert('❌ ERREUR : La configuration Supabase est manquante.\nVérifiez que le fichier private-config.js est bien injecté avant main.js.');
+    throw new Error('Configuration Supabase manquante.');
 }
+
+const CONFIG = { ...window.PRIVATE_CONFIG };
+console.log('✅ Configuration Supabase détectée - Mode Supabase activé');
 
 // Variables globales
 let supabase = null;
@@ -164,14 +159,20 @@ async function submitMood() {
     const comment = document.getElementById('comment').value.trim();
     const submitBtn = document.getElementById('submitBtn');
 
+    // Empêcher double soumission
+    if (submitBtn.disabled) return;
+    submitBtn.disabled = true;
+
     // Validations
     if (!selectedEmoji) {
         alert('N\'oublie pas de choisir un emoji ! 😊');
+        submitBtn.disabled = false;
         return;
     }
 
     if (name.length < 2) {
         alert('Le prénom doit contenir au moins 2 caractères');
+        submitBtn.disabled = false;
         return;
     }
 
@@ -185,7 +186,6 @@ async function submitMood() {
     // Animation de chargement
     const originalText = submitBtn.textContent;
     submitBtn.textContent = '🔄 Envoi en cours...';
-    submitBtn.disabled = true;
 
     const success = await addMood(mood);
 
