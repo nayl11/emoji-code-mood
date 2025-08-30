@@ -1,4 +1,4 @@
-// main.js
+// main.js - Version avec auto-actualisation et préférences étendues
 // ========================================
 // CONFIGURATION ET INITIALISATION
 // ========================================
@@ -355,8 +355,6 @@ function updateMoodList() {
         const timeDisplay = formatTime(humeur.created_at);
         const isRecent = new Date() - new Date(humeur.created_at) < 60000; // Moins d'1 minute
 
-        // Générer des réactions aléatoires style réseaux sociaux
-        const reactions = generateRandomReactions();
         const avatar = generateAvatar(humeur.nom);
         const badge = getBadge(humeur.langage_prefere);
 
@@ -399,26 +397,6 @@ function updateMoodList() {
                         </div>
                     ` : ''}
                 </div>
-
-                <div class="post-actions">
-                    <div class="reactions">
-                        ${reactions.map(r => `<span class="reaction" onclick="addReaction(${index}, '${r.emoji}')">${r.emoji} ${r.count}</span>`).join('')}
-                    </div>
-                    <div class="action-buttons">
-                        <button class="action-btn like-btn" onclick="likePost(${index})">
-                            <span class="icon">❤️</span>
-                            <span class="label">J'aime</span>
-                        </button>
-                        <button class="action-btn comment-btn" onclick="commentPost(${index})">
-                            <span class="icon">💬</span>
-                            <span class="label">Commenter</span>
-                        </button>
-                        <button class="action-btn share-btn" onclick="sharePost(${index})">
-                            <span class="icon">📤</span>
-                            <span class="label">Partager</span>
-                        </button>
-                    </div>
-                </div>
             </div>
         `;
     }).join('');
@@ -426,35 +404,31 @@ function updateMoodList() {
 
 function generateCodeSnippet(humeur) {
     const langagePrefere = humeur.langage_prefere || humeur.langage || 'javascript';
-    const autrePreference = humeur.autre_preference || 'inconnue';
     
     const templates = {
-        javascript: `let humeur = "${humeur.emoji}";
-let preference = "${autrePreference}";${humeur.commentaire ? `\n<span class="comment">// ${escapeHtml(humeur.commentaire)}</span>` : ''}`,
+        javascript: `let humeur = "${humeur.emoji}";${humeur.commentaire ? ` <span class="comment">// ${escapeHtml(humeur.commentaire)}</span>` : ''}`,
         
-        typescript: `const humeur: string = "${humeur.emoji}";
-const preference: string = "${autrePreference}";${humeur.commentaire ? `\n<span class="comment">// ${escapeHtml(humeur.commentaire)}</span>` : ''}`,
+        typescript: `const humeur: string = "${humeur.emoji}";${humeur.commentaire ? ` <span class="comment">// ${escapeHtml(humeur.commentaire)}</span>` : ''}`,
         
-        python: `humeur = "${humeur.emoji}"
-preference = "${autrePreference}"${humeur.commentaire ? `\n<span class="comment"># ${escapeHtml(humeur.commentaire)}</span>` : ''}`,
+        python: `humeur = "${humeur.emoji}"${humeur.commentaire ? `  <span class="comment"># ${escapeHtml(humeur.commentaire)}</span>` : ''}`,
         
-        java: `String humeur = "${humeur.emoji}";
-String preference = "${autrePreference}";${humeur.commentaire ? `\n<span class="comment">// ${escapeHtml(humeur.commentaire)}</span>` : ''}`,
+        java: `String humeur = "${humeur.emoji}";${humeur.commentaire ? ` <span class="comment">// ${escapeHtml(humeur.commentaire)}</span>` : ''}`,
         
-        csharp: `string humeur = "${humeur.emoji}";
-string preference = "${autrePreference}";${humeur.commentaire ? `\n<span class="comment">// ${escapeHtml(humeur.commentaire)}</span>` : ''}`,
+        csharp: `string humeur = "${humeur.emoji}";${humeur.commentaire ? ` <span class="comment">// ${escapeHtml(humeur.commentaire)}</span>` : ''}`,
         
-        php: `$humeur = "${humeur.emoji}";
-$preference = "${autrePreference}";${humeur.commentaire ? `\n<span class="comment">// ${escapeHtml(humeur.commentaire)}</span>` : ''}`,
+        php: `$humeur = "${humeur.emoji}";${humeur.commentaire ? ` <span class="comment">// ${escapeHtml(humeur.commentaire)}</span>` : ''}`,
         
-        cpp: `std::string humeur = "${humeur.emoji}";
-std::string preference = "${autrePreference}";${humeur.commentaire ? `\n<span class="comment">// ${escapeHtml(humeur.commentaire)}</span>` : ''}`,
+        cpp: `std::string humeur = "${humeur.emoji}";${humeur.commentaire ? ` <span class="comment">// ${escapeHtml(humeur.commentaire)}</span>` : ''}`,
         
-        rust: `let humeur = "${humeur.emoji}";
-let preference = "${autrePreference}";${humeur.commentaire ? `\n<span class="comment">// ${escapeHtml(humeur.commentaire)}</span>` : ''}`,
+        rust: `let humeur = "${humeur.emoji}";${humeur.commentaire ? ` <span class="comment">// ${escapeHtml(humeur.commentaire)}</span>` : ''}`,
         
-        go: `humeur := "${humeur.emoji}"
-preference := "${autrePreference}"${humeur.commentaire ? `\n<span class="comment">// ${escapeHtml(humeur.commentaire)}</span>` : ''}`
+        go: `humeur := "${humeur.emoji}"${humeur.commentaire ? ` <span class="comment">// ${escapeHtml(humeur.commentaire)}</span>` : ''}`,
+
+        kotlin: `val humeur = "${humeur.emoji}"${humeur.commentaire ? ` <span class="comment">// ${escapeHtml(humeur.commentaire)}</span>` : ''}`,
+
+        swift: `let humeur = "${humeur.emoji}"${humeur.commentaire ? ` <span class="comment">// ${escapeHtml(humeur.commentaire)}</span>` : ''}`,
+
+        ruby: `humeur = "${humeur.emoji}"${humeur.commentaire ? ` <span class="comment"># ${escapeHtml(humeur.commentaire)}</span>` : ''}`
     };
 
     return templates[langagePrefere] || templates.javascript;
@@ -505,32 +479,11 @@ function formatPreference(preference) {
     return formatted.charAt(0).toUpperCase() + formatted.slice(1);
 }
 
-function generateRandomReactions() {
-    const possibleReactions = [
-        { emoji: '❤️', baseCount: 3 },
-        { emoji: '😍', baseCount: 2 },
-        { emoji: '🔥', baseCount: 4 },
-        { emoji: '👏', baseCount: 2 },
-        { emoji: '💯', baseCount: 1 },
-        { emoji: '🚀', baseCount: 2 },
-        { emoji: '😂', baseCount: 1 },
-        { emoji: '🤯', baseCount: 1 }
-    ];
-    
-    return possibleReactions
-        .filter(() => Math.random() > 0.4) // 60% de chance d'apparaître
-        .slice(0, 4) // Max 4 réactions
-        .map(r => ({
-            emoji: r.emoji,
-            count: r.baseCount + Math.floor(Math.random() * 5)
-        }));
-}
-
 function escapeForJs(text) {
     return text.replace(/'/g, "\\'").replace(/"/g, '\\"').replace(/\n/g, '\\n');
 }
 
-// Fonctions d'interaction style réseaux sociaux
+// Fonction de copie de code simplifiée
 window.copyCode = function(code) {
     // Nettoyer le code HTML pour ne garder que le texte
     const tempDiv = document.createElement('div');
@@ -544,55 +497,6 @@ window.copyCode = function(code) {
     });
 };
 
-window.addReaction = function(postIndex, emoji) {
-    // Animation de réaction
-    const reactionBtn = event.target;
-    reactionBtn.style.animation = 'reactionPop 0.3s ease';
-    setTimeout(() => {
-        reactionBtn.style.animation = '';
-    }, 300);
-    
-    showNotification(`Réaction ajoutée ! ${emoji}`, 'success');
-};
-
-window.likePost = function(postIndex) {
-    const btn = event.target.closest('.like-btn');
-    btn.classList.toggle('liked');
-    
-    if (btn.classList.contains('liked')) {
-        btn.querySelector('.icon').textContent = '💖';
-        btn.style.animation = 'heartBeat 0.5s ease';
-        createHeartParticles(btn);
-    } else {
-        btn.querySelector('.icon').textContent = '❤️';
-    }
-    
-    setTimeout(() => {
-        btn.style.animation = '';
-    }, 500);
-};
-
-window.commentPost = function(postIndex) {
-    showNotification('💬 Fonctionnalité bientôt disponible !', 'info');
-};
-
-window.sharePost = function(postIndex) {
-    const humeur = humeurs[postIndex];
-    const text = `${humeur.nom} code avec ${humeur.emoji} en ${humeur.langage_prefere} ! 🚀`;
-    
-    if (navigator.share) {
-        navigator.share({
-            title: 'Emoji Code Humeur',
-            text: text,
-            url: window.location.href
-        });
-    } else {
-        navigator.clipboard.writeText(text + ' ' + window.location.href).then(() => {
-            showNotification('Lien copié ! 📤', 'success');
-        });
-    }
-};
-
 function showNotification(message, type = 'info') {
     const notification = document.createElement('div');
     notification.className = `notification ${type}`;
@@ -602,29 +506,6 @@ function showNotification(message, type = 'info') {
     setTimeout(() => {
         notification.remove();
     }, 3000);
-}
-
-function createHeartParticles(element) {
-    for (let i = 0; i < 6; i++) {
-        const particle = document.createElement('div');
-        particle.className = 'heart-particle';
-        particle.textContent = '💖';
-        particle.style.position = 'absolute';
-        particle.style.left = (element.offsetLeft + Math.random() * 50) + 'px';
-        particle.style.top = (element.offsetTop + Math.random() * 50) + 'px';
-        particle.style.fontSize = (0.8 + Math.random() * 0.4) + 'em';
-        particle.style.pointerEvents = 'none';
-        particle.style.zIndex = '1000';
-        
-        element.parentElement.appendChild(particle);
-        
-        // Animation
-        particle.style.animation = `heartFloat 2s ease-out forwards`;
-        
-        setTimeout(() => {
-            particle.remove();
-        }, 2000);
-    }
 }
 
 function escapeHtml(text) {
