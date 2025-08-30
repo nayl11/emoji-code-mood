@@ -278,8 +278,8 @@ async function submitMood() {
     const humeur = {
         nom: nom,
         emoji: selectedEmoji,
-        langage_prefere: langage_prefere,    // Nouveau champ
-        autre_preference: autre_preference,   // Nouveau champ
+        langage_prefere: langage_prefere,    
+        autre_preference: autre_preference,   
         commentaire: commentaire || null
     };
 
