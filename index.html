@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Emoji Code Humeur 🎭 - Version Sécurisée</title>
+    <title>Emoji Code Humeur 🎭 - Version Auto</title>
     <link rel="stylesheet" href="styles.css">
     
     <!-- Configuration privée injectée automatiquement par GitHub Actions -->
@@ -17,14 +17,14 @@
     <div class="container">
         <div class="header">
             <div class="security-badge">
-                🔐 Version Sécurisée - Clés API Protégées
+                🔐 Version Auto-Actualisante - Clés API Protégées
             </div>
             <h1>🎭 Emoji Code Humeur</h1>
-            <p>Exprime ton humeur de rentrée avec une ligne de code !</p>
+            <p>Exprime ton humeur avec tes préférences et une ligne de code !</p>
             
             <div class="mode-indicator" id="modeIndicator">
                 <span id="modeIcon">⚡</span>
-                <span id="modeText">Mode Collaboratif - Synchronisation temps réel</span>
+                <span id="modeText">Mode Collaboratif - Synchronisation automatique</span>
             </div>
             
             <div class="stats">
@@ -47,7 +47,7 @@
         
         <div class="main-content">
             <div class="form-section">
-                <h2>📝 Code ton humeur</h2>
+                <h2>📝 Code ton humeur et tes préférences</h2>
                 
                 <form id="moodForm">
                     <div class="form-group">
@@ -56,7 +56,7 @@
                     </div>
                     
                     <div class="form-group">
-                        <label>Choisis ton emoji :</label>
+                        <label>Choisis ton emoji humeur :</label>
                         <div class="emoji-selector">
                             <!-- Énergie et motivation -->
                             <button type="button" class="emoji-btn" data-emoji="🔥" title="Feu - Motivé à fond">🔥</button>
@@ -125,9 +125,9 @@
                     </div>
                     
                     <div class="form-group">
-                        <label for="language">Langage de programmation :</label>
-                        <select id="language" required>
-                            <option value="">Choisis un langage</option>
+                        <label for="favoriteLanguage">Mon langage préféré :</label>
+                        <select id="favoriteLanguage" required>
+                            <option value="">Choisis ton langage préféré</option>
                             <option value="javascript">JavaScript</option>
                             <option value="typescript">TypeScript</option>
                             <option value="python">Python</option>
@@ -137,6 +137,70 @@
                             <option value="cpp">C++</option>
                             <option value="rust">Rust</option>
                             <option value="go">Go</option>
+                            <option value="kotlin">Kotlin</option>
+                            <option value="swift">Swift</option>
+                            <option value="ruby">Ruby</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="otherPreference">Ma préférence tech :</label>
+                        <select id="otherPreference" required>
+                            <option value="">Choisis ta préférence</option>
+                            <optgroup label="🎮 Gaming & Fun">
+                                <option value="jeux-video">Jeux vidéo</option>
+                                <option value="streaming">Streaming</option>
+                                <option value="youtube">YouTube</option>
+                                <option value="twitch">Twitch</option>
+                            </optgroup>
+                            <optgroup label="🎨 Design & Créativité">
+                                <option value="design">Design graphique</option>
+                                <option value="photoshop">Photoshop</option>
+                                <option value="video-editing">Montage vidéo</option>
+                                <option value="ui-ux">UI/UX</option>
+                            </optgroup>
+                            <optgroup label="🎵 Musique & Audio">
+                                <option value="musique">Écouter de la musique</option>
+                                <option value="spotify">Spotify</option>
+                                <option value="production-musicale">Production musicale</option>
+                                <option value="podcasts">Podcasts</option>
+                            </optgroup>
+                            <optgroup label="🤖 Tech & IA">
+                                <option value="intelligence-artificielle">Intelligence Artificielle</option>
+                                <option value="chatgpt">ChatGPT</option>
+                                <option value="robotique">Robotique</option>
+                                <option value="blockchain">Blockchain</option>
+                            </optgroup>
+                            <optgroup label="📱 Mobile & Apps">
+                                <option value="apps-mobiles">Apps mobiles</option>
+                                <option value="tiktok">TikTok</option>
+                                <option value="instagram">Instagram</option>
+                                <option value="snapchat">Snapchat</option>
+                            </optgroup>
+                            <optgroup label="🏃 Sport & Activités">
+                                <option value="sport">Sport</option>
+                                <option value="fitness">Fitness</option>
+                                <option value="course">Course à pied</option>
+                                <option value="velo">Vélo</option>
+                            </optgroup>
+                            <optgroup label="🎬 Cinéma & Séries">
+                                <option value="netflix">Netflix</option>
+                                <option value="series">Séries TV</option>
+                                <option value="cinema">Cinéma</option>
+                                <option value="disney">Disney+</option>
+                            </optgroup>
+                            <optgroup label="📚 Apprentissage">
+                                <option value="lecture">Lecture</option>
+                                <option value="cours-en-ligne">Cours en ligne</option>
+                                <option value="langues">Apprendre des langues</option>
+                                <option value="tutoriels">Tutoriels</option>
+                            </optgroup>
+                            <optgroup label="🍔 Lifestyle">
+                                <option value="cuisine">Cuisine</option>
+                                <option value="voyage">Voyage</option>
+                                <option value="shopping">Shopping</option>
+                                <option value="nature">Nature</option>
+                            </optgroup>
                         </select>
                     </div>
                     
@@ -158,7 +222,9 @@
                             <option value="sudo apt install motivation">
                             <option value="import bonheur from 'vacances'">
                             <option value="let humeur = 'géniale'">
-                            <option value="humeur = 'super'">
+                            <option value="humeur = 'au top'">
+                            <option value="feeling like a coding wizard">
+                            <option value="mode ninja developer activated">
                         </datalist>
                     </div>
                     
@@ -167,12 +233,14 @@
             </div>
             
             <div class="display-section">
-                <h2>💻 Tableau des Humeurs de la Classe</h2>
+                <h2>💻 Tableau des Humeurs de la Classe
+                    <div class="last-update-indicator" id="lastUpdateTime">Mis à jour: maintenant</div>
+                </h2>
                 <div class="mood-list" id="moodList">
                     <div class="loading">
                         <p>🤖 En attente des premiers codes humeur...</p>
                         <p style="font-size: 0.9em; margin-top: 10px; color: #666;">
-                            Mode collaboratif activé - Synchronisation temps réel
+                            Actualisation automatique toutes les 30 secondes
                         </p>
                     </div>
                 </div>
@@ -181,7 +249,9 @@
         
         <div class="teacher-controls">
             <h3 style="margin-bottom: 15px; color: #3ECF8E;">🎓 Contrôles enseignant</h3>
-            <button class="control-btn refresh-btn" onclick="loadMoods()">🔄 Actualiser</button>
+            <p style="font-size: 0.9em; color: #666; margin-bottom: 15px;">
+                ⚡ Actualisation automatique activée - Plus besoin de cliquer !
+            </p>
             <button class="control-btn" onclick="clearAllMoods()">🗑️ Effacer tout</button>
             <button class="control-btn export-btn" onclick="exportMoods()">📄 Exporter CSV</button>
             <button class="control-btn export-btn" onclick="exportMoodsJSON()">💾 Export JSON</button>
