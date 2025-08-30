@@ -88,7 +88,7 @@ jobs:
           echo "🔍 Vérification finale de sécurité..."
           
           # Vérifier qu'aucun placeholder n'est resté
-          if grep -r "VOTRE_PROJECT_REF\|VOTRE_ANON_KEY" . --exclude-dir=.git --exclude-dir=docs; then
+          if grep -r "VOTRE_PROJECT_REF\|VOTRE_ANON_KEY" . --exclude-dir=.git --exclude-dir=docs --exclude-dir=.github; then
             echo "❌ ERREUR: Des placeholders ont été détectés !"
             exit 1
           fi
