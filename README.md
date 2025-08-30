@@ -167,9 +167,5 @@ Des idées d'amélioration ? Un nouveau langage à ajouter ? Un emoji manquant ?
 - 🔧 **[Contribuer au code](CONTRIBUTING.md)**
 - 🌍 **[Aider à traduire](docs/translation.md)**
 
-## 🌟 Retours d'Expérience
 
-> *"Mes étudiants adorent ! Ça détend l'atmosphère et me donne des insights sur leur état d'esprit."*  
-> **— Prof. Martin, IUT Informatique**
 
-> *"L'interface moderne accr
