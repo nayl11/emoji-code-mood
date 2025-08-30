@@ -1,6 +1,6 @@
-# 🎭 Emoji Code Mood
+# 🎭 Emoji Code Humeur
 
-*Un petit brise-glace sympa pour vos cours de programmation*
+*Un brise-glace moderne pour vos cours de programmation*
 
 👉 **Accéder à l'application :** [https://ggaillard.github.io/emoji-code-mood/](https://ggaillard.github.io/emoji-code-mood/)
 [![Licence](https://img.shields.io/badge/Licence-GNU_GPL_v3-blue)](LICENSE)
@@ -9,25 +9,31 @@
 
 ## ✨ L'idée
 
-Plutôt que de demander "Comment ça va ?" en début de cours, et si vos étudiants exprimaient leur humeur avec une petite ligne de code et un emoji ? 
+Transformez votre ritual de début de cours ! Au lieu du classique "Comment ça va ?", vos étudiants partagent leur humeur avec une ligne de code personnalisée et leurs préférences tech.
 
-C'est simple, amusant, et ça introduit naturellement la programmation sans stress.
+Interface moderne style **réseaux sociaux** qui s'adapte automatiquement selon le nombre de participants.
 
 ## 🌟 Comment ça marche
 
-1. **L'étudiant** choisit un emoji qui correspond à son humeur
-2. **Il sélectionne** un langage de programmation qu'il connaît (ou voudrait apprendre)
-3. **Il peut ajouter** un petit commentaire rigolo
-4. **Tout s'affiche** en temps réel pour toute la classe
+1. **L'étudiant** choisit un emoji qui représente son humeur
+2. **Il sélectionne** son langage de programmation préféré  
+3. **Il choisit** sa préférence tech (gaming, musique, IA, sport...)
+4. **Il peut ajouter** un commentaire personnel
+5. **Tout apparaît** instantanément pour toute la classe dans un feed social
 
-**Résultat :** Une ambiance détendue et des sourires garantis ! 😊
+**Résultat :** Une ambiance détendue et une classe connectée ! 🚀
 
-## 📱 Aperçu
+## 📱 Interface 
 
-```javascript
-let mood = "☕"; // besoin d'un café pour démarrer
+```
+┌─────────────────────────────────┐
+│ 🅜 Marie 🐍 🚀            2min  │
+│ Python | Jeux vidéo             │  
+│ humeur = "🚀" // projet    📋   │
+└─────────────────────────────────┘
 ```
 
+<<<<<<< HEAD
 ```python  
 humeur = "🚀" # prêt à décoller cette année !
 ```
@@ -88,56 +94,127 @@ Vous pouvez facilement adapter l'outil à votre contexte :
 - **Introduction naturelle** aux concepts de programmation
 
 ## 🛠️ Fonctionnalités
+=======
+## 🎯 Fonctionnalités Clés
+>>>>>>> 57e3340f1ac7654842fa49c482a8fa317a6ae8dc
 
 ### Pour vos étudiants
-- Interface simple et intuitive
-- 70+ emojis au choix
-- 9 langages de programmation
-- Suggestions de commentaires amusants
-- Compatible téléphone/tablette/ordinateur
+- **Interface sociale moderne** avec avatars colorés
+- **70+ emojis** organisés par catégories (énergie, fatigue, cool...)
+- **12 langages** de programmation supportés
+- **32 préférences tech** (Gaming, IA, Musique, Sport, Netflix...)
+- **Auto-actualisation** invisible en arrière-plan
+- **Copie de code** en un clic
+- **Compatible** mobile/tablette/ordinateur
 
 ### Pour vous, enseignant
-- Résultats en temps réel sur grand écran
-- Statistiques de participation
-- Export des données pour analyse
-- Aucune installation requise
+- **Feed temps réel** style Instagram/Twitter
+- **Affichage adaptatif** selon le nombre de participants
+- **Badges langages** avec icônes (⚡ JS, 🐍 Python, ☕ Java...)
+- **Panneau de contrôle caché** (Ctrl+Shift+A)
+- **Export CSV/JSON** pour analyse
+- **Aucune installation** requise
 
-## 📚 Documentation
+### Préférences Disponibles
+- 🎮 **Gaming & Fun** : Jeux vidéo, Streaming, YouTube, Twitch
+- 🎨 **Design** : Graphisme, Photoshop, Montage vidéo, UI/UX  
+- 🎵 **Musique** : Écoute, Spotify, Production, Podcasts
+- 🤖 **Tech & IA** : Intelligence Artificielle, ChatGPT, Robotique
+- 📱 **Mobile** : Apps mobiles, TikTok, Instagram, Snapchat
+- 🏃 **Sport** : Fitness, Course, Vélo, Activités physiques
+- 🎬 **Divertissement** : Netflix, Séries, Cinéma, Disney+
+- 📚 **Apprentissage** : Lecture, Cours en ligne, Langues
+- 🍔 **Lifestyle** : Cuisine, Voyage, Shopping, Nature
 
-- 📖 **[Guide d'installation](docs/setup.md)** - Étapes détaillées
-- 🎓 **[Guide enseignant](docs/teacher-guide.md)** - Conseils pédagogiques
-- 🔧 **[Dépannage](docs/troubleshooting.md)** - Résoudre les petits soucis
+## 🚀 Installation Rapide
 
+### Option 1: Fork Simple (2 minutes)
+1. **Fork** ce repository
+2. **Settings** → **Pages** → **Source: GitHub Actions**
+3. Votre version : `https://votre-nom.github.io/emoji-code-mood`
+
+### Option 2: Mode Collaboratif Temps Réel
+Pour la synchronisation entre tous vos étudiants :
+
+1. **Créez un compte** [Supabase](https://supabase.com) (gratuit)
+2. **Nouveau projet** + récupérez URL et clé API
+3. **Repository Settings** → **Secrets** → Ajoutez :
+   - `SUPABASE_URL` : `https://xxx.supabase.co`
+   - `SUPABASE_ANON_KEY` : `eyJhbGciO...`
+4. **Workflow automatique** injecte les clés de façon sécurisée
+5. **Guide complet** : [docs/supabase-setup.md](docs/supabase-setup.md)
+
+## 🎓 Panneau Enseignant
+
+**Accès secret :** `Ctrl + Shift + A`
+
+- 🗑️ **Effacer tout** - Reset rapide entre les classes
+- 📄 **Export CSV** - Analyse des données avec Excel
+- 💾 **Export JSON** - Données complètes avec métadonnées
+- 📊 **Stats temps réel** - Nombre de participants, tendances
+
+*Panneau totalement caché des étudiants pour éviter les distractions.*
 
 ## 💡 Idées d'utilisation
 
-- **Rentrée** : Découvrir la personnalité de votre nouvelle classe
-- **Lundi matin** : Voir qui a besoin d'un café ☕
-- **Après un contrôle** : Gérer les émotions
-- **Présentation d'un nouveau langage** : Mesurer l'enthousiasme
-- **Travaux de groupe** : Former des équipes selon les affinités
+- **🎒 Rentrée scolaire** : Apprendre à connaître sa nouvelle classe
+- **☕ Lundi matin** : Prendre la température après le weekend  
+- **📝 Avant un contrôle** : Gérer le stress et motiver
+- **🚀 Nouveau projet** : Mesurer l'enthousiasme de l'équipe
+- **🎯 Formation d'équipes** : Regrouper par affinités tech
+- **📈 Suivi pédagogique** : Identifier les tendances d'humeur
 
-## 🚀 Technologies utilisées
+## 🛠️ Technologies
 
-- **HTML/CSS/JavaScript** - Simple et efficace
-- **Supabase** - Pour la synchronisation temps réel (configuration automatique via secrets GitHub)
-- **GitHub Pages** - Hébergement gratuit
+- **Frontend** : HTML5, CSS3, JavaScript ES6+
+- **Temps réel** : Supabase (PostgreSQL + WebSockets)
+- **Déploiement** : GitHub Actions + Pages
+- **Sécurité** : Secrets GitHub, Row Level Security
+- **Design** : CSS Grid, Flexbox, animations CSS
 
-## 🤝 Contributions bienvenues
+## 📊 Exemples de Code Générés
 
-Des idées d'amélioration ? Une traduction ? Un bug à signaler ?
+```javascript
+let humeur = "🚀"; // prêt pour les projets
+```
 
-- 🐛 **[Signaler un problème](../../issues)**
-- 💡 **[Proposer une idée](../../issues)**
+```python  
+humeur = "☕"  # besoin de caféine pour démarrer
+```
+
+```java
+String humeur = "🤯"; // cerveau en surchauffe
+```
+
+```rust
+let humeur = "😎"; // maître de l'univers aujourd'hui
+```
+
+## 🔒 Sécurité & Confidentialité
+
+- **Clés API** injectées automatiquement via GitHub Secrets
+- **Jamais de données** sensibles dans le code source
+- **Base de données** avec Row Level Security
+- **HTTPS** obligatoire pour toutes les connexions
+- **Données** automatiquement supprimées après 30 jours
+
+## 📈 Analytics Intégrées
+
+L'export JSON inclut :
+- **Distribution des emojis** avec pourcentages
+- **Langages populaires** par classe
+- **Préférences tech** tendances
+- **Évolution temporelle** de l'humeur
+- **Métadonnées** de session complètes
+
+## 🤝 Contribution
+
+Des idées d'amélioration ? Un nouveau langage à ajouter ? Un emoji manquant ?
+
+- 🐛 **[Signaler un bug](../../issues)**
+- 💡 **[Proposer une fonctionnalité](../../issues)**  
 - 🔧 **[Contribuer au code](CONTRIBUTING.md)**
+- 🌍 **[Aider à traduire](docs/translation.md)**
 
 
-## 📄 Licence
 
-Ce projet est sous licence [GNU GPL v3](https://www.gnu.org/licenses/gpl-3.0.fr.html) – vous êtes libre de l'utiliser, le modifier et le partager dans le respect de cette licence. Voir le fichier [LICENSE](LICENSE) pour plus de détails.
-
----
-
-**Créé avec ❤️ pour rendre l'enseignement plus interactif**
-
-*Si ce projet vous aide, n'hésitez pas à lui donner une ⭐ !*

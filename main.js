@@ -1,9 +1,9 @@
-// main.js
+// main.js - Version avec auto-actualisation et préférences étendues
 // ========================================
 // CONFIGURATION ET INITIALISATION
 // ========================================
 
-console.log('🎭 Emoji Code Mood - Version Sécurisée v2.0');
+console.log('🎭 Emoji Code Humeur - Version Auto v2.1 (Français)');
 
 // Vérification stricte de la configuration Supabase
 if (!window.PRIVATE_CONFIG || !window.PRIVATE_CONFIG.supabaseUrl || !window.PRIVATE_CONFIG.supabaseAnonKey) {
@@ -16,9 +16,15 @@ console.log('✅ Configuration Supabase détectée - Mode Supabase activé');
 
 // Variables globales
 let supabase = null;
-let moods = [];
+let humeurs = [];
 let selectedEmoji = '';
 let sessionStartTime = new Date();
+let autoRefreshInterval = null;
+let isConnected = false;
+
+// Configuration auto-actualisation
+const AUTO_REFRESH_INTERVAL = 30000; // 30 secondes
+const CONNECTION_CHECK_INTERVAL = 10000; // 10 secondes
 
 // ========================================
 // INITIALISATION SUPABASE VIA MODULE
@@ -32,39 +38,70 @@ async function initSupabase() {
     }
     try {
         supabase = getSupabaseClient();
-        // Test de connexion
-        const { error } = await supabase.from('moods').select('count').limit(1);
+        // Test de connexion avec la table "humeur"
+        const { error } = await supabase.from('humeur').select('count').limit(1);
         if (error) {
             throw error;
         }
-        console.log('🚀 Supabase connecté avec succès');
-        await loadMoodsFromSupabase();
+        console.log('🚀 Supabase connecté avec succès (table humeur)');
+        isConnected = true;
+        updateConnectionStatus(true);
+        await loadHumeursFromSupabase();
         setupRealtimeSubscription();
+        startAutoRefresh();
         return true;
     } catch (error) {
         console.error('❌ Erreur de connexion Supabase :', error.message || error);
-        alert('Connexion à Supabase impossible. Vérifiez la configuration.');
+        isConnected = false;
+        updateConnectionStatus(false);
+        alert('Connexion à Supabase impossible. Vérifiez la configuration et que la table "humeur" existe.');
         return false;
     }
 }
 
-async function loadMoodsFromSupabase() {
-    if (!supabase) return;
+function updateConnectionStatus(connected) {
+    const indicator = document.getElementById('modeIndicator');
+    const icon = document.getElementById('modeIcon');
+    const text = document.getElementById('modeText');
+    
+    if (connected) {
+        indicator.style.background = '#e3f2fd';
+        indicator.style.color = '#1976d2';
+        icon.textContent = '⚡';
+        text.textContent = 'Connecté - Synchronisation automatique';
+    } else {
+        indicator.style.background = '#ffebee';
+        indicator.style.color = '#d32f2f';
+        icon.textContent = '🔌';
+        text.textContent = 'Reconnexion en cours...';
+    }
+}
+
+async function loadHumeursFromSupabase() {
+    if (!supabase || !isConnected) return;
 
     try {
         const { data, error } = await supabase
-            .from('moods')
+            .from('humeur')
             .select('*')
             .order('created_at', { ascending: false })
             .limit(100);
 
         if (error) throw error;
 
-        moods = data || [];
+        humeurs = data || [];
         updateDisplay();
-        console.log(`📊 ${moods.length} mood codes chargés depuis Supabase`);
+        console.log(`📊 ${humeurs.length} codes humeur chargés automatiquement`);
+        
+        // Réactiver la connexion si elle était en erreur
+        if (!isConnected) {
+            isConnected = true;
+            updateConnectionStatus(true);
+        }
     } catch (error) {
         console.error('❌ Erreur chargement Supabase:', error);
+        isConnected = false;
+        updateConnectionStatus(false);
     }
 }
 
@@ -72,39 +109,67 @@ function setupRealtimeSubscription() {
     if (!supabase) return;
 
     supabase
-        .channel('moods_realtime')
+        .channel('humeur_realtime')
         .on('postgres_changes', 
-            { event: '*', schema: 'public', table: 'moods' },
+            { event: '*', schema: 'public', table: 'humeur' },
             (payload) => {
                 console.log('🔄 Changement temps réel:', payload.eventType);
 
                 if (payload.eventType === 'INSERT') {
-                    moods.unshift(payload.new);
+                    humeurs.unshift(payload.new);
                     updateDisplay();
 
                     // Animation d'arrivée
                     setTimeout(() => {
                         const newItem = document.querySelector('.mood-item');
-                        if (newItem) newItem.style.animation = 'slideIn 0.5s ease';
+                        if (newItem) {
+                            newItem.style.animation = 'slideIn 0.5s ease, glow 2s ease';
+                            // Supprimer l'animation après
+                            setTimeout(() => {
+                                newItem.style.animation = '';
+                            }, 2500);
+                        }
                     }, 100);
                 } else if (payload.eventType === 'DELETE') {
-                    loadMoodsFromSupabase();
+                    loadHumeursFromSupabase();
                 }
             }
         )
         .subscribe((status) => {
             console.log('📡 Realtime status:', status);
+            isConnected = status === 'SUBSCRIBED';
+            updateConnectionStatus(isConnected);
         });
 }
 
-// ========================================
-// MODE LOCAL SUPPRIMÉ : L'application fonctionne uniquement avec Supabase
-// ========================================
+function startAutoRefresh() {
+    // Actualisation automatique périodique
+    autoRefreshInterval = setInterval(async () => {
+        console.log('🔄 Actualisation automatique...');
+        await loadHumeursFromSupabase();
+    }, AUTO_REFRESH_INTERVAL);
+
+    // Vérification de connexion
+    setInterval(async () => {
+        if (!isConnected && supabase) {
+            console.log('🔌 Tentative de reconnexion...');
+            try {
+                await supabase.from('humeur').select('count').limit(1);
+                isConnected = true;
+                updateConnectionStatus(true);
+                await loadHumeursFromSupabase();
+            } catch (error) {
+                console.log('❌ Reconnexion échouée');
+            }
+        }
+    }, CONNECTION_CHECK_INTERVAL);
+}
 
 // ========================================
-// GESTION DES MOOD CODES
+// GESTION DES CODES HUMEUR
 // ========================================
 
+<<<<<<< HEAD
 async function addMood(mood) {
     // Vérifier si un mood similaire a déjà été soumis récemment (protection anti-doublon)
     const recentMood = moods.find(m => 
@@ -120,17 +185,41 @@ async function addMood(mood) {
     }
     
     mood.created_at = new Date().toISOString();
+=======
+async function addHumeur(humeur) {
+    humeur.created_at = new Date().toISOString();
+>>>>>>> 57e3340f1ac7654842fa49c482a8fa317a6ae8dc
 
     // Mode Supabase
     if (supabase) {
         try {
+            // Vérifier si une humeur identique existe déjà récemment (dernières 5 minutes)
+            const cinqMinutesAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString();
+            
+            const { data: existing, error: selectError } = await supabase
+                .from('humeur')
+                .select('*')
+                .eq('nom', humeur.nom)
+                .eq('emoji', humeur.emoji)
+                .eq('langage_prefere', humeur.langage_prefere)
+                .eq('autre_preference', humeur.autre_preference)
+                .eq('commentaire', humeur.commentaire || null)
+                .gte('created_at', cinqMinutesAgo)
+                .limit(1);
+
+            if (selectError) throw selectError;
+            if (existing && existing.length > 0) {
+                alert('Ce code humeur a déjà été enregistré récemment. Attendez quelques minutes avant de renvoyer.');
+                return false;
+            }
+
             const { data, error } = await supabase
-                .from('moods')
-                .insert([mood])
+                .from('humeur')
+                .insert([humeur])
                 .select();
 
             if (error) throw error;
-            console.log('✅ Mood ajouté à Supabase');
+            console.log('✅ Humeur ajoutée à Supabase');
             return true;
         } catch (error) {
             console.error('❌ Erreur ajout Supabase:', error);
@@ -208,12 +297,63 @@ function setupEventListeners() {
         const minutes = Math.floor((new Date() - sessionStartTime) / 60000);
         document.getElementById('sessionTime').textContent = minutes;
     }, 60000);
+
+    // Raccourci clavier pour panneau de contrôle (Ctrl+Shift+A)
+    document.addEventListener('keydown', (e) => {
+        if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+            e.preventDefault();
+            toggleAdminPanel();
+        }
+    });
 }
 
+// Gestion du panneau d'administration caché
+function toggleAdminPanel() {
+    let panel = document.getElementById('hiddenAdminPanel');
+    
+    if (!panel) {
+        // Créer le panneau s'il n'existe pas
+        panel = document.createElement('div');
+        panel.id = 'hiddenAdminPanel';
+        panel.className = 'hidden-admin-panel';
+        panel.innerHTML = `
+            <div class="admin-overlay" onclick="closeAdminPanel()"></div>
+            <div class="admin-content">
+                <div class="admin-header">
+                    <h3>🎓 Panneau Enseignant</h3>
+                    <button class="close-btn" onclick="closeAdminPanel()">✕</button>
+                </div>
+                <div class="admin-body">
+                    <p class="admin-info">
+                        <strong>Raccourci :</strong> Ctrl+Shift+A<br>
+                        <strong>Stats :</strong> ${humeurs.length} participants
+                    </p>
+                    <div class="admin-actions">
+                        <button class="admin-btn danger" onclick="clearAllMoods()">🗑️ Effacer tout</button>
+                        <button class="admin-btn success" onclick="exportMoods()">📄 Export CSV</button>
+                        <button class="admin-btn info" onclick="exportMoodsJSON()">💾 Export JSON</button>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(panel);
+    }
+    
+    panel.classList.toggle('active');
+}
+
+window.closeAdminPanel = function() {
+    const panel = document.getElementById('hiddenAdminPanel');
+    if (panel) {
+        panel.classList.remove('active');
+    }
+};
+
 async function submitMood() {
-    const name = document.getElementById('studentName').value.trim();
-    const language = document.getElementById('language').value;
-    const comment = document.getElementById('comment').value.trim();
+    const nom = document.getElementById('studentName').value.trim();
+    const langage_prefere = document.getElementById('favoriteLanguage').value; // Nouveau champ
+    const autre_preference = document.getElementById('otherPreference').value; // Nouveau champ
+    const commentaire = document.getElementById('comment').value.trim();
     const submitBtn = document.getElementById('submitBtn');
 
     // Empêcher double soumission
@@ -233,24 +373,37 @@ async function submitMood() {
         return;
     }
 
-    if (name.length < 2) {
+    if (nom.length < 2) {
         alert('Le prénom doit contenir au moins 2 caractères');
         submitBtn.disabled = false;
         return;
     }
 
-    const mood = {
-        name: name,
+    if (!langage_prefere) {
+        alert('Choisis ton langage préféré !');
+        submitBtn.disabled = false;
+        return;
+    }
+
+    if (!autre_preference) {
+        alert('Choisis ta préférence additionnelle !');
+        submitBtn.disabled = false;
+        return;
+    }
+
+    const humeur = {
+        nom: nom,
         emoji: selectedEmoji,
-        language: language,
-        comment: comment || null
+        langage_prefere: langage_prefere,    // Nouveau champ
+        autre_preference: autre_preference,   // Nouveau champ
+        commentaire: commentaire || null
     };
 
     // Animation de chargement
     const originalText = submitBtn.textContent;
     submitBtn.textContent = '🔄 Envoi en cours...';
 
-    const success = await addMood(mood);
+    const success = await addHumeur(humeur);
 
     if (success) {
         resetForm();
@@ -290,12 +443,16 @@ function updateDisplay() {
     updateStats();
     updateMoodList();
     updateVisualization();
+    // Suppression de updateLastUpdateTime()
 }
 
-function updateStats() {
-    document.getElementById('totalParticipants').textContent = moods.length;
+// Fonction supprimée - plus d'indicateur de mise à jour
+// function updateLastUpdateTime() { ... }
 
-    const uniqueEmojis = new Set(moods.map(m => m.emoji));
+function updateStats() {
+    document.getElementById('totalParticipants').textContent = humeurs.length;
+
+    const uniqueEmojis = new Set(humeurs.map(h => h.emoji));
     document.getElementById('moodVariety').textContent = uniqueEmojis.size;
 
     const minutes = Math.floor((new Date() - sessionStartTime) / 60000);
@@ -305,49 +462,135 @@ function updateStats() {
 function updateMoodList() {
     const listContainer = document.getElementById('moodList');
 
-    if (moods.length === 0) {
+    if (humeurs.length === 0) {
         listContainer.innerHTML = `
             <div class="loading">
-                <p>🤖 En attente des premiers codes mood...</p>
-                <p style="font-size: 0.9em; margin-top: 10px; color: #666;">Synchronisation temps réel active</p>
+                <p>🤖 En attente des premiers codes humeur...</p>
+                <p style="font-size: 0.9em; margin-top: 10px; color: #666;">
+                    Partage ton humeur pour commencer !
+                </p>
             </div>
         `;
         return;
     }
 
-    listContainer.innerHTML = moods.map(mood => {
-        const codeSnippet = generateCodeSnippet(mood);
-        const timeDisplay = formatTime(mood.created_at);
+    // Affichage compact pour beaucoup de participants
+    const isCompactMode = humeurs.length > 10;
 
-        return `
-            <div class="mood-item">
-                <div class="mood-header">
-                    <span class="student-name">${escapeHtml(mood.name)}</span>
-                    <span class="timestamp">${timeDisplay}</span>
+    listContainer.innerHTML = humeurs.map((humeur, index) => {
+        const codeSnippet = generateCodeSnippet(humeur);
+        const timeDisplay = formatTime(humeur.created_at);
+        const isRecent = new Date() - new Date(humeur.created_at) < 60000;
+
+        const avatar = generateAvatar(humeur.nom);
+        const badge = getBadge(humeur.langage_prefere);
+
+        if (isCompactMode) {
+            // Mode compact pour 10+ participants
+            return `
+                <div class="social-post compact ${isRecent ? 'new-post' : ''}">
+                    <div class="compact-header">
+                        <div class="compact-user">
+                            <div class="mini-avatar">${avatar}</div>
+                            <span class="compact-name">${escapeHtml(humeur.nom)}</span>
+                            <span class="mini-badge ${badge.class}">${badge.icon}</span>
+                            <span class="compact-mood">${humeur.emoji}</span>
+                        </div>
+                        <span class="compact-time">${timeDisplay}</span>
+                    </div>
+                    
+                    <div class="compact-content">
+                        <div class="compact-tags">
+                            <span class="mini-tag lang">${humeur.langage_prefere}</span>
+                            <span class="mini-tag pref">${formatPreference(humeur.autre_preference)}</span>
+                        </div>
+                        
+                        <div class="compact-code">
+                            <span class="compact-code-text">${codeSnippet.replace(/<span class="comment">.*?<\/span>/g, '')}</span>
+                            <button class="mini-copy" onclick="copyCode('${escapeForJs(codeSnippet)}')" title="Copier">📋</button>
+                        </div>
+
+                        ${humeur.commentaire ? `<div class="compact-comment">💭 "${escapeHtml(humeur.commentaire)}"</div>` : ''}
+                    </div>
                 </div>
-                <div class="code-display">
-                    <div class="language-tag">${mood.language}</div>
-                    ${codeSnippet}
+            `;
+        } else {
+            // Mode normal pour moins de 10 participants
+            return `
+                <div class="social-post ${isRecent ? 'new-post' : ''}">
+                    <div class="post-header">
+                        <div class="user-info">
+                            <div class="avatar">${avatar}</div>
+                            <div class="user-details">
+                                <div class="username">
+                                    ${escapeHtml(humeur.nom)}
+                                    <span class="badge ${badge.class}">${badge.icon}</span>
+                                </div>
+                                <div class="post-time">${timeDisplay}</div>
+                            </div>
+                        </div>
+                        <div class="post-mood">${humeur.emoji}</div>
+                    </div>
+
+                    <div class="post-content">
+                        <div class="preferences-tags">
+                            <span class="tag language-tag">💻 ${humeur.langage_prefere}</span>
+                            <span class="tag hobby-tag">✨ ${formatPreference(humeur.autre_preference)}</span>
+                        </div>
+                        
+                        <div class="code-container">
+                            <div class="code-header">
+                                <span class="code-title">Mon code du moment :</span>
+                                <button class="copy-btn" onclick="copyCode('${escapeForJs(codeSnippet)}')" title="Copier le code">📋</button>
+                            </div>
+                            <div class="code-display">
+                                ${codeSnippet}
+                            </div>
+                        </div>
+
+                        ${humeur.commentaire ? `
+                            <div class="post-caption">
+                                <span class="quote-icon">💭</span>
+                                "${escapeHtml(humeur.commentaire)}"
+                            </div>
+                        ` : ''}
+                    </div>
                 </div>
-            </div>
-        `;
+            `;
+        }
     }).join('');
 }
 
-function generateCodeSnippet(mood) {
+function generateCodeSnippet(humeur) {
+    const langagePrefere = humeur.langage_prefere || humeur.langage || 'javascript';
+    
     const templates = {
-        javascript: `let mood = "${mood.emoji}";${mood.comment ? ` <span class="comment">// ${escapeHtml(mood.comment)}</span>` : ''}`,
-        typescript: `const mood: string = "${mood.emoji}";${mood.comment ? ` <span class="comment">// ${escapeHtml(mood.comment)}</span>` : ''}`,
-        python: `humeur = "${mood.emoji}"${mood.comment ? `  <span class="comment"># ${escapeHtml(mood.comment)}</span>` : ''}`,
-        java: `String mood = "${mood.emoji}";${mood.comment ? ` <span class="comment">// ${escapeHtml(mood.comment)}</span>` : ''}`,
-        csharp: `string mood = "${mood.emoji}";${mood.comment ? ` <span class="comment">// ${escapeHtml(mood.comment)}</span>` : ''}`,
-        php: `$mood = "${mood.emoji}";${mood.comment ? ` <span class="comment">// ${escapeHtml(mood.comment)}</span>` : ''}`,
-        cpp: `std::string mood = "${mood.emoji}";${mood.comment ? ` <span class="comment">// ${escapeHtml(mood.comment)}</span>` : ''}`,
-        rust: `let mood = "${mood.emoji}";${mood.comment ? ` <span class="comment">// ${escapeHtml(mood.comment)}</span>` : ''}`,
-        go: `mood := "${mood.emoji}"${mood.comment ? ` <span class="comment">// ${escapeHtml(mood.comment)}</span>` : ''}`
+        javascript: `let humeur = "${humeur.emoji}";${humeur.commentaire ? ` <span class="comment">// ${escapeHtml(humeur.commentaire)}</span>` : ''}`,
+        
+        typescript: `const humeur: string = "${humeur.emoji}";${humeur.commentaire ? ` <span class="comment">// ${escapeHtml(humeur.commentaire)}</span>` : ''}`,
+        
+        python: `humeur = "${humeur.emoji}"${humeur.commentaire ? `  <span class="comment"># ${escapeHtml(humeur.commentaire)}</span>` : ''}`,
+        
+        java: `String humeur = "${humeur.emoji}";${humeur.commentaire ? ` <span class="comment">// ${escapeHtml(humeur.commentaire)}</span>` : ''}`,
+        
+        csharp: `string humeur = "${humeur.emoji}";${humeur.commentaire ? ` <span class="comment">// ${escapeHtml(humeur.commentaire)}</span>` : ''}`,
+        
+        php: `$humeur = "${humeur.emoji}";${humeur.commentaire ? ` <span class="comment">// ${escapeHtml(humeur.commentaire)}</span>` : ''}`,
+        
+        cpp: `std::string humeur = "${humeur.emoji}";${humeur.commentaire ? ` <span class="comment">// ${escapeHtml(humeur.commentaire)}</span>` : ''}`,
+        
+        rust: `let humeur = "${humeur.emoji}";${humeur.commentaire ? ` <span class="comment">// ${escapeHtml(humeur.commentaire)}</span>` : ''}`,
+        
+        go: `humeur := "${humeur.emoji}"${humeur.commentaire ? ` <span class="comment">// ${escapeHtml(humeur.commentaire)}</span>` : ''}`,
+
+        kotlin: `val humeur = "${humeur.emoji}"${humeur.commentaire ? ` <span class="comment">// ${escapeHtml(humeur.commentaire)}</span>` : ''}`,
+
+        swift: `let humeur = "${humeur.emoji}"${humeur.commentaire ? ` <span class="comment">// ${escapeHtml(humeur.commentaire)}</span>` : ''}`,
+
+        ruby: `humeur = "${humeur.emoji}"${humeur.commentaire ? ` <span class="comment"># ${escapeHtml(humeur.commentaire)}</span>` : ''}`
     };
 
-    return templates[mood.language] || `mood = "${mood.emoji}";${mood.comment ? ` // ${escapeHtml(mood.comment)}` : ''}`;
+    return templates[langagePrefere] || templates.javascript;
 }
 
 function formatTime(timestamp) {
@@ -361,6 +604,69 @@ function formatTime(timestamp) {
     return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
 }
 
+// ========================================
+// FONCTIONS STYLE RÉSEAUX SOCIAUX
+// ========================================
+
+function generateAvatar(nom) {
+    const firstLetter = nom.charAt(0).toUpperCase();
+    const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD', '#98D8C8', '#F7DC6F'];
+    const colorIndex = nom.charCodeAt(0) % colors.length;
+    return `<div class="avatar-letter" style="background-color: ${colors[colorIndex]}">${firstLetter}</div>`;
+}
+
+function getBadge(langage) {
+    const badges = {
+        javascript: { icon: '⚡', class: 'badge-js' },
+        typescript: { icon: '🔷', class: 'badge-ts' },
+        python: { icon: '🐍', class: 'badge-python' },
+        java: { icon: '☕', class: 'badge-java' },
+        csharp: { icon: '💎', class: 'badge-csharp' },
+        php: { icon: '🐘', class: 'badge-php' },
+        cpp: { icon: '⚙️', class: 'badge-cpp' },
+        rust: { icon: '🦀', class: 'badge-rust' },
+        go: { icon: '🚀', class: 'badge-go' },
+        kotlin: { icon: '🎯', class: 'badge-kotlin' },
+        swift: { icon: '🍎', class: 'badge-swift' },
+        ruby: { icon: '💎', class: 'badge-ruby' }
+    };
+    return badges[langage] || { icon: '💻', class: 'badge-default' };
+}
+
+function formatPreference(preference) {
+    const formatted = preference.replace(/-/g, ' ').replace(/([a-z])([A-Z])/g, '$1 $2');
+    return formatted.charAt(0).toUpperCase() + formatted.slice(1);
+}
+
+function escapeForJs(text) {
+    return text.replace(/'/g, "\\'").replace(/"/g, '\\"').replace(/\n/g, '\\n');
+}
+
+// Fonction de copie de code simplifiée
+window.copyCode = function(code) {
+    // Nettoyer le code HTML pour ne garder que le texte
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = code;
+    const cleanCode = tempDiv.textContent || tempDiv.innerText || '';
+    
+    navigator.clipboard.writeText(cleanCode).then(() => {
+        showNotification('Code copié ! 📋', 'success');
+    }).catch(() => {
+        showNotification('Erreur lors de la copie', 'error');
+    });
+};
+
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.remove();
+    }, 3000);
+}
+
 function escapeHtml(text) {
     if (!text) return '';
     const div = document.createElement('div');
@@ -371,53 +677,61 @@ function escapeHtml(text) {
 function updateVisualization() {
     const container = document.getElementById('moodVisualization');
 
-    if (moods.length === 0) {
+    if (humeurs.length === 0) {
         container.innerHTML = '';
         return;
     }
 
     const emojiCounts = {};
-    moods.forEach(mood => {
-        emojiCounts[mood.emoji] = (emojiCounts[mood.emoji] || 0) + 1;
+    const langageCounts = {};
+    const preferenceCounts = {};
+    
+    humeurs.forEach(humeur => {
+        emojiCounts[humeur.emoji] = (emojiCounts[humeur.emoji] || 0) + 1;
+        langageCounts[humeur.langage_prefere] = (langageCounts[humeur.langage_prefere] || 0) + 1;
+        preferenceCounts[humeur.autre_preference] = (preferenceCounts[humeur.autre_preference] || 0) + 1;
     });
 
-    container.innerHTML = Object.entries(emojiCounts)
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 10)
-        .map(([emoji, count]) => `
-            <div class="mood-bubble">
-                <span>${emoji}</span>
-                <span class="mood-count">${count}</span>
+    container.innerHTML = `
+        <div class="viz-section">
+            <h4>🎭 Top Émojis</h4>
+            <div class="viz-items">
+                ${Object.entries(emojiCounts)
+                    .sort((a, b) => b[1] - a[1])
+                    .slice(0, 5)
+                    .map(([emoji, count]) => `
+                        <div class="mood-bubble">
+                            <span>${emoji}</span>
+                            <span class="mood-count">${count}</span>
+                        </div>
+                    `).join('')}
             </div>
-        `).join('');
+        </div>
+        <div class="viz-section">
+            <h4>💻 Langages Populaires</h4>
+            <div class="viz-items">
+                ${Object.entries(langageCounts)
+                    .sort((a, b) => b[1] - a[1])
+                    .slice(0, 3)
+                    .map(([langage, count]) => `
+                        <div class="lang-bubble">
+                            <span>${langage}</span>
+                            <span class="lang-count">${count}</span>
+                        </div>
+                    `).join('')}
+            </div>
+        </div>
+    `;
 }
 
 // ========================================
-// CONTRÔLES ENSEIGNANT
+// CONTRÔLES ENSEIGNANT SIMPLIFIÉS
 // ========================================
 
-window.loadMoods = async function() {
-    const btn = event.target;
-    const originalText = btn.textContent;
-    btn.textContent = '🔄 Actualisation...';
-    btn.disabled = true;
-
-    try {
-        await loadMoodsFromSupabase();
-        btn.textContent = '✅ Actualisé';
-    } catch (error) {
-        btn.textContent = '❌ Erreur';
-        console.error('Erreur actualisation:', error);
-    }
-
-    setTimeout(() => {
-        btn.textContent = originalText;
-        btn.disabled = false;
-    }, 2000);
-};
+// Suppression du bouton actualiser - tout est automatique maintenant !
 
 window.clearAllMoods = async function() {
-    if (!confirm('⚠️ Êtes-vous sûr de vouloir effacer TOUS les mood codes ?')) {
+    if (!confirm('⚠️ Êtes-vous sûr de vouloir effacer TOUS les codes humeur ?')) {
         return;
     }
 
@@ -428,12 +742,18 @@ window.clearAllMoods = async function() {
 
     try {
         const { error } = await supabase
-            .from('moods')
+            .from('humeur')
             .delete()
             .neq('id', 0);
 
         if (error) throw error;
         btn.textContent = '✅ Effacé';
+        
+        // Actualisation automatique après suppression
+        setTimeout(() => {
+            loadHumeursFromSupabase();
+        }, 1000);
+        
     } catch (error) {
         btn.textContent = '❌ Erreur';
         console.error('Erreur suppression:', error);
@@ -446,18 +766,19 @@ window.clearAllMoods = async function() {
 };
 
 window.exportMoods = function() {
-    if (moods.length === 0) {
-        alert('Aucun mood code à exporter !');
+    if (humeurs.length === 0) {
+        alert('Aucun code humeur à exporter !');
         return;
     }
 
-    const exportData = moods.map(mood => ({
-        Prénom: mood.name,
-        Emoji: mood.emoji,
-        Langage: mood.language,
-        Commentaire: mood.comment || '',
-        'Date/Heure': formatTime(mood.created_at),
-        Timestamp: mood.created_at,
+    const exportData = humeurs.map(humeur => ({
+        Prénom: humeur.nom,
+        Emoji: humeur.emoji,
+        'Langage Préféré': humeur.langage_prefere || humeur.langage,
+        'Autre Préférence': humeur.autre_preference || '',
+        Commentaire: humeur.commentaire || '',
+        'Date/Heure': formatTime(humeur.created_at),
+        Timestamp: humeur.created_at,
         Mode: CONFIG.mode
     }));
 
@@ -469,12 +790,12 @@ window.exportMoods = function() {
         )
     ].join('\n');
 
-    downloadFile(csvContent, `emoji-code-mood-${new Date().toISOString().split('T')[0]}.csv`, 'text/csv');
+    downloadFile(csvContent, `emoji-code-humeur-${new Date().toISOString().split('T')[0]}.csv`, 'text/csv');
 };
 
 window.exportMoodsJSON = function() {
-    if (moods.length === 0) {
-        alert('Aucun mood code à exporter !');
+    if (humeurs.length === 0) {
+        alert('Aucun code humeur à exporter !');
         return;
     }
 
@@ -483,34 +804,42 @@ window.exportMoodsJSON = function() {
             exportDate: new Date().toISOString(),
             mode: CONFIG.mode,
             sessionDuration: Math.floor((new Date() - sessionStartTime) / 60000),
-            totalParticipants: moods.length,
-            uniqueEmojis: new Set(moods.map(m => m.emoji)).size,
-            version: 'secure-2.0'
+            totalParticipants: humeurs.length,
+            uniqueEmojis: new Set(humeurs.map(h => h.emoji)).size,
+            version: 'auto-refresh-2.1-fr',
+            autoRefreshEnabled: true
         },
-        moods: moods,
+        humeurs: humeurs,
         analytics: generateAnalytics()
     };
 
     const jsonContent = JSON.stringify(exportData, null, 2);
-    downloadFile(jsonContent, `emoji-code-mood-session-${new Date().toISOString().split('T')[0]}.json`, 'application/json');
+    downloadFile(jsonContent, `emoji-code-humeur-session-${new Date().toISOString().split('T')[0]}.json`, 'application/json');
 };
 
 function generateAnalytics() {
     const emojiStats = {};
     const languageStats = {};
+    const preferenceStats = {};
 
-    moods.forEach(mood => {
-        emojiStats[mood.emoji] = (emojiStats[mood.emoji] || 0) + 1;
-        languageStats[mood.language] = (languageStats[mood.language] || 0) + 1;
+    humeurs.forEach(humeur => {
+        emojiStats[humeur.emoji] = (emojiStats[humeur.emoji] || 0) + 1;
+        languageStats[humeur.langage_prefere || humeur.langage] = (languageStats[humeur.langage_prefere || humeur.langage] || 0) + 1;
+        preferenceStats[humeur.autre_preference] = (preferenceStats[humeur.autre_preference] || 0) + 1;
     });
 
     return {
         emojiDistribution: emojiStats,
         languagePreferences: languageStats,
+        otherPreferences: preferenceStats,
         topEmojis: Object.entries(emojiStats)
             .sort((a, b) => b[1] - a[1])
             .slice(0, 5)
-            .map(([emoji, count]) => ({ emoji, count, percentage: Math.round(count / moods.length * 100) }))
+            .map(([emoji, count]) => ({ emoji, count, percentage: Math.round(count / humeurs.length * 100) })),
+        topLanguages: Object.entries(languageStats)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 3)
+            .map(([langage, count]) => ({ langage, count, percentage: Math.round(count / humeurs.length * 100) }))
     };
 }
 
@@ -528,11 +857,21 @@ function downloadFile(content, filename, mimeType) {
 }
 
 // ========================================
+// NETTOYAGE À LA FERMETURE
+// ========================================
+
+window.addEventListener('beforeunload', () => {
+    if (autoRefreshInterval) {
+        clearInterval(autoRefreshInterval);
+    }
+});
+
+// ========================================
 // INITIALISATION DE L'APPLICATION
 // ========================================
 
 async function initApp() {
-    console.log('🚀 Initialisation Emoji Code Mood...');
+    console.log('🚀 Initialisation Emoji Code Humeur (auto-actualisation)...');
 
     try {
         // Configuration des event listeners d'abord (toujours nécessaire)
@@ -601,6 +940,20 @@ function setupLocalMode() {
     // S'assurer que les event listeners sont configurés en mode local
     console.log('🔧 Configuration des event listeners en mode local...');
     setupEventListeners();
+<<<<<<< HEAD
+=======
+
+    // Initialisation Supabase obligatoire
+    await initSupabase();
+
+    // Mise à jour initiale de l'affichage
+    updateDisplay();
+
+    console.log('✅ Application initialisée avec succès');
+    console.log('📊 Mode actuel:', CONFIG.mode);
+    console.log('🔄 Auto-actualisation activée');
+    console.log('📈 Codes humeur chargés:', humeurs.length);
+>>>>>>> 57e3340f1ac7654842fa49c482a8fa317a6ae8dc
 }
 
 // Démarrage automatique - Multiple méthodes pour assurer le chargement
@@ -614,29 +967,8 @@ if (document.readyState === 'loading') {
 // Fallback supplémentaire
 window.addEventListener('load', () => {
     // Vérifier si l'app n'est pas encore initialisée
-    if (moods.length === 0 && !document.querySelector('.mood-item')) {
+    if (humeurs.length === 0 && !document.querySelector('.mood-item')) {
         console.log('🔄 Initialisation fallback...');
         initApp();
     }
 });
-
-// Auto-détection si le fichier private-config.js est présent
-// Pour utiliser vos propres clés, créez ce fichier localement :
-/*
-window.PRIVATE_CONFIG = {
-    mode: 'supabase',
-    supabaseUrl: 'https://xxx.supabase.co',
-    supabaseAnonKey: 'eyJ...',
-    useRealtime: true
-};
-*/
-
-// Debug helper - Vous pouvez supprimer cette section en production
-// Debug helper - Supprime les fonctions liées au mode local
-window.debugEmojiMood = {
-    getConfig: () => CONFIG,
-    getMoods: () => moods
-};
-
-// Message de debug dans la console
-console.log('🎭 Emoji Code Mood chargé !');
