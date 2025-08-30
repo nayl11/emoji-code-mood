@@ -110,6 +110,22 @@ async function addMood(mood) {
 
     if (CONFIG.mode === 'supabase' && supabase) {
         try {
+            // Vérifier si un mood identique existe déjà (prénom, emoji, langage, commentaire)
+            const { data: existing, error: selectError } = await supabase
+                .from('moods')
+                .select('*')
+                .eq('name', mood.name)
+                .eq('emoji', mood.emoji)
+                .eq('language', mood.language)
+                .eq('comment', mood.comment || null)
+                .limit(1);
+
+            if (selectError) throw selectError;
+            if (existing && existing.length > 0) {
+                alert('Ce code humeur a déjà été enregistré.');
+                return false;
+            }
+
             const { data, error } = await supabase
                 .from('moods')
                 .insert([mood])

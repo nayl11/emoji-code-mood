@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Connexion Supabase</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f8f8f8; padding: 30px; }
+        .test-container { background: #fff; border-radius: 8px; box-shadow: 0 2px 8px #0001; padding: 24px; max-width: 600px; margin: auto; }
+        h1 { color: #3ECF8E; }
+        #testOutput { margin-top: 20px; font-size: 1.1em; }
+        .ok { color: #3ECF8E; }
+        .err { color: #e74c3c; }
+        pre { background: #eee; padding: 8px; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🔎 Test Connexion Supabase</h1>
+        <p>Ce test vérifie chaque étape de la connexion à Supabase.<br>
+        <b>Assurez-vous que le fichier <code>private-config.js</code> est bien injecté avant ce script.</b></p>
+        <div id="testOutput"></div>
+    </div>
+    <!-- Configuration privée injectée automatiquement par GitHub Actions -->
+    <!-- PRIVATE_CONFIG_PLACEHOLDER -->
+    <script src="testSupabaseConnection.js"></script>
+</body>
+</html>
