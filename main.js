@@ -474,90 +474,37 @@ function updateMoodList() {
         return;
     }
 
-    // Affichage compact pour beaucoup de participants
-    const isCompactMode = humeurs.length > 10;
-
+    // Affichage unique compact pour tous les participants
     listContainer.innerHTML = humeurs.map((humeur, index) => {
         const codeSnippet = generateCodeSnippet(humeur);
         const timeDisplay = formatTime(humeur.created_at);
         const isRecent = new Date() - new Date(humeur.created_at) < 60000;
-
         const avatar = generateAvatar(humeur.nom);
         const badge = getBadge(humeur.langage_prefere);
-
-        if (isCompactMode) {
-            // Mode compact pour 10+ participants
-            return `
-                <div class="social-post compact ${isRecent ? 'new-post' : ''}">
-                    <div class="compact-header">
-                        <div class="compact-user">
-                            <div class="mini-avatar">${avatar}</div>
-                            <span class="compact-name">${escapeHtml(humeur.nom)}</span>
-                            <span class="mini-badge ${badge.class}">${badge.icon}</span>
-                            <span class="compact-mood">${humeur.emoji}</span>
-                        </div>
-                        <span class="compact-time">${timeDisplay}</span>
+        return `
+            <div class="social-post compact ${isRecent ? 'new-post' : ''}">
+                <div class="compact-header">
+                    <div class="compact-user">
+                        <div class="mini-avatar">${avatar}</div>
+                        <span class="compact-name">${escapeHtml(humeur.nom)}</span>
+                        <span class="mini-badge ${badge.class}">${badge.icon}</span>
+                        <span class="compact-mood">${humeur.emoji}</span>
                     </div>
-                    
-                    <div class="compact-content">
-                        <div class="compact-tags">
-                            <span class="mini-tag lang">${humeur.langage_prefere}</span>
-                            <span class="mini-tag pref">${formatPreference(humeur.autre_preference)}</span>
-                        </div>
-                        
-                        <div class="compact-code">
-                            <span class="compact-code-text">${codeSnippet.replace(/<span class="comment">.*?<\/span>/g, '')}</span>
-                            <button class="mini-copy" onclick="copyCode('${escapeForJs(codeSnippet)}')" title="Copier">📋</button>
-                        </div>
-
-                        ${humeur.commentaire ? `<div class="compact-comment">💭 "${escapeHtml(humeur.commentaire)}"</div>` : ''}
-                    </div>
+                    <span class="compact-time">${timeDisplay}</span>
                 </div>
-            `;
-        } else {
-            // Mode normal pour moins de 10 participants
-            return `
-                <div class="social-post ${isRecent ? 'new-post' : ''}">
-                    <div class="post-header">
-                        <div class="user-info">
-                            <div class="avatar">${avatar}</div>
-                            <div class="user-details">
-                                <div class="username">
-                                    ${escapeHtml(humeur.nom)}
-                                    <span class="badge ${badge.class}">${badge.icon}</span>
-                                </div>
-                                <div class="post-time">${timeDisplay}</div>
-                            </div>
-                        </div>
-                        <div class="post-mood">${humeur.emoji}</div>
+                <div class="compact-content">
+                    <div class="compact-tags">
+                        <span class="mini-tag lang">${humeur.langage_prefere}</span>
+                        <span class="mini-tag pref">${formatPreference(humeur.autre_preference)}</span>
                     </div>
-
-                    <div class="post-content">
-                        <div class="preferences-tags">
-                            <span class="tag language-tag">💻 ${humeur.langage_prefere}</span>
-                            <span class="tag hobby-tag">✨ ${formatPreference(humeur.autre_preference)}</span>
-                        </div>
-                        
-                        <div class="code-container">
-                            <div class="code-header">
-                                <span class="code-title">Mon code du moment :</span>
-                                <button class="copy-btn" onclick="copyCode('${escapeForJs(codeSnippet)}')" title="Copier le code">📋</button>
-                            </div>
-                            <div class="code-display">
-                                ${codeSnippet}
-                            </div>
-                        </div>
-
-                        ${humeur.commentaire ? `
-                            <div class="post-caption">
-                                <span class="quote-icon">💭</span>
-                                "${escapeHtml(humeur.commentaire)}"
-                            </div>
-                        ` : ''}
+                    <div class="compact-code">
+                        <span class="compact-code-text">${codeSnippet.replace(/<span class=\"comment\">.*?<\/span>/g, '')}</span>
+                        <button class="mini-copy" onclick="copyCode('${escapeForJs(codeSnippet)}')" title="Copier">📋</button>
                     </div>
+                    ${humeur.commentaire ? `<div class="compact-comment"> "${escapeHtml(humeur.commentaire)}"</div>` : ''}
                 </div>
-            `;
-        }
+            </div>
+        `;
     }).join('');
 }
 

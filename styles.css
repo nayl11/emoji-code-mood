@@ -514,55 +514,70 @@ input:focus, select:focus, textarea:focus {
 
 /* Container du code */
 .code-container {
-    margin: 16px 0;
-    border-radius: 12px;
-    overflow: hidden;
-    border: 1px solid #e8e8e8;
+    margin: 24px 0 20px 0;
+    border-radius: 16px;
+    overflow: visible;
+    border: 1.5px solid #d0e6e2;
+    box-shadow: 0 4px 18px rgba(62,207,142,0.08);
+    background: linear-gradient(120deg, #f8f9fa 80%, #e6f9f3 100%);
+    padding: 0 0 10px 0;
+    transition: box-shadow 0.2s;
 }
 
 .code-header {
-    background: #f8f9fa;
-    padding: 10px 16px;
+    background: transparent;
+    padding: 14px 24px 0 24px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid #e8e8e8;
+    border-bottom: none;
 }
 
 .code-title {
-    font-size: 0.9em;
-    color: #666;
-    font-weight: 500;
+    font-size: 1.08em;
+    color: #2B7EC8;
+    font-weight: 600;
+    letter-spacing: 0.01em;
 }
 
 .copy-btn {
-    background: #3ECF8E;
-    color: white;
+    background: linear-gradient(90deg, #3ECF8E 60%, #2B7EC8 100%);
+    color: #fff;
     border: none;
-    padding: 4px 8px;
-    border-radius: 6px;
+    padding: 5px 12px;
+    border-radius: 8px;
     cursor: pointer;
-    font-size: 0.8em;
-    transition: all 0.2s ease;
+    font-size: 1em;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(62,207,142,0.08);
+    transition: all 0.18s;
 }
 
 .copy-btn:hover {
-    background: #2B7EC8;
-    transform: scale(1.05);
+    background: linear-gradient(90deg, #2B7EC8 60%, #3ECF8E 100%);
+    transform: scale(1.08);
+    color: #fff;
 }
 
 .code-display {
-    background: #2d3748;
+    background: #232b3a;
     color: #e2e8f0;
-    padding: 16px;
-    font-family: 'Courier New', monospace;
+    margin: 14px 18px 0 18px;
+    padding: 18px 20px 14px 20px;
+    font-family: 'Fira Mono', 'Consolas', 'Courier New', monospace;
     white-space: pre-line;
-    line-height: 1.6;
-    font-size: 0.9em;
+    line-height: 1.7;
+    font-size: 1.08em;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(43,126,200,0.07);
+    border: 1px solid #3ECF8E22;
+    word-break: break-word;
 }
 
 .comment {
     color: #a0aec0;
+    font-style: italic;
+    margin-left: 8px;
 }
 
 /* Citation du post */
