@@ -1,4 +1,4 @@
-// main.js - Version avec auto-actualisation et préférences étendues
+// main.js
 // ========================================
 // CONFIGURATION ET INITIALISATION
 // ========================================
@@ -236,25 +236,7 @@ function setupEventListeners() {
         document.getElementById('sessionTime').textContent = minutes;
     }, 60000);
 
-    // Indicateur d'actualisation automatique
-    const lastUpdateIndicator = document.createElement('div');
-    lastUpdateIndicator.id = 'lastUpdateTime';
-    lastUpdateIndicator.className = 'last-update-indicator';
-    lastUpdateIndicator.textContent = 'Dernière mise à jour: maintenant';
-    document.querySelector('.display-section h2').appendChild(lastUpdateIndicator);
-    
-    // Mettre à jour l'indicateur de dernière actualisation
-    setInterval(() => {
-        const now = new Date();
-        const minutes = Math.floor((now - sessionStartTime) / 60000);
-        if (minutes === 0) {
-            lastUpdateIndicator.textContent = 'Mis à jour il y a quelques secondes';
-        } else if (minutes === 1) {
-            lastUpdateIndicator.textContent = 'Dernière mise à jour: il y a 1 minute';
-        } else {
-            lastUpdateIndicator.textContent = `Dernière mise à jour: il y a ${minutes} minutes`;
-        }
-    }, 30000);
+    // Plus d'indicateur de mise à jour - interface plus clean
 }
 
 async function submitMood() {
@@ -337,20 +319,11 @@ function updateDisplay() {
     updateStats();
     updateMoodList();
     updateVisualization();
-    updateLastUpdateTime();
+    // Suppression de updateLastUpdateTime()
 }
 
-function updateLastUpdateTime() {
-    const indicator = document.getElementById('lastUpdateTime');
-    if (indicator) {
-        const now = new Date();
-        indicator.textContent = `Mis à jour: ${now.toLocaleTimeString()}`;
-        indicator.style.animation = 'pulse 1s ease';
-        setTimeout(() => {
-            indicator.style.animation = '';
-        }, 1000);
-    }
-}
+// Fonction supprimée - plus d'indicateur de mise à jour
+// function updateLastUpdateTime() { ... }
 
 function updateStats() {
     document.getElementById('totalParticipants').textContent = humeurs.length;
@@ -370,29 +343,81 @@ function updateMoodList() {
             <div class="loading">
                 <p>🤖 En attente des premiers codes humeur...</p>
                 <p style="font-size: 0.9em; margin-top: 10px; color: #666;">
-                    Actualisation automatique toutes les 30 secondes
+                    Partage ton humeur pour commencer !
                 </p>
             </div>
         `;
         return;
     }
 
-    listContainer.innerHTML = humeurs.map(humeur => {
+    listContainer.innerHTML = humeurs.map((humeur, index) => {
         const codeSnippet = generateCodeSnippet(humeur);
         const timeDisplay = formatTime(humeur.created_at);
+        const isRecent = new Date() - new Date(humeur.created_at) < 60000; // Moins d'1 minute
+
+        // Générer des réactions aléatoires style réseaux sociaux
+        const reactions = generateRandomReactions();
+        const avatar = generateAvatar(humeur.nom);
+        const badge = getBadge(humeur.langage_prefere);
 
         return `
-            <div class="mood-item">
-                <div class="mood-header">
-                    <span class="student-name">${escapeHtml(humeur.nom)}</span>
-                    <span class="timestamp">${timeDisplay}</span>
+            <div class="social-post ${isRecent ? 'new-post' : ''}">
+                <div class="post-header">
+                    <div class="user-info">
+                        <div class="avatar">${avatar}</div>
+                        <div class="user-details">
+                            <div class="username">
+                                ${escapeHtml(humeur.nom)}
+                                <span class="badge ${badge.class}">${badge.icon}</span>
+                            </div>
+                            <div class="post-time">${timeDisplay}</div>
+                        </div>
+                    </div>
+                    <div class="post-mood">${humeur.emoji}</div>
                 </div>
-                <div class="preferences-display">
-                    <div class="preference-tag language-tag">${humeur.langage_prefere || 'Non spécifié'}</div>
-                    <div class="preference-tag other-tag">${humeur.autre_preference || 'Non spécifié'}</div>
+
+                <div class="post-content">
+                    <div class="preferences-tags">
+                        <span class="tag language-tag">💻 ${humeur.langage_prefere}</span>
+                        <span class="tag hobby-tag">✨ ${formatPreference(humeur.autre_preference)}</span>
+                    </div>
+                    
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span class="code-title">Mon code du moment :</span>
+                            <button class="copy-btn" onclick="copyCode('${escapeForJs(codeSnippet)}')" title="Copier le code">📋</button>
+                        </div>
+                        <div class="code-display">
+                            ${codeSnippet}
+                        </div>
+                    </div>
+
+                    ${humeur.commentaire ? `
+                        <div class="post-caption">
+                            <span class="quote-icon">💭</span>
+                            "${escapeHtml(humeur.commentaire)}"
+                        </div>
+                    ` : ''}
                 </div>
-                <div class="code-display">
-                    ${codeSnippet}
+
+                <div class="post-actions">
+                    <div class="reactions">
+                        ${reactions.map(r => `<span class="reaction" onclick="addReaction(${index}, '${r.emoji}')">${r.emoji} ${r.count}</span>`).join('')}
+                    </div>
+                    <div class="action-buttons">
+                        <button class="action-btn like-btn" onclick="likePost(${index})">
+                            <span class="icon">❤️</span>
+                            <span class="label">J'aime</span>
+                        </button>
+                        <button class="action-btn comment-btn" onclick="commentPost(${index})">
+                            <span class="icon">💬</span>
+                            <span class="label">Commenter</span>
+                        </button>
+                        <button class="action-btn share-btn" onclick="sharePost(${index})">
+                            <span class="icon">📤</span>
+                            <span class="label">Partager</span>
+                        </button>
+                    </div>
                 </div>
             </div>
         `;
@@ -444,6 +469,162 @@ function formatTime(timestamp) {
     if (diffMinutes < 60) return `${diffMinutes}min`;
     if (diffMinutes < 1440) return `${Math.floor(diffMinutes / 60)}h${diffMinutes % 60 > 0 ? diffMinutes % 60 + 'min' : ''}`;
     return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+}
+
+// ========================================
+// FONCTIONS STYLE RÉSEAUX SOCIAUX
+// ========================================
+
+function generateAvatar(nom) {
+    const firstLetter = nom.charAt(0).toUpperCase();
+    const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD', '#98D8C8', '#F7DC6F'];
+    const colorIndex = nom.charCodeAt(0) % colors.length;
+    return `<div class="avatar-letter" style="background-color: ${colors[colorIndex]}">${firstLetter}</div>`;
+}
+
+function getBadge(langage) {
+    const badges = {
+        javascript: { icon: '⚡', class: 'badge-js' },
+        typescript: { icon: '🔷', class: 'badge-ts' },
+        python: { icon: '🐍', class: 'badge-python' },
+        java: { icon: '☕', class: 'badge-java' },
+        csharp: { icon: '💎', class: 'badge-csharp' },
+        php: { icon: '🐘', class: 'badge-php' },
+        cpp: { icon: '⚙️', class: 'badge-cpp' },
+        rust: { icon: '🦀', class: 'badge-rust' },
+        go: { icon: '🚀', class: 'badge-go' },
+        kotlin: { icon: '🎯', class: 'badge-kotlin' },
+        swift: { icon: '🍎', class: 'badge-swift' },
+        ruby: { icon: '💎', class: 'badge-ruby' }
+    };
+    return badges[langage] || { icon: '💻', class: 'badge-default' };
+}
+
+function formatPreference(preference) {
+    const formatted = preference.replace(/-/g, ' ').replace(/([a-z])([A-Z])/g, '$1 $2');
+    return formatted.charAt(0).toUpperCase() + formatted.slice(1);
+}
+
+function generateRandomReactions() {
+    const possibleReactions = [
+        { emoji: '❤️', baseCount: 3 },
+        { emoji: '😍', baseCount: 2 },
+        { emoji: '🔥', baseCount: 4 },
+        { emoji: '👏', baseCount: 2 },
+        { emoji: '💯', baseCount: 1 },
+        { emoji: '🚀', baseCount: 2 },
+        { emoji: '😂', baseCount: 1 },
+        { emoji: '🤯', baseCount: 1 }
+    ];
+    
+    return possibleReactions
+        .filter(() => Math.random() > 0.4) // 60% de chance d'apparaître
+        .slice(0, 4) // Max 4 réactions
+        .map(r => ({
+            emoji: r.emoji,
+            count: r.baseCount + Math.floor(Math.random() * 5)
+        }));
+}
+
+function escapeForJs(text) {
+    return text.replace(/'/g, "\\'").replace(/"/g, '\\"').replace(/\n/g, '\\n');
+}
+
+// Fonctions d'interaction style réseaux sociaux
+window.copyCode = function(code) {
+    // Nettoyer le code HTML pour ne garder que le texte
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = code;
+    const cleanCode = tempDiv.textContent || tempDiv.innerText || '';
+    
+    navigator.clipboard.writeText(cleanCode).then(() => {
+        showNotification('Code copié ! 📋', 'success');
+    }).catch(() => {
+        showNotification('Erreur lors de la copie', 'error');
+    });
+};
+
+window.addReaction = function(postIndex, emoji) {
+    // Animation de réaction
+    const reactionBtn = event.target;
+    reactionBtn.style.animation = 'reactionPop 0.3s ease';
+    setTimeout(() => {
+        reactionBtn.style.animation = '';
+    }, 300);
+    
+    showNotification(`Réaction ajoutée ! ${emoji}`, 'success');
+};
+
+window.likePost = function(postIndex) {
+    const btn = event.target.closest('.like-btn');
+    btn.classList.toggle('liked');
+    
+    if (btn.classList.contains('liked')) {
+        btn.querySelector('.icon').textContent = '💖';
+        btn.style.animation = 'heartBeat 0.5s ease';
+        createHeartParticles(btn);
+    } else {
+        btn.querySelector('.icon').textContent = '❤️';
+    }
+    
+    setTimeout(() => {
+        btn.style.animation = '';
+    }, 500);
+};
+
+window.commentPost = function(postIndex) {
+    showNotification('💬 Fonctionnalité bientôt disponible !', 'info');
+};
+
+window.sharePost = function(postIndex) {
+    const humeur = humeurs[postIndex];
+    const text = `${humeur.nom} code avec ${humeur.emoji} en ${humeur.langage_prefere} ! 🚀`;
+    
+    if (navigator.share) {
+        navigator.share({
+            title: 'Emoji Code Humeur',
+            text: text,
+            url: window.location.href
+        });
+    } else {
+        navigator.clipboard.writeText(text + ' ' + window.location.href).then(() => {
+            showNotification('Lien copié ! 📤', 'success');
+        });
+    }
+};
+
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.remove();
+    }, 3000);
+}
+
+function createHeartParticles(element) {
+    for (let i = 0; i < 6; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'heart-particle';
+        particle.textContent = '💖';
+        particle.style.position = 'absolute';
+        particle.style.left = (element.offsetLeft + Math.random() * 50) + 'px';
+        particle.style.top = (element.offsetTop + Math.random() * 50) + 'px';
+        particle.style.fontSize = (0.8 + Math.random() * 0.4) + 'em';
+        particle.style.pointerEvents = 'none';
+        particle.style.zIndex = '1000';
+        
+        element.parentElement.appendChild(particle);
+        
+        // Animation
+        particle.style.animation = `heartFloat 2s ease-out forwards`;
+        
+        setTimeout(() => {
+            particle.remove();
+        }, 2000);
+    }
 }
 
 function escapeHtml(text) {
