@@ -1,9 +1,9 @@
-// main.js - Version française avec table "humeur"
+// main.js - Version avec auto-actualisation et préférences étendues
 // ========================================
 // CONFIGURATION ET INITIALISATION
 // ========================================
 
-console.log('🎭 Emoji Code Mood - Version Sécurisée v2.0 (Français)');
+console.log('🎭 Emoji Code Humeur - Version Auto v2.1 (Français)');
 
 // Vérification stricte de la configuration Supabase
 if (!window.PRIVATE_CONFIG || !window.PRIVATE_CONFIG.supabaseUrl || !window.PRIVATE_CONFIG.supabaseAnonKey) {
@@ -16,9 +16,15 @@ console.log('✅ Configuration Supabase détectée - Mode Supabase activé');
 
 // Variables globales
 let supabase = null;
-let humeurs = [];  // Changé de "moods" à "humeurs"
+let humeurs = [];
 let selectedEmoji = '';
 let sessionStartTime = new Date();
+let autoRefreshInterval = null;
+let isConnected = false;
+
+// Configuration auto-actualisation
+const AUTO_REFRESH_INTERVAL = 30000; // 30 secondes
+const CONNECTION_CHECK_INTERVAL = 10000; // 10 secondes
 
 // ========================================
 // INITIALISATION SUPABASE VIA MODULE
@@ -38,22 +44,45 @@ async function initSupabase() {
             throw error;
         }
         console.log('🚀 Supabase connecté avec succès (table humeur)');
+        isConnected = true;
+        updateConnectionStatus(true);
         await loadHumeursFromSupabase();
         setupRealtimeSubscription();
+        startAutoRefresh();
         return true;
     } catch (error) {
         console.error('❌ Erreur de connexion Supabase :', error.message || error);
+        isConnected = false;
+        updateConnectionStatus(false);
         alert('Connexion à Supabase impossible. Vérifiez la configuration et que la table "humeur" existe.');
         return false;
     }
 }
 
+function updateConnectionStatus(connected) {
+    const indicator = document.getElementById('modeIndicator');
+    const icon = document.getElementById('modeIcon');
+    const text = document.getElementById('modeText');
+    
+    if (connected) {
+        indicator.style.background = '#e3f2fd';
+        indicator.style.color = '#1976d2';
+        icon.textContent = '⚡';
+        text.textContent = 'Connecté - Synchronisation automatique';
+    } else {
+        indicator.style.background = '#ffebee';
+        indicator.style.color = '#d32f2f';
+        icon.textContent = '🔌';
+        text.textContent = 'Reconnexion en cours...';
+    }
+}
+
 async function loadHumeursFromSupabase() {
-    if (!supabase) return;
+    if (!supabase || !isConnected) return;
 
     try {
         const { data, error } = await supabase
-            .from('humeur')  // Table "humeur" au lieu de "moods"
+            .from('humeur')
             .select('*')
             .order('created_at', { ascending: false })
             .limit(100);
@@ -62,9 +91,17 @@ async function loadHumeursFromSupabase() {
 
         humeurs = data || [];
         updateDisplay();
-        console.log(`📊 ${humeurs.length} codes humeur chargés depuis Supabase`);
+        console.log(`📊 ${humeurs.length} codes humeur chargés automatiquement`);
+        
+        // Réactiver la connexion si elle était en erreur
+        if (!isConnected) {
+            isConnected = true;
+            updateConnectionStatus(true);
+        }
     } catch (error) {
         console.error('❌ Erreur chargement Supabase:', error);
+        isConnected = false;
+        updateConnectionStatus(false);
     }
 }
 
@@ -72,9 +109,9 @@ function setupRealtimeSubscription() {
     if (!supabase) return;
 
     supabase
-        .channel('humeur_realtime')  // Canal pour table "humeur"
+        .channel('humeur_realtime')
         .on('postgres_changes', 
-            { event: '*', schema: 'public', table: 'humeur' },  // Table "humeur"
+            { event: '*', schema: 'public', table: 'humeur' },
             (payload) => {
                 console.log('🔄 Changement temps réel:', payload.eventType);
 
@@ -85,7 +122,13 @@ function setupRealtimeSubscription() {
                     // Animation d'arrivée
                     setTimeout(() => {
                         const newItem = document.querySelector('.mood-item');
-                        if (newItem) newItem.style.animation = 'slideIn 0.5s ease';
+                        if (newItem) {
+                            newItem.style.animation = 'slideIn 0.5s ease, glow 2s ease';
+                            // Supprimer l'animation après
+                            setTimeout(() => {
+                                newItem.style.animation = '';
+                            }, 2500);
+                        }
                     }, 100);
                 } else if (payload.eventType === 'DELETE') {
                     loadHumeursFromSupabase();
@@ -94,7 +137,32 @@ function setupRealtimeSubscription() {
         )
         .subscribe((status) => {
             console.log('📡 Realtime status:', status);
+            isConnected = status === 'SUBSCRIBED';
+            updateConnectionStatus(isConnected);
         });
+}
+
+function startAutoRefresh() {
+    // Actualisation automatique périodique
+    autoRefreshInterval = setInterval(async () => {
+        console.log('🔄 Actualisation automatique...');
+        await loadHumeursFromSupabase();
+    }, AUTO_REFRESH_INTERVAL);
+
+    // Vérification de connexion
+    setInterval(async () => {
+        if (!isConnected && supabase) {
+            console.log('🔌 Tentative de reconnexion...');
+            try {
+                await supabase.from('humeur').select('count').limit(1);
+                isConnected = true;
+                updateConnectionStatus(true);
+                await loadHumeursFromSupabase();
+            } catch (error) {
+                console.log('❌ Reconnexion échouée');
+            }
+        }
+    }, CONNECTION_CHECK_INTERVAL);
 }
 
 // ========================================
@@ -106,19 +174,23 @@ async function addHumeur(humeur) {
 
     if (CONFIG.mode === 'supabase' && supabase) {
         try {
-            // Vérifier si une humeur identique existe déjà (nom, emoji, langage, commentaire)
+            // Vérifier si une humeur identique existe déjà récemment (dernières 5 minutes)
+            const cinqMinutesAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString();
+            
             const { data: existing, error: selectError } = await supabase
                 .from('humeur')
                 .select('*')
-                .eq('nom', humeur.nom)              // Champ "nom" au lieu de "name"
+                .eq('nom', humeur.nom)
                 .eq('emoji', humeur.emoji)
-                .eq('langage', humeur.langage)      // Champ "langage" au lieu de "language"
-                .eq('commentaire', humeur.commentaire || null)  // Champ "commentaire" au lieu de "comment"
+                .eq('langage_prefere', humeur.langage_prefere)
+                .eq('autre_preference', humeur.autre_preference)
+                .eq('commentaire', humeur.commentaire || null)
+                .gte('created_at', cinqMinutesAgo)
                 .limit(1);
 
             if (selectError) throw selectError;
             if (existing && existing.length > 0) {
-                alert('Ce code humeur a déjà été enregistré.');
+                alert('Ce code humeur a déjà été enregistré récemment. Attendez quelques minutes avant de renvoyer.');
                 return false;
             }
 
@@ -163,12 +235,33 @@ function setupEventListeners() {
         const minutes = Math.floor((new Date() - sessionStartTime) / 60000);
         document.getElementById('sessionTime').textContent = minutes;
     }, 60000);
+
+    // Indicateur d'actualisation automatique
+    const lastUpdateIndicator = document.createElement('div');
+    lastUpdateIndicator.id = 'lastUpdateTime';
+    lastUpdateIndicator.className = 'last-update-indicator';
+    lastUpdateIndicator.textContent = 'Dernière mise à jour: maintenant';
+    document.querySelector('.display-section h2').appendChild(lastUpdateIndicator);
+    
+    // Mettre à jour l'indicateur de dernière actualisation
+    setInterval(() => {
+        const now = new Date();
+        const minutes = Math.floor((now - sessionStartTime) / 60000);
+        if (minutes === 0) {
+            lastUpdateIndicator.textContent = 'Mis à jour il y a quelques secondes';
+        } else if (minutes === 1) {
+            lastUpdateIndicator.textContent = 'Dernière mise à jour: il y a 1 minute';
+        } else {
+            lastUpdateIndicator.textContent = `Dernière mise à jour: il y a ${minutes} minutes`;
+        }
+    }, 30000);
 }
 
 async function submitMood() {
-    const nom = document.getElementById('studentName').value.trim();           // Utilise "nom"
-    const langage = document.getElementById('language').value;                // Utilise "langage"
-    const commentaire = document.getElementById('comment').value.trim();      // Utilise "commentaire"
+    const nom = document.getElementById('studentName').value.trim();
+    const langage_prefere = document.getElementById('favoriteLanguage').value; // Nouveau champ
+    const autre_preference = document.getElementById('otherPreference').value; // Nouveau champ
+    const commentaire = document.getElementById('comment').value.trim();
     const submitBtn = document.getElementById('submitBtn');
 
     // Empêcher double soumission
@@ -188,11 +281,24 @@ async function submitMood() {
         return;
     }
 
+    if (!langage_prefere) {
+        alert('Choisis ton langage préféré !');
+        submitBtn.disabled = false;
+        return;
+    }
+
+    if (!autre_preference) {
+        alert('Choisis ta préférence additionnelle !');
+        submitBtn.disabled = false;
+        return;
+    }
+
     const humeur = {
-        nom: nom,                                    // Champ "nom"
+        nom: nom,
         emoji: selectedEmoji,
-        langage: langage,                           // Champ "langage"
-        commentaire: commentaire || null            // Champ "commentaire"
+        langage_prefere: langage_prefere,    // Nouveau champ
+        autre_preference: autre_preference,   // Nouveau champ
+        commentaire: commentaire || null
     };
 
     // Animation de chargement
@@ -231,6 +337,19 @@ function updateDisplay() {
     updateStats();
     updateMoodList();
     updateVisualization();
+    updateLastUpdateTime();
+}
+
+function updateLastUpdateTime() {
+    const indicator = document.getElementById('lastUpdateTime');
+    if (indicator) {
+        const now = new Date();
+        indicator.textContent = `Mis à jour: ${now.toLocaleTimeString()}`;
+        indicator.style.animation = 'pulse 1s ease';
+        setTimeout(() => {
+            indicator.style.animation = '';
+        }, 1000);
+    }
 }
 
 function updateStats() {
@@ -250,7 +369,9 @@ function updateMoodList() {
         listContainer.innerHTML = `
             <div class="loading">
                 <p>🤖 En attente des premiers codes humeur...</p>
-                <p style="font-size: 0.9em; margin-top: 10px; color: #666;">Synchronisation temps réel active</p>
+                <p style="font-size: 0.9em; margin-top: 10px; color: #666;">
+                    Actualisation automatique toutes les 30 secondes
+                </p>
             </div>
         `;
         return;
@@ -266,8 +387,11 @@ function updateMoodList() {
                     <span class="student-name">${escapeHtml(humeur.nom)}</span>
                     <span class="timestamp">${timeDisplay}</span>
                 </div>
+                <div class="preferences-display">
+                    <div class="preference-tag language-tag">${humeur.langage_prefere || 'Non spécifié'}</div>
+                    <div class="preference-tag other-tag">${humeur.autre_preference || 'Non spécifié'}</div>
+                </div>
                 <div class="code-display">
-                    <div class="language-tag">${humeur.langage}</div>
                     ${codeSnippet}
                 </div>
             </div>
@@ -276,19 +400,39 @@ function updateMoodList() {
 }
 
 function generateCodeSnippet(humeur) {
+    const langagePrefere = humeur.langage_prefere || humeur.langage || 'javascript';
+    const autrePreference = humeur.autre_preference || 'inconnue';
+    
     const templates = {
-        javascript: `let humeur = "${humeur.emoji}";${humeur.commentaire ? ` <span class="comment">// ${escapeHtml(humeur.commentaire)}</span>` : ''}`,
-        typescript: `const humeur: string = "${humeur.emoji}";${humeur.commentaire ? ` <span class="comment">// ${escapeHtml(humeur.commentaire)}</span>` : ''}`,
-        python: `humeur = "${humeur.emoji}"${humeur.commentaire ? `  <span class="comment"># ${escapeHtml(humeur.commentaire)}</span>` : ''}`,
-        java: `String humeur = "${humeur.emoji}";${humeur.commentaire ? ` <span class="comment">// ${escapeHtml(humeur.commentaire)}</span>` : ''}`,
-        csharp: `string humeur = "${humeur.emoji}";${humeur.commentaire ? ` <span class="comment">// ${escapeHtml(humeur.commentaire)}</span>` : ''}`,
-        php: `$humeur = "${humeur.emoji}";${humeur.commentaire ? ` <span class="comment">// ${escapeHtml(humeur.commentaire)}</span>` : ''}`,
-        cpp: `std::string humeur = "${humeur.emoji}";${humeur.commentaire ? ` <span class="comment">// ${escapeHtml(humeur.commentaire)}</span>` : ''}`,
-        rust: `let humeur = "${humeur.emoji}";${humeur.commentaire ? ` <span class="comment">// ${escapeHtml(humeur.commentaire)}</span>` : ''}`,
-        go: `humeur := "${humeur.emoji}"${humeur.commentaire ? ` <span class="comment">// ${escapeHtml(humeur.commentaire)}</span>` : ''}`
+        javascript: `let humeur = "${humeur.emoji}";
+let preference = "${autrePreference}";${humeur.commentaire ? `\n<span class="comment">// ${escapeHtml(humeur.commentaire)}</span>` : ''}`,
+        
+        typescript: `const humeur: string = "${humeur.emoji}";
+const preference: string = "${autrePreference}";${humeur.commentaire ? `\n<span class="comment">// ${escapeHtml(humeur.commentaire)}</span>` : ''}`,
+        
+        python: `humeur = "${humeur.emoji}"
+preference = "${autrePreference}"${humeur.commentaire ? `\n<span class="comment"># ${escapeHtml(humeur.commentaire)}</span>` : ''}`,
+        
+        java: `String humeur = "${humeur.emoji}";
+String preference = "${autrePreference}";${humeur.commentaire ? `\n<span class="comment">// ${escapeHtml(humeur.commentaire)}</span>` : ''}`,
+        
+        csharp: `string humeur = "${humeur.emoji}";
+string preference = "${autrePreference}";${humeur.commentaire ? `\n<span class="comment">// ${escapeHtml(humeur.commentaire)}</span>` : ''}`,
+        
+        php: `$humeur = "${humeur.emoji}";
+$preference = "${autrePreference}";${humeur.commentaire ? `\n<span class="comment">// ${escapeHtml(humeur.commentaire)}</span>` : ''}`,
+        
+        cpp: `std::string humeur = "${humeur.emoji}";
+std::string preference = "${autrePreference}";${humeur.commentaire ? `\n<span class="comment">// ${escapeHtml(humeur.commentaire)}</span>` : ''}`,
+        
+        rust: `let humeur = "${humeur.emoji}";
+let preference = "${autrePreference}";${humeur.commentaire ? `\n<span class="comment">// ${escapeHtml(humeur.commentaire)}</span>` : ''}`,
+        
+        go: `humeur := "${humeur.emoji}"
+preference := "${autrePreference}"${humeur.commentaire ? `\n<span class="comment">// ${escapeHtml(humeur.commentaire)}</span>` : ''}`
     };
 
-    return templates[humeur.langage] || `humeur = "${humeur.emoji}";${humeur.commentaire ? ` // ${escapeHtml(humeur.commentaire)}` : ''}`;
+    return templates[langagePrefere] || templates.javascript;
 }
 
 function formatTime(timestamp) {
@@ -318,44 +462,52 @@ function updateVisualization() {
     }
 
     const emojiCounts = {};
+    const langageCounts = {};
+    const preferenceCounts = {};
+    
     humeurs.forEach(humeur => {
         emojiCounts[humeur.emoji] = (emojiCounts[humeur.emoji] || 0) + 1;
+        langageCounts[humeur.langage_prefere] = (langageCounts[humeur.langage_prefere] || 0) + 1;
+        preferenceCounts[humeur.autre_preference] = (preferenceCounts[humeur.autre_preference] || 0) + 1;
     });
 
-    container.innerHTML = Object.entries(emojiCounts)
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 10)
-        .map(([emoji, count]) => `
-            <div class="mood-bubble">
-                <span>${emoji}</span>
-                <span class="mood-count">${count}</span>
+    container.innerHTML = `
+        <div class="viz-section">
+            <h4>🎭 Top Émojis</h4>
+            <div class="viz-items">
+                ${Object.entries(emojiCounts)
+                    .sort((a, b) => b[1] - a[1])
+                    .slice(0, 5)
+                    .map(([emoji, count]) => `
+                        <div class="mood-bubble">
+                            <span>${emoji}</span>
+                            <span class="mood-count">${count}</span>
+                        </div>
+                    `).join('')}
             </div>
-        `).join('');
+        </div>
+        <div class="viz-section">
+            <h4>💻 Langages Populaires</h4>
+            <div class="viz-items">
+                ${Object.entries(langageCounts)
+                    .sort((a, b) => b[1] - a[1])
+                    .slice(0, 3)
+                    .map(([langage, count]) => `
+                        <div class="lang-bubble">
+                            <span>${langage}</span>
+                            <span class="lang-count">${count}</span>
+                        </div>
+                    `).join('')}
+            </div>
+        </div>
+    `;
 }
 
 // ========================================
-// CONTRÔLES ENSEIGNANT
+// CONTRÔLES ENSEIGNANT SIMPLIFIÉS
 // ========================================
 
-window.loadMoods = async function() {
-    const btn = event.target;
-    const originalText = btn.textContent;
-    btn.textContent = '🔄 Actualisation...';
-    btn.disabled = true;
-
-    try {
-        await loadHumeursFromSupabase();
-        btn.textContent = '✅ Actualisé';
-    } catch (error) {
-        btn.textContent = '❌ Erreur';
-        console.error('Erreur actualisation:', error);
-    }
-
-    setTimeout(() => {
-        btn.textContent = originalText;
-        btn.disabled = false;
-    }, 2000);
-};
+// Suppression du bouton actualiser - tout est automatique maintenant !
 
 window.clearAllMoods = async function() {
     if (!confirm('⚠️ Êtes-vous sûr de vouloir effacer TOUS les codes humeur ?')) {
@@ -369,12 +521,18 @@ window.clearAllMoods = async function() {
 
     try {
         const { error } = await supabase
-            .from('humeur')              // Table "humeur"
+            .from('humeur')
             .delete()
             .neq('id', 0);
 
         if (error) throw error;
         btn.textContent = '✅ Effacé';
+        
+        // Actualisation automatique après suppression
+        setTimeout(() => {
+            loadHumeursFromSupabase();
+        }, 1000);
+        
     } catch (error) {
         btn.textContent = '❌ Erreur';
         console.error('Erreur suppression:', error);
@@ -393,10 +551,11 @@ window.exportMoods = function() {
     }
 
     const exportData = humeurs.map(humeur => ({
-        Prénom: humeur.nom,                    // Champ "nom"
+        Prénom: humeur.nom,
         Emoji: humeur.emoji,
-        Langage: humeur.langage,              // Champ "langage"
-        Commentaire: humeur.commentaire || '', // Champ "commentaire"
+        'Langage Préféré': humeur.langage_prefere || humeur.langage,
+        'Autre Préférence': humeur.autre_preference || '',
+        Commentaire: humeur.commentaire || '',
         'Date/Heure': formatTime(humeur.created_at),
         Timestamp: humeur.created_at,
         Mode: CONFIG.mode
@@ -426,9 +585,10 @@ window.exportMoodsJSON = function() {
             sessionDuration: Math.floor((new Date() - sessionStartTime) / 60000),
             totalParticipants: humeurs.length,
             uniqueEmojis: new Set(humeurs.map(h => h.emoji)).size,
-            version: 'secure-2.0-fr'
+            version: 'auto-refresh-2.1-fr',
+            autoRefreshEnabled: true
         },
-        humeurs: humeurs,                     // Propriété "humeurs"
+        humeurs: humeurs,
         analytics: generateAnalytics()
     };
 
@@ -439,19 +599,26 @@ window.exportMoodsJSON = function() {
 function generateAnalytics() {
     const emojiStats = {};
     const languageStats = {};
+    const preferenceStats = {};
 
     humeurs.forEach(humeur => {
         emojiStats[humeur.emoji] = (emojiStats[humeur.emoji] || 0) + 1;
-        languageStats[humeur.langage] = (languageStats[humeur.langage] || 0) + 1;  // Champ "langage"
+        languageStats[humeur.langage_prefere || humeur.langage] = (languageStats[humeur.langage_prefere || humeur.langage] || 0) + 1;
+        preferenceStats[humeur.autre_preference] = (preferenceStats[humeur.autre_preference] || 0) + 1;
     });
 
     return {
         emojiDistribution: emojiStats,
         languagePreferences: languageStats,
+        otherPreferences: preferenceStats,
         topEmojis: Object.entries(emojiStats)
             .sort((a, b) => b[1] - a[1])
             .slice(0, 5)
-            .map(([emoji, count]) => ({ emoji, count, percentage: Math.round(count / humeurs.length * 100) }))
+            .map(([emoji, count]) => ({ emoji, count, percentage: Math.round(count / humeurs.length * 100) })),
+        topLanguages: Object.entries(languageStats)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 3)
+            .map(([langage, count]) => ({ langage, count, percentage: Math.round(count / humeurs.length * 100) }))
     };
 }
 
@@ -469,11 +636,21 @@ function downloadFile(content, filename, mimeType) {
 }
 
 // ========================================
+// NETTOYAGE À LA FERMETURE
+// ========================================
+
+window.addEventListener('beforeunload', () => {
+    if (autoRefreshInterval) {
+        clearInterval(autoRefreshInterval);
+    }
+});
+
+// ========================================
 // INITIALISATION DE L'APPLICATION
 // ========================================
 
 async function initApp() {
-    console.log('🚀 Initialisation Emoji Code Mood (version française)...');
+    console.log('🚀 Initialisation Emoji Code Humeur (auto-actualisation)...');
 
     // Configuration des event listeners d'abord
     setupEventListeners();
@@ -486,6 +663,7 @@ async function initApp() {
 
     console.log('✅ Application initialisée avec succès');
     console.log('📊 Mode actuel:', CONFIG.mode);
+    console.log('🔄 Auto-actualisation activée');
     console.log('📈 Codes humeur chargés:', humeurs.length);
 }
 
