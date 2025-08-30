@@ -93,6 +93,7 @@ jobs:
             exit 1
           fi
           
+          
           # Vérifier que la configuration est bien injectée
           if ! grep -q "window.PRIVATE_CONFIG" private-config.js; then
             echo "❌ ERREUR: Configuration non injectée !"
