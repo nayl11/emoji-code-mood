@@ -236,8 +236,56 @@ function setupEventListeners() {
         document.getElementById('sessionTime').textContent = minutes;
     }, 60000);
 
-    // Plus d'indicateur de mise à jour - interface plus clean
+    // Raccourci clavier pour panneau de contrôle (Ctrl+Shift+A)
+    document.addEventListener('keydown', (e) => {
+        if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+            e.preventDefault();
+            toggleAdminPanel();
+        }
+    });
 }
+
+// Gestion du panneau d'administration caché
+function toggleAdminPanel() {
+    let panel = document.getElementById('hiddenAdminPanel');
+    
+    if (!panel) {
+        // Créer le panneau s'il n'existe pas
+        panel = document.createElement('div');
+        panel.id = 'hiddenAdminPanel';
+        panel.className = 'hidden-admin-panel';
+        panel.innerHTML = `
+            <div class="admin-overlay" onclick="closeAdminPanel()"></div>
+            <div class="admin-content">
+                <div class="admin-header">
+                    <h3>🎓 Panneau Enseignant</h3>
+                    <button class="close-btn" onclick="closeAdminPanel()">✕</button>
+                </div>
+                <div class="admin-body">
+                    <p class="admin-info">
+                        <strong>Raccourci :</strong> Ctrl+Shift+A<br>
+                        <strong>Stats :</strong> ${humeurs.length} participants
+                    </p>
+                    <div class="admin-actions">
+                        <button class="admin-btn danger" onclick="clearAllMoods()">🗑️ Effacer tout</button>
+                        <button class="admin-btn success" onclick="exportMoods()">📄 Export CSV</button>
+                        <button class="admin-btn info" onclick="exportMoodsJSON()">💾 Export JSON</button>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(panel);
+    }
+    
+    panel.classList.toggle('active');
+}
+
+window.closeAdminPanel = function() {
+    const panel = document.getElementById('hiddenAdminPanel');
+    if (panel) {
+        panel.classList.remove('active');
+    }
+};
 
 async function submitMood() {
     const nom = document.getElementById('studentName').value.trim();
@@ -278,8 +326,8 @@ async function submitMood() {
     const humeur = {
         nom: nom,
         emoji: selectedEmoji,
-        langage_prefere: langage_prefere,    
-        autre_preference: autre_preference,   
+        langage_prefere: langage_prefere,    // Nouveau champ
+        autre_preference: autre_preference,   // Nouveau champ
         commentaire: commentaire || null
     };
 
@@ -350,55 +398,90 @@ function updateMoodList() {
         return;
     }
 
+    // Affichage compact pour beaucoup de participants
+    const isCompactMode = humeurs.length > 10;
+
     listContainer.innerHTML = humeurs.map((humeur, index) => {
         const codeSnippet = generateCodeSnippet(humeur);
         const timeDisplay = formatTime(humeur.created_at);
-        const isRecent = new Date() - new Date(humeur.created_at) < 60000; // Moins d'1 minute
+        const isRecent = new Date() - new Date(humeur.created_at) < 60000;
 
         const avatar = generateAvatar(humeur.nom);
         const badge = getBadge(humeur.langage_prefere);
 
-        return `
-            <div class="social-post ${isRecent ? 'new-post' : ''}">
-                <div class="post-header">
-                    <div class="user-info">
-                        <div class="avatar">${avatar}</div>
-                        <div class="user-details">
-                            <div class="username">
-                                ${escapeHtml(humeur.nom)}
-                                <span class="badge ${badge.class}">${badge.icon}</span>
-                            </div>
-                            <div class="post-time">${timeDisplay}</div>
+        if (isCompactMode) {
+            // Mode compact pour 10+ participants
+            return `
+                <div class="social-post compact ${isRecent ? 'new-post' : ''}">
+                    <div class="compact-header">
+                        <div class="compact-user">
+                            <div class="mini-avatar">${avatar}</div>
+                            <span class="compact-name">${escapeHtml(humeur.nom)}</span>
+                            <span class="mini-badge ${badge.class}">${badge.icon}</span>
+                            <span class="compact-mood">${humeur.emoji}</span>
                         </div>
-                    </div>
-                    <div class="post-mood">${humeur.emoji}</div>
-                </div>
-
-                <div class="post-content">
-                    <div class="preferences-tags">
-                        <span class="tag language-tag">💻 ${humeur.langage_prefere}</span>
-                        <span class="tag hobby-tag">✨ ${formatPreference(humeur.autre_preference)}</span>
+                        <span class="compact-time">${timeDisplay}</span>
                     </div>
                     
-                    <div class="code-container">
-                        <div class="code-header">
-                            <span class="code-title">Mon code du moment :</span>
-                            <button class="copy-btn" onclick="copyCode('${escapeForJs(codeSnippet)}')" title="Copier le code">📋</button>
+                    <div class="compact-content">
+                        <div class="compact-tags">
+                            <span class="mini-tag lang">${humeur.langage_prefere}</span>
+                            <span class="mini-tag pref">${formatPreference(humeur.autre_preference)}</span>
                         </div>
-                        <div class="code-display">
-                            ${codeSnippet}
+                        
+                        <div class="compact-code">
+                            <span class="compact-code-text">${codeSnippet.replace(/<span class="comment">.*?<\/span>/g, '')}</span>
+                            <button class="mini-copy" onclick="copyCode('${escapeForJs(codeSnippet)}')" title="Copier">📋</button>
                         </div>
+
+                        ${humeur.commentaire ? `<div class="compact-comment">💭 "${escapeHtml(humeur.commentaire)}"</div>` : ''}
+                    </div>
+                </div>
+            `;
+        } else {
+            // Mode normal pour moins de 10 participants
+            return `
+                <div class="social-post ${isRecent ? 'new-post' : ''}">
+                    <div class="post-header">
+                        <div class="user-info">
+                            <div class="avatar">${avatar}</div>
+                            <div class="user-details">
+                                <div class="username">
+                                    ${escapeHtml(humeur.nom)}
+                                    <span class="badge ${badge.class}">${badge.icon}</span>
+                                </div>
+                                <div class="post-time">${timeDisplay}</div>
+                            </div>
+                        </div>
+                        <div class="post-mood">${humeur.emoji}</div>
                     </div>
 
-                    ${humeur.commentaire ? `
-                        <div class="post-caption">
-                            <span class="quote-icon">💭</span>
-                            "${escapeHtml(humeur.commentaire)}"
+                    <div class="post-content">
+                        <div class="preferences-tags">
+                            <span class="tag language-tag">💻 ${humeur.langage_prefere}</span>
+                            <span class="tag hobby-tag">✨ ${formatPreference(humeur.autre_preference)}</span>
                         </div>
-                    ` : ''}
+                        
+                        <div class="code-container">
+                            <div class="code-header">
+                                <span class="code-title">Mon code du moment :</span>
+                                <button class="copy-btn" onclick="copyCode('${escapeForJs(codeSnippet)}')" title="Copier le code">📋</button>
+                            </div>
+                            <div class="code-display">
+                                ${codeSnippet}
+                            </div>
+                        </div>
+
+                        ${humeur.commentaire ? `
+                            <div class="post-caption">
+                                <span class="quote-icon">💭</span>
+                                "${escapeHtml(humeur.commentaire)}"
+                            </div>
+                        ` : ''}
+                    </div>
                 </div>
-            </div>
-        `;
+            `;
+        }
     }).join('');
 }
 
