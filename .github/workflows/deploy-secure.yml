@@ -125,4 +125,4 @@ jobs:
           echo "✅ Déploiement réussi !"
           echo "🌐 Votre application est disponible à: ${{ steps.deployment.outputs.page_url }}"
           echo "⚡ Mode Collaboratif Supabase activé automatiquement"
-          echo "🔒 Vos clés API restent secrètes et sécurisées"
+          echo "🔒 Vos clés API restent secrètes et sécurisées."
