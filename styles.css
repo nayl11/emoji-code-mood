@@ -590,7 +590,263 @@ input:focus, select:focus, textarea:focus {
 @keyframes newPostGlow {
     0% { box-shadow: 0 0 20px rgba(255, 107, 107, 0.3); }
     100% { box-shadow: 0 2px 12px rgba(0,0,0,0.1); }
-}/* Suppression des anciens styles - remplacés par le style réseaux sociaux ci-dessus */
+}/* Mode compact pour 10+ participants */
+.social-post.compact {
+    padding: 12px;
+    margin-bottom: 8px;
+    border-radius: 10px;
+}
+
+.compact-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.compact-user {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.mini-avatar .avatar-letter {
+    width: 30px;
+    height: 30px;
+    font-size: 0.9em;
+}
+
+.compact-name {
+    font-weight: 600;
+    color: #333;
+    font-size: 0.95em;
+}
+
+.mini-badge {
+    padding: 1px 4px;
+    border-radius: 4px;
+    font-size: 0.6em;
+    font-weight: 500;
+    background: #3ECF8E;
+    color: white;
+}
+
+.compact-mood {
+    font-size: 1.5em;
+}
+
+.compact-time {
+    font-size: 0.8em;
+    color: #8e8e93;
+}
+
+.compact-content {
+    margin-left: 38px;
+}
+
+.compact-tags {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 6px;
+}
+
+.mini-tag {
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.75em;
+    font-weight: 500;
+    color: white;
+}
+
+.mini-tag.lang {
+    background: linear-gradient(45deg, #3ECF8E, #2B7EC8);
+}
+
+.mini-tag.pref {
+    background: linear-gradient(45deg, #FF6B6B, #FF8E85);
+}
+
+.compact-code {
+    background: #2d3748;
+    color: #e2e8f0;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.8em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+}
+
+.compact-code-text {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.mini-copy {
+    background: #3ECF8E;
+    color: white;
+    border: none;
+    padding: 2px 6px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.7em;
+    margin-left: 8px;
+}
+
+.compact-comment {
+    font-size: 0.85em;
+    color: #666;
+    font-style: italic;
+    padding: 4px 8px;
+    background: #f8f9fa;
+    border-radius: 6px;
+    border-left: 3px solid #3ECF8E;
+}
+
+/* Panneau d'administration caché */
+.hidden-admin-panel {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 2000;
+    display: none;
+    animation: fadeIn 0.3s ease;
+}
+
+.hidden-admin-panel.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.admin-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+}
+
+.admin-content {
+    background: white;
+    border-radius: 16px;
+    padding: 0;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    position: relative;
+    max-width: 400px;
+    width: 90%;
+    animation: slideUp 0.4s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(50px) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.admin-header {
+    background: linear-gradient(135deg, #3ECF8E, #2B7EC8);
+    color: white;
+    padding: 20px;
+    border-radius: 16px 16px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.admin-header h3 {
+    margin: 0;
+    font-size: 1.2em;
+}
+
+.close-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.2em;
+    transition: all 0.2s ease;
+}
+
+.close-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+.admin-body {
+    padding: 20px;
+}
+
+.admin-info {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 0.9em;
+    line-height: 1.5;
+    color: #666;
+    border-left: 4px solid #3ECF8E;
+}
+
+.admin-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.admin-btn {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.admin-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.admin-btn.danger {
+    background: #f44336;
+    color: white;
+}
+
+.admin-btn.success {
+    background: #4caf50;
+    color: white;
+}
+
+.admin-btn.info {
+    background: #2196f3;
+    color: white;
+}
 
 /* Visualisations améliorées pour s'harmoniser avec le style réseaux sociaux */
 .mood-visualization {
