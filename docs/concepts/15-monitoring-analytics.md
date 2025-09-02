@@ -639,7 +639,7 @@ privacyManager.cleanupOldData();
 
 ---
 
-**Documentation complète !** Vous avez maintenant une base documentaire de niveau professionnel à **95% de qualité** pour Emoji Code Mood.
+**Documentation complète !** Vous avez maintenant une base documentaire de niveau professionnel  pour Emoji Code Mood.
 
 ---
 
