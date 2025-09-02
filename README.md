@@ -162,28 +162,6 @@ emoji-code-mood/
 
 ---
 
-## 🌟 Qui Utilise Emoji Code Mood ?
-
-### **🏫 Établissements :**
-- Écoles d'ingénieurs (Polytech, INSA, UTC...)
-- Universités (cours d'informatique)  
-- Bootcamps de programmation
-- Organismes de formation professionnelle
-
-### **👨‍💻 Formateurs :**
-- Enseignants en informatique
-- Formateurs en reconversion  
-- Développeurs seniors qui forment
-- Consultants en digital learning
-
-### **📊 Statistiques :**
-- **50+ formateurs** utilisent l'outil
-- **2000+ étudiants** ont participé
-- **95% satisfaction** des enseignants
-- **Temps de setup moyen :** 18 minutes
-
----
-
 ## 🎨 Personnalisation
 
 Vous pouvez adapter l'outil à votre contexte :
@@ -216,19 +194,6 @@ Envie d'améliorer l'outil ? Vous êtes les bienvenus !
 
 ---
 
-## 📚 Documentation
-
-### **Pour commencer :**
-- **[Installation rapide](docs/setup/)** - 15 minutes chrono
-- **[Test local](test.html)** - Vérifier que tout fonctionne
-- **[Questions fréquentes](docs/setup/troubleshooting.md)** - Solutions aux problèmes courants
-
-### **Pour aller plus loin :**
-- **[Formation complète](docs/formation/)** - 4 heures de formation pratique
-- **[Guide technique](docs/concepts/)** - Architecture et fonctionnement
-- **[Guide enseignant](docs/guide-animateur.md)** - Conseils d'utilisation
-
----
 
 ## 📄 Licence
 
@@ -237,18 +202,17 @@ Ce projet est sous licence GNU General Public License v3.0
 - Modifications autorisées  
 - Code source ouvert
 
-**Créé par :** [Guillaume Gaillard](https://github.com/ggaillard)  
+**Créé par :** [G.Gaillard](https://ggaillard.github.io/)  
 **Contributeurs :** [Liste](contributors)
 
 ---
-
 
 
 **🎭 Emoji Code Mood - Pour des cours plus sympas !**
 
 *Fait avec ❤️ pour les enseignants*
 
-[🚀 **Commencer**](docs/setup/) • [📚 **Apprendre**](docs/formation/) • [💬 **Discuter**](discussions)
+
 
 
 
