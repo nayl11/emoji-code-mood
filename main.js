@@ -604,11 +604,12 @@ window.copyCode = function(code) {
 };
 
 function showNotification(message, type = 'info') {
+    // Supprimer les notifications existantes pour éviter la superposition
+    document.querySelectorAll('.notification').forEach(n => n.remove());
     const notification = document.createElement('div');
     notification.className = `notification ${type}`;
     notification.textContent = message;
     document.body.appendChild(notification);
-    
     setTimeout(() => {
         notification.remove();
     }, 3000);
@@ -887,8 +888,7 @@ function setupLocalMode() {
     // S'assurer que les event listeners sont configurés en mode local
     console.log('🔧 Configuration des event listeners en mode local...');
     setupEventListeners();
-<<<<<<< HEAD
-=======
+
 
     // Initialisation Supabase obligatoire
     await initSupabase();
@@ -900,7 +900,7 @@ function setupLocalMode() {
     console.log('📊 Mode actuel:', CONFIG.mode);
     console.log('🔄 Auto-actualisation activée');
     console.log('📈 Codes humeur chargés:', humeurs.length);
->>>>>>> 57e3340f1ac7654842fa49c482a8fa317a6ae8dc
+
 }
 
 // Démarrage automatique - Multiple méthodes pour assurer le chargement
