@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎭 Formation Emoji Code Mood - Slides</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            overflow: hidden;
+        }
+        
+        .presentation {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .slide {
+            display: none;
+            padding: 60px;
+            text-align: center;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            animation: slideIn 0.5s ease;
+        }
+        
+        .slide.active {
+            display: flex;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        h1 {
+            font-size: 4em;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            background: linear-gradient(45deg, #ff6b6b, #feca57);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        h2 {
+            font-size: 3em;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        h3 {
+            font-size: 2.2em;
+            margin-bottom: 30px;
+            color: #feca57;
+        }
+        
+        p {
+            font-size: 1.8em;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            max-width: 900px;
+        }
+        
+        .highlight {
+            background: rgba(255,255,255,0.2);
+            padding: 10px 20px;
+            border-radius: 15px;
+            display: inline-block;
+            margin: 10px;
+            font-weight: bold;
+        }
+        
+        .tech-stack {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+            margin: 40px 0;
+            max-width: 800px;
+        }
+        
+        .tech-item {
+            background: rgba(255,255,255,0.1);
+            padding: 30px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease;
+        }
+        
+        .tech-item:hover {
+            transform: scale(1.05);
+        }
+        
+        .emoji-big {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+        
+        .timeline {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 20px;
+            margin: 40px 0;
+            max-width: 1000px;
+        }
+        
+        .timeline-item {
+            background: rgba(255,255,255,0.1);
+            padding: 25px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .timeline-time {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #feca57;
+            margin-bottom: 10px;
+        }
+        
+        .timeline-title {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+        
+        .timeline-desc {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+        
+        .controls {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            z-index: 1000;
+        }
+        
+        .btn {
+            background: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        
+        .btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.05);
+        }
+        
+        .slide-counter {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: rgba(0,0,0,0.3);
+            padding: 10px 20px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .demo-interface {
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 30px 0;
+            backdrop-filter: blur(10px);
+            max-width: 600px;
+        }
+        
+        .mock-app {
+            background: white;
+            color: #333;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .mock-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .mock-emoji-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .mock-emoji {
+            background: #f0f0f0;
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            font-size: 1.5em;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .mock-emoji:hover {
+            background: #e3f2fd;
+            transform: scale(1.1);
+        }
+        
+        .comparison-table {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 40px 0;
+            max-width: 800px;
+        }
+        
+        .comparison-column {
+            background: rgba(255,255,255,0.1);
+            padding: 30px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .comparison-column.old {
+            background: rgba(255,99,99,0.2);
+        }
+        
+        .comparison-column.new {
+            background: rgba(99,255,99,0.2);
+        }
+        
+        .objectives-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin: 40px 0;
+            max-width: 900px;
+        }
+        
+        .objective-item {
+            background: rgba(255,255,255,0.1);
+            padding: 25px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            text-align: left;
+        }
+        
+        .objective-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .objective-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #feca57;
+        }
+        
+        .objective-desc {
+            font-size: 1em;
+            line-height: 1.4;
+        }
+        
+        @media (max-width: 768px) {
+            .tech-stack, .timeline, .comparison-table, .objectives-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            h1 { font-size: 2.5em; }
+            h2 { font-size: 2em; }
+            p { font-size: 1.2em; }
+            .slide { padding: 30px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation">
+        <div class="slide-counter">
+            <span id="currentSlide">1</span> / <span id="totalSlides">12</span>
+        </div>
+
+        <!-- Slide 1: Titre -->
+        <div class="slide active">
+            <div class="emoji-big">🎭</div>
+            <h1>Emoji Code Mood</h1>
+            <p>Formation Développement Web Moderne</p>
+            <div class="highlight">4 heures | Technologies actuelles | Projet concret</div>
+        </div>
+
+        <!-- Slide 2: L'Application -->
+        <div class="slide">
+            <h2>📱 L'Application Étudiée</h2>
+            <div class="demo-interface">
+                <div class="mock-app">
+                    <div class="mock-header">
+                        <h3 style="color: #3ECF8E; margin: 0;">🎭 Emoji Code Mood</h3>
+                        <p style="margin: 10px 0; font-size: 0.9em;">Exprime ton humeur avec une ligne de code</p>
+                    </div>
+        </div>
+
+        <!-- Slide 5: Avant vs Maintenant -->
+        <div class="slide">
+            <h2>🔄 Évolution Technologique</h2>
+            <div class="comparison-table">
+                <div class="comparison-column old">
+                    <h3>❌ Avant (Compliqué)</h3>
+                    <p><strong>Serveur PHP</strong><br>À configurer soi-même</p>
+                    <p><strong>Base MySQL</strong><br>À installer et maintenir</p>
+                    <p><strong>Hébergement</strong><br>20€/mois minimum</p>
+                    <p><strong>Setup</strong><br>2-3 jours de configuration</p>
+                </div>
+                <div class="comparison-column new">
+                    <h3>✅ Maintenant (Simple)</h3>
+                    <p><strong>Supabase BaaS</strong><br>Tout configuré automatiquement</p>
+                    <p><strong>PostgreSQL Cloud</strong><br>Maintenance zéro</p>
+                    <p><strong>GitHub Pages</strong><br>Gratuit et illimité</p>
+                    <p><strong>Setup</strong><br>10 minutes chrono</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Objectifs d'Apprentissage -->
+        <div class="slide">
+            <h2>🎯 Ce que Vous Allez Maîtriser</h2>
+            <div class="objectives-grid">
+                <div class="objective-item">
+                    <div class="objective-icon">🔍</div>
+                    <div class="objective-title">Analyser</div>
+                    <div class="objective-desc">Comprendre une application web moderne existante</div>
+                </div>
+                <div class="objective-item">
+                    <div class="objective-icon">🛠️</div>
+                    <div class="objective-title">Modifier</div>
+                    <div class="objective-desc">Personnaliser l'interface et les fonctionnalités</div>
+                </div>
+                <div class="objective-item">
+                    <div class="objective-icon">🚀</div>
+                    <div class="objective-title">Déployer</div>
+                    <div class="objective-desc">Mettre en ligne automatiquement</div>
+                </div>
+                <div class="objective-item">
+                    <div class="objective-icon">🗄️</div>
+                    <div class="objective-title">Base de Données</div>
+                    <div class="objective-desc">Utiliser une BDD moderne temps réel</div>
+                </div>
+                <div class="objective-item">
+                    <div class="objective-icon">📱</div>
+                    <div class="objective-title">Responsive</div>
+                    <div class="objective-desc">Interface adaptée mobile/desktop</div>
+                </div>
+                <div class="objective-item">
+                    <div class="objective-icon">🎨</div>
+                    <div class="objective-title">Créer</div>
+                    <div class="objective-desc">Votre version personnalisée unique</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Méthodologie -->
+        <div class="slide">
+            <h2>📚 Méthode d'Apprentissage</h2>
+            <div class="demo-interface">
+                <h3>🔄 Cycle Pédagogique</h3>
+                <div style="font-size: 1.5em; margin: 30px 0;">
+                    <span class="highlight">Observer</span> → 
+                    <span class="highlight">Comprendre</span> → 
+                    <span class="highlight">Modifier</span> → 
+                    <span class="highlight">Tester</span>
+                </div>
+            </div>
+            <div class="tech-stack" style="grid-template-columns: 1fr 1fr;">
+                <div class="tech-item">
+                    <div class="emoji-big">👥</div>
+                    <h3>Collaboratif</h3>
+                    <p>Travail en binômes<br>Entraide encouragée</p>
+                </div>
+                <div class="tech-item">
+                    <div class="emoji-big">🎯</div>
+                    <h3>Pratique</h3>
+                    <p>80% manipulation<br>20% théorie</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Pourquoi Ces Technologies -->
+        <div class="slide">
+            <h2>💼 Pourquoi Ces Technologies ?</h2>
+            <div style="font-size: 1.5em; margin: 30px 0;">
+                <p><strong>Utilisées par :</strong></p>
+                <div class="highlight">Netflix</div>
+                <div class="highlight">Spotify</div>
+                <div class="highlight">Airbnb</div>
+                <div class="highlight">WhatsApp</div>
+            </div>
+            <div class="tech-stack" style="grid-template-columns: 1fr 1fr;">
+                <div class="tech-item">
+                    <div class="emoji-big">📈</div>
+                    <h3>Marché du Travail</h3>
+                    <p>Compétences très demandées<br>Salaires attractifs</p>
+                </div>
+                <div class="tech-item">
+                    <div class="emoji-big">🚀</div>
+                    <h3>Innovation</h3>
+                    <p>Technologies d'avenir<br>Écosystème dynamique</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: Matériel Nécessaire -->
+        <div class="slide">
+            <h2>💻 Matériel Nécessaire</h2>
+            <div class="objectives-grid">
+                <div class="objective-item">
+                    <div class="objective-icon">💻</div>
+                    <div class="objective-title">Ordinateur</div>
+                    <div class="objective-desc">Navigateur moderne (Chrome/Firefox/Edge)</div>
+                </div>
+                <div class="objective-item">
+                    <div class="objective-icon">🌐</div>
+                    <div class="objective-title">Internet</div>
+                    <div class="objective-desc">Connexion stable pour les tests temps réel</div>
+                </div>
+                <div class="objective-item">
+                    <div class="objective-icon">🔧</div>
+                    <div class="objective-title">Comptes Gratuits</div>
+                    <div class="objective-desc">GitHub + Supabase (création pendant le cours)</div>
+                </div>
+            </div>
+            <div class="highlight" style="margin-top: 40px; font-size: 1.2em;">
+                💰 Tout est gratuit ! Aucun achat nécessaire
+            </div>
+        </div>
+
+        <!-- Slide 10: Résultats Attendus -->
+        <div class="slide">
+            <h2>🏆 Vos Livrables</h2>
+            <div class="objectives-grid">
+                <div class="objective-item">
+                    <div class="objective-icon">🌐</div>
+                    <div class="objective-title">App en Ligne</div>
+                    <div class="objective-desc">Application fonctionnelle accessible publiquement</div>
+                </div>
+                <div class="objective-item">
+                    <div class="objective-icon">📝</div>
+                    <div class="objective-title">Code Source</div>
+                    <div class="objective-desc">Repository GitHub avec votre travail</div>
+                </div>
+                <div class="objective-item">
+                    <div class="objective-icon">🎨</div>
+                    <div class="objective-title">Version Personnalisée</div>
+                    <div class="objective-desc">Adaptation unique à votre contexte</div>
+                </div>
+                <div class="objective-item">
+                    <div class="objective-icon">🧠</div>
+                    <div class="objective-title">Compétences</div>
+                    <div class="objective-desc">Stack technique moderne maîtrisée</div>
+                </div>
+                <div class="objective-item">
+                    <div class="objective-icon">💼</div>
+                    <div class="objective-title">Portfolio</div>
+                    <div class="objective-desc">Projet valorisable sur votre CV</div>
+                </div>
+                <div class="objective-item">
+                    <div class="objective-icon">🔄</div>
+                    <div class="objective-title">Évolutivité</div>
+                    <div class="objective-desc">Base solide pour vos futurs projets</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 11: Questions Fréquentes -->
+        <div class="slide">
+            <h2>❓ Questions Fréquentes</h2>
+            <div style="text-align: left; max-width: 900px; font-size: 1.3em;">
+                <div class="tech-item" style="margin: 20px 0;">
+                    <p><strong>🤔 C'est compliqué ?</strong></p>
+                    <p style="font-size: 0.9em; opacity: 0.9;">Non ! On analyse l'existant étape par étape. Pas de panique.</p>
+                </div>
+                <div class="tech-item" style="margin: 20px 0;">
+                    <p><strong>💰 Ça coûte cher ?</strong></p>
+                    <p style="font-size: 0.9em; opacity: 0.9;">Tout est gratuit ! GitHub et Supabase ont des quotas généreux.</p>
+                </div>
+                <div class="tech-item" style="margin: 20px 0;">
+                    <p><strong>📱 Ça marche sur mobile ?</strong></p>
+                    <p style="font-size: 0.9em; opacity: 0.9;">Oui ! Interface responsive optimisée mobile/desktop.</p>
+                </div>
+                <div class="tech-item" style="margin: 20px 0;">
+                    <p><strong>💼 C'est utile professionnellement ?</strong></p>
+                    <p style="font-size: 0.9em; opacity: 0.9;">Absolument ! Ces technologies sont utilisées par les GAFAM.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 12: C'est Parti -->
+        <div class="slide">
+            <div class="emoji-big">🚀</div>
+            <h1>C'est Parti !</h1>
+            <p>Prêts à créer votre première application web moderne ?</p>
+            <div class="highlight" style="font-size: 1.5em; margin: 40px 0;">
+                Session 1 : Prise en Main<br>
+                <span style="font-size: 0.8em;">45 minutes pour avoir votre app en ligne !</span>
+            </div>
+            <div class="demo-interface">
+                <p style="font-size: 1.2em; margin: 0;">
+                    🎯 <strong>Premier objectif :</strong><br>
+                    Dans 45 minutes, votre application sera accessible<br>
+                    à l'adresse <strong>https://votre-nom.github.io/emoji-code-mood/</strong>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button class="btn" onclick="previousSlide()">◀ Précédent</button>
+        <button class="btn" onclick="toggleFullscreen()">⛶ Plein Écran</button>
+        <button class="btn" onclick="nextSlide()">Suivant ▶</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        
+        document.getElementById('totalSlides').textContent = totalSlides;
+        
+        function showSlide(index) {
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[index].classList.add('active');
+            document.getElementById('currentSlide').textContent = index + 1;
+        }
+        
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % totalSlides;
+            showSlide(currentSlide);
+        }
+        
+        function previousSlide() {
+            currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+            showSlide(currentSlide);
+        }
+        
+        function toggleFullscreen() {
+            if (document.fullscreenElement) {
+                document.exitFullscreen();
+            } else {
+                document.documentElement.requestFullscreen();
+            }
+        }
+        
+        // Contrôles clavier
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                previousSlide();
+            } else if (e.key === 'f' || e.key === 'F11') {
+                e.preventDefault();
+                toggleFullscreen();
+            } else if (e.key === 'Home') {
+                currentSlide = 0;
+                showSlide(currentSlide);
+            } else if (e.key === 'End') {
+                currentSlide = totalSlides - 1;
+                showSlide(currentSlide);
+            }
+        });
+        
+        // Clic pour avancer (zone droite)
+        document.addEventListener('click', (e) => {
+            const clickX = e.clientX;
+            const windowWidth = window.innerWidth;
+            
+            if (clickX > windowWidth * 0.7) {
+                nextSlide();
+            } else if (clickX < windowWidth * 0.3) {
+                previousSlide();
+            }
+        });
+        
+        console.log('🎭 Slides de présentation chargées !');
+        console.log('⌨️ Contrôles : ← → Espace F11 Home End');
+        console.log('🖱️ Clic : Zone droite = suivant, Zone gauche = précédent');
+    </script>
+</body>
+</html>
+                    <div class="mock-emoji-grid">
+                        <div class="mock-emoji">🚀</div>
+                        <div class="mock-emoji">💻</div>
+                        <div class="mock-emoji">☕</div>
+                        <div class="mock-emoji">😎</div>
+                        <div class="mock-emoji">🤔</div>
+                        <div class="mock-emoji">🔥</div>
+                    </div>
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-top: 15px; font-family: monospace;">
+                        let mood = "🚀"; // prêt à décoller !
+                    </div>
+                </div>
+            </div>
+            <p><strong>Interface temps réel</strong> comme Instagram/Twitter</p>
+        </div>
+
+        <!-- Slide 3: Stack Technique -->
+        <div class="slide">
+            <h2>🛠️ Technologies Modernes</h2>
+            <div class="tech-stack">
+                <div class="tech-item">
+                    <div class="emoji-big">🎨</div>
+                    <h3>HTML5 + CSS3</h3>
+                    <p>Interface moderne et responsive</p>
+                </div>
+                <div class="tech-item">
+                    <div class="emoji-big">⚡</div>
+                    <h3>JavaScript ES6+</h3>
+                    <p>Logique interactive avancée</p>
+                </div>
+                <div class="tech-item">
+                    <div class="emoji-big">🗄️</div>
+                    <h3>Supabase</h3>
+                    <p>Base de données temps réel</p>
+                </div>
+                <div class="tech-item">
+                    <div class="emoji-big">🚀</div>
+                    <h3>GitHub Pages</h3>
+                    <p>Déploiement automatique</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Planning -->
+        <div class="slide">
+            <h2>⏰ Planning 4 Heures</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-time">45min</div>
+                    <div class="timeline-title">🚀 Prise en Main</div>
+                    <div class="timeline-desc">Fork, config, déploiement</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-time">60min</div>
+                    <div class="timeline-title">🎨 Interface</div>
+                    <div class="timeline-desc">HTML5, CSS, responsive</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-time">60min</div>
+                    <div class="timeline-title">⚡ JavaScript</div>
+                    <div class="timeline-desc">ES6+, événements, async</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-time">60min</div>
+                    <div class="timeline-title">🗄️ Base Données</div>
+                    <div class="timeline-desc">Supabase, SQL, temps réel</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-time">45min</div>
+                    <div class="timeline-title">🛠️ Projet</div>
+                    <div class="timeline-desc">Personnalisation finale</div>
+                </div>
+            </div>
