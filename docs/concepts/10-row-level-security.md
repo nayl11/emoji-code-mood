@@ -460,7 +460,7 @@ const debouncedSave = debounce((formData) => {
 
 ---
 
-**Prochaine étape :** [10. Row Level Security](10-row-level-security.md) - Sécurité au niveau base
+**Prochaine étape :** [11. Secrets Management ](11-secrets-management.md) - Sécurité au niveau base
 
 ---
 
