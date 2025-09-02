@@ -1,3 +1,4 @@
+Étudiants en BTS SIO, NSI, BUT Informatique, ou toute formation en développement applicatif.
 # 🎭 Emoji Code Humeur
 
 *Un brise-glace moderne pour vos cours de programmation*
