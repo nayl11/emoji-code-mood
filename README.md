@@ -1,5 +1,9 @@
-Étudiants en BTS SIO, NSI, BUT Informatique, ou toute formation en développement applicatif.
+
 # 🎭 Emoji Code Humeur
+
+## Public ciblé
+
+Étudiants en BTS SIO, NSI, BUT Informatique, ou toute formation en développement applicatif.
 
 *Un brise-glace moderne pour vos cours de programmation*
 
@@ -34,70 +38,17 @@ Interface moderne style **réseaux sociaux** qui s'adapte automatiquement selon 
 └─────────────────────────────────┘
 ```
 
-<<<<<<< HEAD
-```python  
-humeur = "🚀" # prêt à décoller cette année !
-```
+# 🎯 Idéal pour
 
-```java
-String mood = "🤔"; // en mode réflexion intense
-```
-
-## 🎯 Idéal pour
-
-- **Première semaine** de cours (faire connaissance)
-- **Début de séance** (prendre la température)
-- **Après les vacances** (transition en douceur) 
-- **Avant un gros projet** (voir le niveau de motivation)
+- Première semaine de cours (faire connaissance)
+- Début de séance (prendre la température)
+- Après les vacances (transition en douceur)
+- Avant un gros projet (voir le niveau de motivation)
 
 Aucune installation nécessaire, ça fonctionne directement dans votre navigateur.
+# 🏷️ Tags GitHub recommandés
 
-## 💻 Créer votre propre version
-
-### Option simple (5 minutes)
-1. Cliquez sur le bouton **Fork** en haut de cette page
-2. Dans votre nouveau repository : **Settings** → **Pages** → **Source: Branch main**
-3. Votre version sera disponible à `https://votre-nom.github.io/emoji-code-mood`
-
-### Option collaborative (temps réel)
-Pour que tous vos étudiants voient les réponses en temps réel :
-
-#### 🚀 **Déploiement automatique avec GitHub Actions (Recommandé)**
-1. **Forkez** ce repository
-2. **Configurez vos secrets GitHub** :
-   - Allez dans `Settings` → `Secrets and variables` → `Actions`
-   - Ajoutez `SUPABASE_URL` avec votre URL Supabase
-   - Ajoutez `SUPABASE_ANON_KEY` avec votre clé anonyme
-3. **Poussez votre code** - Le déploiement se fait automatiquement !
-4. **Votre app est déployée** sur GitHub Pages avec Supabase configuré
-
-#### 📖 **Guide détaillé** : 
-- [Configuration GitHub Actions](docs/github-actions-setup.md) - Déploiement automatique
-- [Configuration Supabase](docs/supabase-setup.md) - Base de données
-
-> ⚡ **Configuration automatique et sécurisée** :
-> Les paramètres Supabase sont injectés automatiquement via GitHub Actions. 
-> Aucune configuration manuelle n'est nécessaire côté client.
-
-## 🎨 Personnaliser
-
-Vous pouvez facilement adapter l'outil à votre contexte :
-- Modifier les couleurs aux couleurs de votre école
-- Ajouter votre logo
-- Personnaliser les suggestions de commentaires
-- Ajuster les langages proposés
-
-## 📊 Ce que ça vous apporte
-
-- **Ambiance détendue** dès les premières minutes
-- **Connexion** immédiate avec vos étudiants
-- **Données utiles** pour adapter votre pédagogie
-- **Introduction naturelle** aux concepts de programmation
-
-## 🛠️ Fonctionnalités
-=======
-## 🎯 Fonctionnalités Clés
->>>>>>> 57e3340f1ac7654842fa49c482a8fa317a6ae8dc
+emoji, humeur, mood, classroom, éducation, supabase, javascript, bts-sio, nsi, but-informatique, dev, pédagogie, feedback, webapp, collaboratif, enseignement, étudiants
 
 ### Pour vos étudiants
 - **Interface sociale moderne** avec avatars colorés
