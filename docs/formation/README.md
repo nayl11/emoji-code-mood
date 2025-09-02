@@ -11,7 +11,7 @@
 **Total :** 4h00 exactes
 
 ## 🛠️ Support Formateur
-- [📊 Slides](slides-presentation.html) - Présentation interactive
+- [📊 Slides](https://ggaillard.github.io/emoji-code-mood/docs/formation/Slide-Presentation.html) - Présentation interactive
 - [🆘 FAQ](faq-rapide.md) - Solutions aux 5 problèmes les plus fréquents
 
 ## 🎯 Objectif
