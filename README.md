@@ -93,7 +93,7 @@ Pour que tous vos étudiants voient les réponses en temps réel :
 - Compétences techniques modernes
 - Outil prêt pour vos cours
 
-**📊 Supports :** [Slides interactifs](docs/formation/Slide-Presentation.html) | [Guides détaillés](docs/formation/)
+**📊 Supports :** [Slides interactifs](https://ggaillard.github.io/emoji-code-mood/docs/formation/Slide-Presentation.html) | [Guides détaillés](docs/formation/)
 
 ---
 
