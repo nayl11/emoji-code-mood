@@ -12,7 +12,7 @@
 
 ## 🛠️ Support Formateur
 - [📊 Slides](https://ggaillard.github.io/emoji-code-mood/docs/formation/Slide-Presentation.html) - Présentation interactive
-- [🆘 FAQ](faq-rapide.md) - Solutions aux 5 problèmes les plus fréquents
+
 
 ## 🎯 Objectif
 Maîtriser le développement web moderne en analysant, modifiant et déployant une vraie application.
