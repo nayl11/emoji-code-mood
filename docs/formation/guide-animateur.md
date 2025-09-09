@@ -1,4 +1,4 @@
-# 🎓 Guide Animateur Simplifié - Formation 4h
+# 🎓 Guide - Formation 4h
 
 ## ⏰ Planning Ultra-Détaillé
 
