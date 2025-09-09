@@ -138,37 +138,53 @@
             background: rgba(244, 67, 54, 0.8);
         }
 
+        /* NAVIGATION - Éléments principaux */
         .navigation {
             position: fixed;
-            bottom: 30px;
+            bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
-            display: flex;
-            gap: 15px;
-            z-index: 100;
+            display: flex !important;
+            gap: 25px;
+            z-index: 2000;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 20px 40px;
+            border-radius: 50px;
+            backdrop-filter: blur(20px);
+            border: 3px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
         }
 
         .nav-btn {
-            background: rgba(255, 255, 255, 0.2);
-            border: 2px solid rgba(255, 255, 255, 0.3);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
             color: white;
-            padding: 12px 25px;
-            border-radius: 25px;
+            padding: 15px 30px;
+            border-radius: 30px;
             cursor: pointer;
-            font-size: 1em;
+            font-size: 1.1em;
             font-weight: bold;
             transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
+            min-width: 150px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        .nav-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-3px);
+        .nav-btn:hover:not(:disabled) {
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6);
+        }
+
+        .nav-btn:active {
+            transform: translateY(-2px);
         }
 
         .nav-btn:disabled {
-            opacity: 0.5;
+            opacity: 0.3;
             cursor: not-allowed;
+            background: #555;
             transform: none;
         }
 
@@ -176,11 +192,33 @@
             position: fixed;
             top: 30px;
             right: 30px;
-            background: rgba(255, 255, 255, 0.2);
-            padding: 10px 20px;
-            border-radius: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 3px solid rgba(255, 255, 255, 0.4);
+            padding: 15px 25px;
+            border-radius: 25px;
             font-weight: bold;
-            backdrop-filter: blur(10px);
+            font-size: 1.2em;
+            backdrop-filter: blur(15px);
+            color: white;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+            z-index: 2000;
+        }
+
+        .nav-help {
+            position: fixed;
+            bottom: 120px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            padding: 12px 25px;
+            border-radius: 20px;
+            color: #ffd700;
+            font-size: 1em;
+            font-weight: bold;
+            z-index: 2000;
+            text-align: center;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
         }
 
         .parcours-grid {
@@ -295,15 +333,32 @@
             
             h1 { font-size: 2.5em; }
             h2 { font-size: 2em; }
+            
+            .navigation {
+                padding: 15px 20px;
+                gap: 15px;
+            }
+            
+            .nav-btn {
+                min-width: 120px;
+                font-size: 1em;
+                padding: 12px 20px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="presentation-container">
-        <div class="slide-counter">
-            <span id="currentSlide">1</span> / <span id="totalSlides">8</span>
-        </div>
+    <!-- Compteur de slides -->
+    <div class="slide-counter">
+        Slide <span id="currentSlide">1</span> / <span id="totalSlides">9</span>
+    </div>
 
+    <!-- Aide à la navigation -->
+    <div class="nav-help">
+        🎯 Navigation : Flèches ← → • Clic • Boutons ci-dessous
+    </div>
+
+    <div class="presentation-container">
         <!-- Slide 1: Titre -->
         <div class="slide active">
             <h1>📚 Les 15 Concepts</h1>
@@ -512,3 +567,344 @@
                         <span>45 min</span>
                         <span class="difficulty intermediate">Intermédiaire</span>
                     </div>
+                </div>
+                <div class="concept-card">
+                    <div class="concept-header">
+                        <div class="concept-emoji">⚙️</div>
+                        <div class="concept-title">10. GitHub Actions</div>
+                    </div>
+                    <div class="concept-desc">CI/CD, automatisation, déploiement</div>
+                    <div class="concept-meta">
+                        <span>60 min</span>
+                        <span class="difficulty advanced">Avancé</span>
+                    </div>
+                </div>
+                <div class="concept-card">
+                    <div class="concept-header">
+                        <div class="concept-emoji">🔐</div>
+                        <div class="concept-title">11. Variables d'Env.</div>
+                    </div>
+                    <div class="concept-desc">Secrets, configuration sécurisée</div>
+                    <div class="concept-meta">
+                        <span>30 min</span>
+                        <span class="difficulty intermediate">Intermédiaire</span>
+                    </div>
+                </div>
+                <div class="concept-card">
+                    <div class="concept-header">
+                        <div class="concept-emoji">🔍</div>
+                        <div class="concept-title">12. Tests & Debug</div>
+                    </div>
+                    <div class="concept-desc">DevTools, debugging, tests unitaires</div>
+                    <div class="concept-meta">
+                        <span>45 min</span>
+                        <span class="difficulty intermediate">Intermédiaire</span>
+                    </div>
+                </div>
+            </div>
+            <p style="font-size: 1.2em; margin-top: 30px;">
+                Outils et processus <span class="highlight">professionnels</span><br>
+                pour un développement <span class="highlight">moderne</span> et <span class="highlight">sécurisé</span>
+            </p>
+        </div>
+
+        <!-- Slide 7: Concepts Performance (13-15) -->
+        <div class="slide">
+            <h2>🚀 Concepts Performance</h2>
+            <div class="concepts-grid">
+                <div class="concept-card">
+                    <div class="concept-header">
+                        <div class="concept-emoji">⚡</div>
+                        <div class="concept-title">13. Optimisation</div>
+                    </div>
+                    <div class="concept-desc">Performance, cache, Core Web Vitals</div>
+                    <div class="concept-meta">
+                        <span>60 min</span>
+                        <span class="difficulty advanced">Avancé</span>
+                    </div>
+                </div>
+                <div class="concept-card">
+                    <div class="concept-header">
+                        <div class="concept-emoji">🌐</div>
+                        <div class="concept-title">14. GitHub Pages</div>
+                    </div>
+                    <div class="concept-desc">Hébergement statique, domaines, HTTPS</div>
+                    <div class="concept-meta">
+                        <span>45 min</span>
+                        <span class="difficulty intermediate">Intermédiaire</span>
+                    </div>
+                </div>
+                <div class="concept-card">
+                    <div class="concept-header">
+                        <div class="concept-emoji">📱</div>
+                        <div class="concept-title">15. Design Responsive</div>
+                    </div>
+                    <div class="concept-desc">Mobile-first, breakpoints, touch UI</div>
+                    <div class="concept-meta">
+                        <span>60 min</span>
+                        <span class="difficulty intermediate">Intermédiaire</span>
+                    </div>
+                </div>
+            </div>
+            <p style="font-size: 1.2em; margin-top: 30px;">
+                Performance et <span class="highlight">expérience utilisateur</span><br>
+                optimisées pour tous les <span class="highlight">appareils</span>
+            </p>
+        </div>
+
+        <!-- Slide 8: Parcours d'apprentissage -->
+        <div class="slide">
+            <h2>🎓 Parcours d'Apprentissage</h2>
+            <div class="parcours-grid">
+                <div class="parcours-card">
+                    <div class="parcours-emoji">🚀</div>
+                    <div class="parcours-title">Débutant (6h)</div>
+                    <p><strong>Pour découvrir :</strong></p>
+                    <p>04→03→05→06</p>
+                    <p style="font-size: 0.9em; opacity: 0.8; margin-top: 10px;">
+                        HTML5 → CSS → JavaScript → Base de données
+                    </p>
+                </div>
+                <div class="parcours-card">
+                    <div class="parcours-emoji">💻</div>
+                    <div class="parcours-title">Développeur (8h)</div>
+                    <p><strong>Pour maîtriser :</strong></p>
+                    <p>01→05→07→10→14</p>
+                    <p style="font-size: 0.9em; opacity: 0.8; margin-top: 10px;">
+                        Architecture → JS → API → CI/CD → Deploy
+                    </p>
+                </div>
+                <div class="parcours-card">
+                    <div class="parcours-emoji">🏗️</div>
+                    <div class="parcours-title">Architecte (10h)</div>
+                    <p><strong>Pour concevoir :</strong></p>
+                    <p>01→02→08→13→Tous</p>
+                    <p style="font-size: 0.9em; opacity: 0.8; margin-top: 10px;">
+                        Patterns → Temps réel → Performance
+                    </p>
+                </div>
+                <div class="parcours-card">
+                    <div class="parcours-emoji">👨‍🏫</div>
+                    <div class="parcours-title">Enseignant (4h)</div>
+                    <p><strong>Pour enseigner :</strong></p>
+                    <p>04→05→06→14</p>
+                    <p style="font-size: 0.9em; opacity: 0.8; margin-top: 10px;">
+                        Base solide et pratique
+                    </p>
+                </div>
+            </div>
+            <p style="font-size: 1.3em; margin-top: 30px;">
+                Choisissez votre <span class="highlight">parcours</span> selon vos <span class="highlight">objectifs</span><br>
+                Progression <span class="highlight">adaptée</span> à votre <span class="highlight">niveau</span>
+            </p>
+        </div>
+
+        <!-- Slide 9: Objectifs finaux -->
+        <div class="slide">
+            <h2>🎯 Objectifs Finaux</h2>
+            <div class="concepts-grid">
+                <div class="concept-card">
+                    <div class="concept-header">
+                        <div class="concept-emoji">🔍</div>
+                        <div class="concept-title">Analyser</div>
+                    </div>
+                    <div class="concept-desc">Comprendre une application web moderne complète</div>
+                </div>
+                <div class="concept-card">
+                    <div class="concept-header">
+                        <div class="concept-emoji">🧠</div>
+                        <div class="concept-title">Comprendre</div>
+                    </div>
+                    <div class="concept-desc">Maîtriser les technologies et patterns actuels</div>
+                </div>
+                <div class="concept-card">
+                    <div class="concept-header">
+                        <div class="concept-emoji">🛠️</div>
+                        <div class="concept-title">Modifier</div>
+                    </div>
+                    <div class="concept-desc">Personnaliser et adapter le code existant</div>
+                </div>
+                <div class="concept-card">
+                    <div class="concept-header">
+                        <div class="concept-emoji">🚀</div>
+                        <div class="concept-title">Créer</div>
+                    </div>
+                    <div class="concept-desc">Développer ses propres applications web</div>
+                </div>
+                <div class="concept-card">
+                    <div class="concept-header">
+                        <div class="concept-emoji">🌐</div>
+                        <div class="concept-title">Déployer</div>
+                    </div>
+                    <div class="concept-desc">Mettre en ligne et maintenir des projets</div>
+                </div>
+                <div class="concept-card">
+                    <div class="concept-header">
+                        <div class="concept-emoji">👨‍🏫</div>
+                        <div class="concept-title">Enseigner</div>
+                    </div>
+                    <div class="concept-desc">Transmettre ces concepts à d'autres</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- NAVIGATION PRINCIPALE -->
+    <div class="navigation">
+        <button class="nav-btn" id="prevBtn" onclick="previousSlide()">← PRÉCÉDENT</button>
+        <button class="nav-btn" id="nextBtn" onclick="nextSlide()">SUIVANT →</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        // Initialisation au chargement de la page
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('totalSlides').textContent = totalSlides;
+            showSlide(0);
+        });
+
+        function showSlide(n) {
+            // Vérifier les limites
+            if (n < 0) n = 0;
+            if (n >= totalSlides) n = totalSlides - 1;
+            
+            // Masquer toutes les slides
+            slides.forEach(slide => slide.classList.remove('active'));
+            
+            // Afficher la slide demandée
+            currentSlide = n;
+            slides[currentSlide].classList.add('active');
+            
+            // Mettre à jour le compteur
+            document.getElementById('currentSlide').textContent = currentSlide + 1;
+            
+            // Mettre à jour les boutons de navigation
+            updateNavigationButtons();
+        }
+
+        function updateNavigationButtons() {
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            // Bouton précédent
+            if (prevBtn) {
+                prevBtn.disabled = currentSlide === 0;
+                prevBtn.style.opacity = currentSlide === 0 ? '0.3' : '1';
+            }
+            
+            // Bouton suivant
+            if (nextBtn) {
+                nextBtn.disabled = currentSlide === totalSlides - 1;
+                nextBtn.style.opacity = currentSlide === totalSlides - 1 ? '0.3' : '1';
+            }
+        }
+
+        function previousSlide() {
+            if (currentSlide > 0) {
+                showSlide(currentSlide - 1);
+            }
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) {
+                showSlide(currentSlide + 1);
+            }
+        }
+
+        // Navigation au clavier
+        document.addEventListener('keydown', function(e) {
+            switch(e.key) {
+                case 'ArrowLeft':
+                case 'ArrowUp':
+                    e.preventDefault();
+                    previousSlide();
+                    break;
+                case 'ArrowRight':
+                case 'ArrowDown':
+                case ' ': // Barre d'espace
+                    e.preventDefault();
+                    nextSlide();
+                    break;
+                case 'Home':
+                    e.preventDefault();
+                    showSlide(0);
+                    break;
+                case 'End':
+                    e.preventDefault();
+                    showSlide(totalSlides - 1);
+                    break;
+                case 'Escape':
+                    // Basculer en mode plein écran
+                    if (!document.fullscreenElement) {
+                        document.documentElement.requestFullscreen().catch(err => {
+                            console.log('Plein écran non disponible:', err);
+                        });
+                    } else {
+                        document.exitFullscreen();
+                    }
+                    break;
+            }
+        });
+
+        // Navigation par clic sur la slide
+        document.addEventListener('click', function(e) {
+            // Ignorer les clics sur les éléments interactifs
+            if (e.target.closest('.nav-btn') || 
+                e.target.closest('.concept-card') || 
+                e.target.closest('.nav-help') ||
+                e.target.closest('.slide-counter') ||
+                e.target.closest('.navigation')) {
+                return;
+            }
+            
+            // Avancer à la slide suivante
+            nextSlide();
+        });
+
+        // Gestion des gestes tactiles pour mobile/tablette
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', function(e) {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', function(e) {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            const diff = touchStartX - touchEndX;
+            
+            if (Math.abs(diff) > swipeThreshold) {
+                if (diff > 0) {
+                    // Swipe vers la gauche = slide suivante
+                    nextSlide();
+                } else {
+                    // Swipe vers la droite = slide précédente
+                    previousSlide();
+                }
+            }
+        }
+
+        // Debug: Afficher les informations de navigation
+        console.log(`Présentation initialisée avec ${totalSlides} slides`);
+        console.log('Navigation disponible:');
+        console.log('- Flèches clavier: ← →');
+        console.log('- Boutons: Précédent / Suivant');
+        console.log('- Clic: n\'importe où sur la slide');
+        console.log('- Touch: swipe gauche/droite');
+        console.log('- Raccourcis: Home (début), End (fin), Echap (plein écran)');
+        
+        // Afficher un message de bienvenue
+        setTimeout(() => {
+            console.log('🎯 Utilisez les flèches du clavier ou les boutons pour naviguer !');
+        }, 1000);
+    </script>
+</body>
+</html>
