@@ -7,7 +7,7 @@
 
 *Un brise-glace sympathique pour vos cours de programmation*
 
-👉 **[Voir l'application](https://ggaillard.github.io/emoji-code-mood/app.html)** | 🏠 **[Tableau de bord](https://ggaillard.github.io/emoji-code-mood/)** | 📚 **[Formation](docs/formation/)** | ⚙️ **[Installation](docs/setup/)** | 📖 **[Documentation](docs/)**
+👉 **[Voir l'application](https://ggaillard.github.io/emoji-code-mood/)** | � **[Tableau de bord](https://ggaillard.github.io/emoji-code-mood/dashboard.html)** | 📚 **[Formation](docs/formation/)** | ⚙️ **[Installation](docs/setup/)** | 📖 **[Documentation](docs/)**
 
 ---
 
@@ -146,7 +146,9 @@ Pour que tous vos étudiants voient les réponses en temps réel :
 ```
 emoji-code-mood/
 ├── index.html              # Tableau de bord (navigation)
-├── app.html                # Application temps réel principale
+├── index.html              # Application temps réel principale (point d'entrée)
+├── app.html                # Copie conservée / version alternative (transition)
+├── dashboard.html          # Ancien tableau de bord de navigation
 ├── main.js                 # Logique applicative  
 ├── styles.css              # Styles de l'application (feed, formulaires...)
 ├── css/

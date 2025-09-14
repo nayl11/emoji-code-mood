@@ -14,7 +14,7 @@
 ## 🚀 Étape 1 : Découverte de l'application (5 min)
 
 ### **🔍 Exploration guidée**
-Rendez-vous sur la [tableau de bord](https://ggaillard.github.io/emoji-code-mood/) puis ouvrez l'[application](https://ggaillard.github.io/emoji-code-mood/app.html) et testez :
+Rendez-vous directement sur l'[application](https://ggaillard.github.io/emoji-code-mood/) (désormais à la racine) ou, si besoin, sur l'[ancien tableau de bord](https://ggaillard.github.io/emoji-code-mood/dashboard.html) puis testez :
 
 1. **Interface utilisateur** 👆
    - Sélectionnez votre humeur avec un emoji
@@ -115,7 +115,7 @@ CREATE INDEX idx_moods_created_at ON public.moods(created_at DESC);
 
 ### **🔗 Accès à votre application**
 Votre app sera disponible à l'adresse :
-`https://[votre-nom-github].github.io/emoji-code-mood/app.html`
+`https://[votre-nom-github].github.io/emoji-code-mood/`
 
 ⏰ **Patience** : Le premier déploiement prend 5-10 minutes.
 
@@ -150,7 +150,8 @@ Ouvrez votre repository GitHub et explorez :
 ```
 emoji-code-mood/
 ├── index.html          # Tableau de bord (navigation principale)
-├── app.html            # Application temps réel (interface principale)
+├── index.html          # Application temps réel (interface principale)
+├── dashboard.html      # Tableau de bord (optionnel)
 ├── styles.css          # Styles et responsive design  
 ├── main.js             # Logique JavaScript
 ├── supabaseClient.js   # Client Supabase
@@ -159,7 +160,7 @@ emoji-code-mood/
 
 ### **🔍 Analyse guidée**
 
-#### **Dans `app.html` :**
+#### **Dans `index.html` :**
 - Trouvez le formulaire de saisie (ligne ~50)
 - Identifiez les sections d'affichage (ligne ~80)
 - Observez les attributs `data-*` pour JavaScript
@@ -184,7 +185,7 @@ emoji-code-mood/
 ## 🆘 Résolution de problèmes
 
 ### **❌ "Mon app ne se charge pas"**
-- Vérifiez l'URL : `https://votre-nom.github.io/emoji-code-mood/app.html`
+- Vérifiez l'URL : `https://votre-nom.github.io/emoji-code-mood/`
 - **Actions** tab → Vérifiez que le déploiement est ✅
 - Attendez 10 minutes après la première activation
 

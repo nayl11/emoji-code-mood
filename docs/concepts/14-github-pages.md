@@ -89,7 +89,8 @@ Source Options:
 ```
 github.io/emoji-code-mood/
 ├── index.html              # Tableau de bord (navigation)
-├── app.html                # Application temps réel (point d'entrée usage)
+├── index.html              # Application temps réel (point d'entrée usage)
+├── dashboard.html          # Tableau de bord (optionnel)
 ├── main.js                 # Logique applicative
 ├── styles.css              # Styles
 ├── private-config.js       # ← Généré par Actions seulement

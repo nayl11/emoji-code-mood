@@ -14,9 +14,9 @@
 
 ## 📖 Étape 1 : Analyse de la structure HTML5 (15 min)
 
-### **🔍 Exploration du fichier `app.html`**
+### **🔍 Exploration du fichier `index.html`**
 
-Ouvrez le fichier `app.html` (anciennement `index.html`) de votre projet et analysons sa structure :
+Ouvrez le fichier `index.html` (point d'entrée actuel de l'application) et analysons sa structure :
 
 ```html
 <!DOCTYPE html>
@@ -80,7 +80,7 @@ Ouvrez le fichier `app.html` (anciennement `index.html`) de votre projet et anal
 
 ### **🔧 Exercice pratique : Modification de structure**
 
-Modifiez votre `app.html` pour personnaliser l'en-tête :
+Modifiez votre `index.html` pour personnaliser l'en-tête :
 
 ```html
 <header class="app-header">
