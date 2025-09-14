@@ -95,6 +95,6 @@ Vous allez analyser, tester et personnaliser une application existante pour appr
 
 ## 🚀 C'est parti !
 
-**Première étape :** [01 - Prise en main](01-prise-en-main-simple.md)
+**Première étape :** [01 - Prise en main](formation/01-prise-en-main-simple.md)
 
 *Prêts à découvrir les technologies web modernes ?*
