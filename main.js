@@ -173,12 +173,10 @@ async function addHumeur(humeur) {
     // Timestamp local immédiat (utilisé aussi en mode local)
     humeur.created_at = new Date().toISOString();
 
-    // Mode Supabase
     if (supabase) {
         try {
-            // Vérifier si une humeur identique existe déjà récemment (dernières 5 minutes)
+            // Anti-doublon 5 minutes
             const cinqMinutesAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString();
-            
             const { data: existing, error: selectError } = await supabase
                 .from('humeur')
                 .select('*')
@@ -187,51 +185,60 @@ async function addHumeur(humeur) {
                 .eq('langage_prefere', humeur.langage_prefere)
                 .eq('autre_preference', humeur.autre_preference)
                 .eq('commentaire', humeur.commentaire || null)
-                    // Timestamp local immédiat (utilisé aussi en mode local)
-                    humeur.created_at = new Date().toISOString();
+                .gte('created_at', cinqMinutesAgo)
+                .limit(1);
 
-                    // Mode Supabase
-                    if (supabase) {
-                        try {
-                            // Vérifier si une humeur identique existe déjà récemment (dernières 5 minutes)
-                            const cinqMinutesAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString();
-                            const { data: existing, error: selectError } = await supabase
-                                .from('humeur')
-                                .select('*')
-                                .eq('nom', humeur.nom)
-                                .eq('emoji', humeur.emoji)
-                                .eq('langage_prefere', humeur.langage_prefere)
-                                .eq('autre_preference', humeur.autre_preference)
-                                .eq('commentaire', humeur.commentaire || null)
-                                .gte('created_at', cinqMinutesAgo)
-                                .limit(1);
+            if (selectError) throw selectError;
+            if (existing && existing.length > 0) {
+                alert('Ce code humeur a déjà été enregistré récemment. Attendez quelques minutes avant de renvoyer.');
+                return false;
+            }
 
-                            if (selectError) throw selectError;
-                            if (existing && existing.length > 0) {
-                                alert('Ce code humeur a déjà été enregistré récemment. Attendez quelques minutes avant de renvoyer.');
-                                return false;
-                            }
+            const { error } = await supabase
+                .from('humeur')
+                .insert([humeur]);
+            if (error) throw error;
+            console.log('✅ Humeur ajoutée à Supabase');
+            return true;
+        } catch (error) {
+            console.error('❌ Erreur ajout Supabase:', error);
+            if (error.code === 'NETWORK_ERROR' || (error.message && error.message.includes('fetch'))) {
+                console.log('🔄 Basculement vers le mode local (erreur réseau)');
+                return addHumeurLocal(humeur);
+            }
+            return false;
+        }
+    }
+    return addHumeurLocal(humeur);
+}
 
-                            const { data, error } = await supabase
-                                .from('humeur')
-                                .insert([humeur])
-                                .select();
+// Ajout local (fallback) aligné structure
+function addHumeurLocal(humeur) {
+    try {
+        const existing = humeurs.find(h => 
+            h.nom === humeur.nom &&
+            h.emoji === humeur.emoji &&
+            h.langage_prefere === humeur.langage_prefere &&
+            h.autre_preference === humeur.autre_preference &&
+            h.commentaire === (humeur.commentaire || null) &&
+            (Date.now() - new Date(h.created_at).getTime()) < 5 * 60 * 1000
+        );
+        if (existing) {
+            console.warn('⚠️ Humeur identique déjà présente en local (5 min)');
+            return false;
+        }
+        humeur.id = Date.now();
+        humeurs.unshift(humeur);
+        localStorage.setItem('emojiMoodLocal', JSON.stringify(humeurs));
+        updateDisplay();
+        console.log('✅ Humeur ajoutée en local');
+        return true;
+    } catch (e) {
+        console.error('❌ Erreur ajout local:', e);
+        return false;
+    }
+}
 
-                            if (error) throw error;
-                            console.log('✅ Humeur ajoutée à Supabase');
-                            return true;
-                        } catch (error) {
-                            console.error('❌ Erreur ajout Supabase:', error);
-                            // Fallback vers le mode local seulement si erreur réseau
-                            if (error.code === 'NETWORK_ERROR' || (error.message && error.message.includes('fetch'))) {
-                                console.log('🔄 Basculement vers le mode local (erreur réseau)');
-                                return addHumeurLocal(humeur);
-                            }
-                            return false; // Ne pas stocker en local si logique métier (doublon) rejetée par Supabase
-                        }
-                    }
-                    // Mode local (fallback explicite ou si supabase non init)
-                    return addHumeurLocal(humeur);
 // Gestion du panneau d'administration caché
 function toggleAdminPanel() {
     let panel = document.getElementById('hiddenAdminPanel');
