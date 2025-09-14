@@ -161,4 +161,4 @@ Votre app sera disponible à :
 
 ---
 
-**Prochaine étape :** [02 - Comprendre l'Interface](02-interface-simple.md)
+**Prochaine étape :** [02 - Comprendre l'Interface](02-html-css-moderne.md)
