@@ -421,6 +421,4 @@ Si groupe hétérogène → Binômes mixtes obligatoires
 
 ---
 
-**🎓 Bonne animation ! Avec ce guide, votre formation sera un succès !**
 
-*"Le meilleur enseignant inspire ses étudiants à devenir autodidactes"*
