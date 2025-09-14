@@ -831,3 +831,6 @@ window.addEventListener('load', () => {
     }
 });
 
+// SENTINELLE FIN DE FICHIER (debug)
+console.log('✅ Fin de main.js chargée (sentinelle)');
+
