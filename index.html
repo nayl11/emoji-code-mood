@@ -11,7 +11,15 @@
     <link rel="stylesheet" href="css/common.css">
     <link rel="stylesheet" href="css/dashboard.css">
 </head>
-<body class="dashboard">
+<body class="dashboard gradient-bg">
+    <nav class="main-nav">
+        <a href="app.html">🚀 Application</a>
+        <a href="docs/formation/">📚 Formation</a>
+        <a href="docs/concepts/">🧠 15 Concepts</a>
+        <a href="docs/setup/">⚙️ Configuration</a>
+        <a href="docs/formation/Slide-Presentation.html">📊 Présentation</a>
+        <button class="btn" type="button" onclick="openMyProject()">👨‍💻 Mon Projet</button>
+    </nav>
     <header class="dashboard-header">
         <h1 class="site-title"><span class="emoji" aria-hidden="true">🎭</span><span>Emoji Code Mood</span></h1>
         <p class="subtitle">Bienvenue ! Ce tableau de bord centralise l'accès à l'application, la formation accélérée, les 15 concepts techniques, la configuration de l'environnement, les slides de présentation et votre propre fork GitHub.</p>
@@ -19,37 +27,37 @@
     <main id="dashboard" class="dashboard-main" aria-labelledby="main-navigation">
         <h2 id="main-navigation" class="visually-hidden">Navigation principale</h2>
         <section class="grid" aria-label="Cartes de navigation">
-            <a class="nav-card" href="app.html" data-accent>
+            <a class="card" href="app.html">
                 <div class="icon" aria-hidden="true">🚀</div>
                 <h3>Application</h3>
                 <p>Utiliser l'app temps réel pour partager et visualiser les humeurs de la classe.</p>
                 <span class="action">Ouvrir</span>
             </a>
-            <a class="nav-card" href="docs/formation/" data-accent>
+            <a class="card" href="docs/formation/">
                 <div class="icon" aria-hidden="true">📚</div>
                 <h3>Formation</h3>
                 <p>Parcours guidé 4h pas à pas : HTML/CSS moderne, JS interactif, temps réel & projet.</p>
                 <span class="action">Explorer</span>
             </a>
-            <a class="nav-card" href="docs/concepts/" data-accent>
+            <a class="card" href="docs/concepts/">
                 <div class="icon" aria-hidden="true">🧠</div>
                 <h3>15 Concepts</h3>
                 <p>Architecture, design patterns, sécurité, base de données, RLS, monitoring...</p>
                 <span class="action">Apprendre</span>
             </a>
-            <a class="nav-card" href="docs/setup/" data-accent>
+            <a class="card" href="docs/setup/">
                 <div class="icon" aria-hidden="true">⚙️</div>
                 <h3>Configuration</h3>
                 <p>Initialiser GitHub, Supabase, variables d'environnement et GitHub Actions.</p>
                 <span class="action">Configurer</span>
             </a>
-            <a class="nav-card" href="docs/formation/Slide-Presentation.html" data-accent>
+            <a class="card" href="docs/formation/Slide-Presentation.html">
                 <div class="icon" aria-hidden="true">📊</div>
                 <h3>Présentation</h3>
                 <p>Slides dynamiques d'introduction supportant la facilitation du cours.</p>
                 <span class="action">Afficher</span>
             </a>
-            <button class="nav-card" type="button" onclick="openMyProject()" data-accent aria-describedby="project-desc">
+            <button class="card btn" type="button" onclick="openMyProject()" aria-describedby="project-desc">
                 <div class="icon" aria-hidden="true">👨‍💻</div>
                 <h3>Mon Projet</h3>
                 <p id="project-desc">Accéder rapidement à mon fork GitHub personnalisé du dépôt.</p>
@@ -59,14 +67,14 @@
         <section class="quick-section" aria-labelledby="quick-access-title">
             <h2 id="quick-access-title">Accès Rapide</h2>
             <div class="quick-links" role="list">
-                <a role="listitem" href="checklist.html">✅ Checklist Pédagogique</a>
-                <a role="listitem" href="README.md">📄 README</a>
-                <a role="listitem" href="SETUP.md">🛠 Guide Setup</a>
-                <a role="listitem" href="LICENSE">⚖️ Licence</a>
-                <a role="listitem" href="test.html">🧪 Page Test</a>
-                <a role="listitem" href="test-production.html">🧪 Test Production</a>
-                <a role="listitem" href="demo.html">🎬 Demo</a>
-                <a role="listitem" href="https://github.com/ggaillard/emoji-code-mood" target="_blank" rel="noopener">🌐 Dépôt Source</a>
+                <a class="card" role="listitem" href="checklist.html">✅ Checklist Pédagogique</a>
+                <a class="card" role="listitem" href="README.md">📄 README</a>
+                <a class="card" role="listitem" href="SETUP.md">🛠 Guide Setup</a>
+                <a class="card" role="listitem" href="LICENSE">⚖️ Licence</a>
+                <a class="card" role="listitem" href="test.html">🧪 Page Test</a>
+                <a class="card" role="listitem" href="test-production.html">🧪 Test Production</a>
+                <a class="card" role="listitem" href="demo.html">🎬 Demo</a>
+                <a class="card" role="listitem" href="https://github.com/ggaillard/emoji-code-mood" target="_blank" rel="noopener">🌐 Dépôt Source</a>
             </div>
         </section>
     </main>
