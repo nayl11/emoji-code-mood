@@ -18,7 +18,6 @@
         <a href="docs/concepts/">🧠 15 Concepts</a>
         <a href="docs/setup/">⚙️ Configuration</a>
         <a href="docs/formation/Slide-Presentation.html">📊 Présentation</a>
-        <button class="btn" type="button" onclick="openMyProject()">👨‍💻 Mon Projet</button>
     </nav>
     <header class="dashboard-header">
         <h1 class="site-title"><span class="emoji" aria-hidden="true">🎭</span><span>Emoji Code Mood</span></h1>
@@ -57,12 +56,6 @@
                 <p>Slides dynamiques d'introduction supportant la facilitation du cours.</p>
                 <span class="action">Afficher</span>
             </a>
-            <button class="card btn" type="button" onclick="openMyProject()" aria-describedby="project-desc">
-                <div class="icon" aria-hidden="true">👨‍💻</div>
-                <h3>Mon Projet</h3>
-                <p id="project-desc">Accéder rapidement à mon fork GitHub personnalisé du dépôt.</p>
-                <span class="action">Ouvrir</span>
-            </button>
         </section>
         <section class="quick-section" aria-labelledby="quick-access-title">
             <h2 id="quick-access-title">Accès Rapide</h2>
@@ -80,12 +73,6 @@
     </main>
     <footer class="dashboard-footer">© <span id="year"></span> Emoji Code Mood • Pédagogie & Temps Réel</footer>
     <script>
-        function openMyProject() {
-            const username = prompt("Entrez votre nom d'utilisateur GitHub :");
-            if (username) {
-                window.open(`https://github.com/${username}/emoji-code-mood`, '_blank');
-            }
-        }
         document.getElementById('year').textContent = new Date().getFullYear();
     </script>
 </body>
