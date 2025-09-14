@@ -169,6 +169,38 @@ function startAutoRefresh() {
 // GESTION DES CODES HUMEUR
 // ========================================
 
+// (Réintégré) Configuration des écouteurs d'événements UI
+function setupEventListeners() {
+    console.log('🔧 (setupEventListeners) Initialisation des interactions utilisateur');
+
+    // Boutons emoji
+    const emojiButtons = document.querySelectorAll('.emoji-btn');
+    emojiButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            selectedEmoji = btn.dataset.emoji;
+        });
+    });
+
+    // Soumission formulaire
+    const form = document.getElementById('moodForm');
+    if (form) {
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            submitMood();
+        });
+    }
+
+    // Focus suggestion commentaire (optionnel si datalist existe)
+    const commentInput = document.getElementById('comment');
+    if (commentInput) {
+        commentInput.addEventListener('focus', () => {
+            commentInput.setAttribute('placeholder', 'Exprime un détail, une blague, un état...');
+        });
+    }
+}
+
 async function addHumeur(humeur) {
     // Timestamp local immédiat (utilisé aussi en mode local)
     humeur.created_at = new Date().toISOString();
