@@ -823,3 +823,4 @@ window.addEventListener('load', () => {
         initApp();
     }
 });
+
