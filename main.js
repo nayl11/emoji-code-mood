@@ -795,7 +795,6 @@ async function initApp() {
         if (!supabaseSuccess) {
             console.warn('⚠️ Mode développement local activé (Supabase non disponible)');
             // Mode local pour le développement
-            setupLocalMode();
         }
 
         // Mise à jour initiale de l'affichage
@@ -810,7 +809,6 @@ async function initApp() {
         
         // En cas d'erreur, essayer au moins de configurer le mode local
         try {
-            setupLocalMode();
             updateDisplay();
             console.log('✅ Récupération en mode local réussie');
         } catch (localError) {
@@ -822,27 +820,6 @@ async function initApp() {
 
 // Mode local pour le développement
 function setupLocalMode() {
-    console.log('🔧 Mode local activé - Données stockées en localStorage');
-    
-    // Charger les moods depuis localStorage
-    const savedMoods = localStorage.getItem('emojiMoodLocal');
-    if (savedMoods) {
-        try {
-            humeurs = JSON.parse(savedMoods);
-            console.log(`📊 ${humeurs.length} humeurs chargées depuis localStorage`);
-        } catch (error) {
-            console.error('Erreur chargement localStorage:', error);
-            humeurs = [];
-        }
-    }
-    
-    // Modifier la fonction addMood pour le mode local
-    // Exposer pour compat éventuelle
-    window.addHumeurLocal = addHumeurLocal;
-    
-    // S'assurer que les event listeners sont configurés en mode local
-    console.log('🔧 Configuration des event listeners en mode local...');
-    setupEventListeners(); // sécurité
 
 }
 
