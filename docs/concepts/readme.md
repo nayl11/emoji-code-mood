@@ -14,6 +14,29 @@ Ce brise-glace interactif est conçu pour enseigner les **technologies web moder
 
 ---
 
+## 🎥 Présentation Interactive
+
+### **📊 [Slides de Présentation](concepts-presentation.html)**
+> Présentation interactive complète des 15 concepts avec navigation fluide
+
+**Contenu de la présentation :**
+- 🎯 **Approche pédagogique** : Observer → Comprendre → Modifier → Créer
+- 💻 **Stack technologique** : Frontend, Backend, Déploiement
+- 📋 **Vue d'ensemble des 15 concepts** avec durées et niveaux
+- 🛤️ **Parcours personnalisés** selon vos objectifs :
+  - 👨‍💻 **Développeur (6h)** : Concepts 04→05→06→07
+  - 🎨 **Designer (4h)** : Concepts 03→04→15→11
+  - 🏗️ **Architecte (10h)** : Concepts 01→02→08→13→Tous
+  - 👨‍🏫 **Enseignant (4h)** : Concepts 04→05→06→14
+
+**Navigation :**
+- Flèches ← → du clavier
+- Clic sur les slides
+- Boutons de navigation
+- Progression automatique
+
+---
+
 ## 📋 Les 15 Concepts Abordés
 
 ### **🌐 Frontend & Interface**
@@ -86,21 +109,17 @@ Ce brise-glace interactif est conçu pour enseigner les **technologies web moder
 - Niveau : ⭐⭐⭐ Avancé  
 - Durée : 60 min
 
-#### **[11. Variables d'Environnement](11-variables-environnement.md)**
-> Configuration sécurisée, secrets, environnements multiples
-- Concepts : **Secrets**, **Configuration**, **Sécurité**
-- Niveau : ⭐⭐ Intermédiaire
-- Durée : 30 min
+#### **[11. Tests & Qualité](11-tests-qualite.md)**
+> Tests unitaires, intégration, debugging, bonnes pratiques
+- Concepts : **Jest**, **Cypress**, **Debugging**, **Code Quality**
+- Niveau : ⭐⭐⭐ Avancé
+- Durée : 75 min
 
-#### **[12. Tests & Debug](12-tests-debug.md)**
-> DevTools, debugging, tests unitaires, validation
-- Concepts : **DevTools**, **Unit testing**, **Debugging**
-- Niveau : ⭐⭐ Intermédiaire
-- Durée : 45 min
-
----
-
-### **🚀 Déploiement & Performance**
+#### **[12. Sécurité Web](12-securite-web.md)**
+> Authentification, autorisation, protection des données
+- Concepts : **HTTPS**, **JWT**, **OWASP**, **Encryption**
+- Niveau : ⭐⭐⭐ Avancé
+- Durée : 60 min
 
 #### **[13. Optimisation Performance](13-performance-web.md)**
 > Optimisation assets, lazy loading, cache, Core Web Vitals
@@ -121,12 +140,43 @@ Ce brise-glace interactif est conçu pour enseigner les **technologies web moder
 - Durée : 60 min
 
 ---
+
 ## 📊 Progression & Évaluation
 
 ### **Niveaux de Maîtrise**
 - ⭐ **Débutant** : Comprendre et utiliser
 - ⭐⭐ **Intermédiaire** : Modifier et adapter  
 - ⭐⭐⭐ **Avancé** : Concevoir et optimiser
+
+### **🎯 Parcours Recommandés**
+
+#### **👨‍💻 Développeur Full-Stack (6h)**
+```
+04 → 05 → 06 → 07
+HTML5 → JavaScript → BDD → API
+```
+*Pour maîtriser le développement web complet*
+
+#### **🎨 Designer Frontend (4h)**
+```
+03 → 04 → 15 → 11
+CSS → HTML5 → Responsive → Tests
+```
+*Pour créer des interfaces modernes et accessibles*
+
+#### **🏗️ Architecte Technique (10h)**
+```
+01 → 02 → 08 → 13 → Tous
+Architecture → Patterns → Temps réel → Performance → Expertise
+```
+*Pour concevoir des applications scalables*
+
+#### **👨‍🏫 Enseignant/Formateur (4h)**
+```
+04 → 05 → 06 → 14
+HTML5 → JavaScript → BDD → Déploiement
+```
+*Pour enseigner les bases solides du web moderne*
 
 ---
 
@@ -135,7 +185,7 @@ Ce brise-glace interactif est conçu pour enseigner les **technologies web moder
 Ces concepts apparaissent dans plusieurs chapitres :
 
 ### **🔒 Sécurité**
-- Chapitres concernés : 07, 10, 11
+- Chapitres concernés : 07, 10, 11, 12
 - Protection des données, authentification, secrets
 
 ### **🎨 UX/UI Design**  
@@ -143,12 +193,34 @@ Ces concepts apparaissent dans plusieurs chapitres :
 - Interface utilisateur, accessibilité, responsive
 
 ### **⚡ Performance**
-- Chapitres concernés : 05, 13, 14
+- Chapitres concernés : 05, 08, 13, 14
 - Optimisation, cache, vitesse de chargement
 
 ### **🤝 Collaboration**
-- Chapitres concernés : 09, 10
+- Chapitres concernés : 09, 10, 11
 - Travail en équipe, versioning, bonnes pratiques
+
+---
+
+## 🛠️ Supports Pédagogiques
+
+### **📊 Présentations Interactives**
+- **[Slides des 15 Concepts](concepts-presentation.html)** - Présentation complète
+- **Navigation intuitive** avec flèches et clics
+- **Parcours personnalisables** selon les objectifs
+- **Visuels modernes** et animations engageantes
+
+### **📚 Documentation Complète**
+- **Guides étape par étape** pour chaque concept
+- **Exemples de code** tirés du projet réel
+- **Exercices pratiques** avec solutions
+- **Ressources complémentaires** pour approfondir
+
+### **🎯 Outils d'Évaluation**
+- **Checklist de validation** pour chaque concept
+- **Critères de maîtrise** par niveau
+- **Projets d'application** concrets
+- **Grilles d'auto-évaluation**
 
 ---
 
@@ -163,6 +235,11 @@ Ces concepts apparaissent dans plusieurs chapitres :
 - [CodePen](https://codepen.io/) - Prototypage rapide
 - [Can I Use](https://caniuse.com/) - Compatibilité navigateurs
 - [Git Visualizer](https://git-school.github.io/visualizing-git/) - Comprendre Git
+
+### **Communautés**
+- [Dev.to](https://dev.to) - Articles et discussions
+- [Stack Overflow](https://stackoverflow.com) - Questions techniques
+- [Discord Programming](https://discord.gg/programming) - Communauté temps réel
 
 ---
 
@@ -179,4 +256,25 @@ Ces concepts apparaissent dans plusieurs chapitres :
 
 ---
 
-**🚀 Prêt à commencer ? Commencez par le [concept 04 - HTML5 Sémantique](04-html5-semantique.md) pour une approche progressive !**
+## 🚀 Commencer Votre Apprentissage
+
+### **🎬 Étape 1 : Découverte**
+Commencez par regarder la **[présentation interactive](concepts-presentation.html)** pour avoir une vue d'ensemble des 15 concepts et choisir votre parcours.
+
+### **📖 Étape 2 : Apprentissage**
+Suivez le parcours recommandé ou commencez par le **[concept 04 - HTML5 Sémantique](04-html5-semantique.md)** pour une approche progressive.
+
+### **🛠️ Étape 3 : Pratique**
+Appliquez chaque concept sur le projet **Emoji Code Mood** avec les exercices pratiques fournis.
+
+### **🎯 Étape 4 : Évaluation**
+Utilisez les checklist et grilles d'évaluation pour valider votre maîtrise de chaque concept.
+
+### **🌟 Étape 5 : Partage**
+Contribuez à la communauté en partageant vos créations et améliorations du projet.
+
+---
+
+**💡 Conseil d'apprentissage :** Les concepts sont conçus pour être modulaires. Vous pouvez les étudier dans l'ordre qui correspond le mieux à vos objectifs et à votre niveau actuel.
+
+**🎓 Pour les enseignants :** Chaque concept peut être utilisé comme module de cours indépendant, avec support pédagogique complet et évaluations intégrées.
