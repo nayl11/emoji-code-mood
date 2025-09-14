@@ -14,7 +14,7 @@
 ## 🚀 Étape 1 : Découverte de l'application (5 min)
 
 ### **🔍 Exploration guidée**
-Rendez-vous sur la [démo officielle](https://ggaillard.github.io/emoji-code-mood/) et testez :
+Rendez-vous sur la [tableau de bord](https://ggaillard.github.io/emoji-code-mood/) puis ouvrez l'[application](https://ggaillard.github.io/emoji-code-mood/app.html) et testez :
 
 1. **Interface utilisateur** 👆
    - Sélectionnez votre humeur avec un emoji
@@ -115,7 +115,7 @@ CREATE INDEX idx_moods_created_at ON public.moods(created_at DESC);
 
 ### **🔗 Accès à votre application**
 Votre app sera disponible à l'adresse :
-`https://[votre-nom-github].github.io/emoji-code-mood/`
+`https://[votre-nom-github].github.io/emoji-code-mood/app.html`
 
 ⏰ **Patience** : Le premier déploiement prend 5-10 minutes.
 
@@ -149,16 +149,17 @@ Ouvrez votre repository GitHub et explorez :
 
 ```
 emoji-code-mood/
-├── index.html          # Interface principale
-├── style.css           # Styles et responsive design  
-├── script.js           # Logique JavaScript
-├── config.js           # Configuration Supabase
+├── index.html          # Tableau de bord (navigation principale)
+├── app.html            # Application temps réel (interface principale)
+├── styles.css          # Styles et responsive design  
+├── main.js             # Logique JavaScript
+├── supabaseClient.js   # Client Supabase
 └── docs/               # Documentation et formation
 ```
 
 ### **🔍 Analyse guidée**
 
-#### **Dans `index.html` :**
+#### **Dans `app.html` :**
 - Trouvez le formulaire de saisie (ligne ~50)
 - Identifiez les sections d'affichage (ligne ~80)
 - Observez les attributs `data-*` pour JavaScript
@@ -183,7 +184,7 @@ emoji-code-mood/
 ## 🆘 Résolution de problèmes
 
 ### **❌ "Mon app ne se charge pas"**
-- Vérifiez l'URL : `https://votre-nom.github.io/emoji-code-mood/`
+- Vérifiez l'URL : `https://votre-nom.github.io/emoji-code-mood/app.html`
 - **Actions** tab → Vérifiez que le déploiement est ✅
 - Attendez 10 minutes après la première activation
 

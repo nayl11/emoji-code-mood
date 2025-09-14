@@ -3,170 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎭 Emoji Code Mood</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .welcome-container {
-            text-align: center;
-            max-width: 600px;
-        }
-
-        .logo {
-            font-size: 8em;
-            margin-bottom: 30px;
-            animation: bounce 2s infinite;
-        }
-
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-            40% { transform: translateY(-20px); }
-            60% { transform: translateY(-10px); }
-        }
-
-        h1 {
-            font-size: 3em;
-            margin-bottom: 20px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-
-        .subtitle {
-            font-size: 1.3em;
-            opacity: 0.9;
-            margin-bottom: 50px;
-        }
-
-        .choice-buttons {
-            display: flex;
-            gap: 30px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .choice-btn {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 20px;
-            padding: 30px 40px;
-            text-decoration: none;
-            color: white;
-            transition: all 0.3s ease;
-            text-align: center;
-            min-width: 250px;
-        }
-
-        .choice-btn:hover {
-            transform: translateY(-10px);
-            background: rgba(255, 255, 255, 0.25);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-        }
-
-        .btn-icon {
-            font-size: 3em;
-            display: block;
-            margin-bottom: 15px;
-        }
-
-        .btn-title {
-            font-size: 1.5em;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-
-        .btn-desc {
-            opacity: 0.9;
-            font-size: 0.9em;
-        }
-
-        .quick-nav {
-            margin-top: 40px;
-            opacity: 0.8;
-        }
-
-        .quick-nav a {
-            color: white;
-            text-decoration: none;
-            margin: 0 15px;
-            font-size: 0.9em;
-        }
-
-        .quick-nav a:hover {
-            text-decoration: underline;
-        }
-
-        @media (max-width: 768px) {
-            .logo { font-size: 6em; }
-            h1 { font-size: 2.5em; }
-            .choice-buttons { flex-direction: column; align-items: center; }
-            .choice-btn { min-width: 280px; }
-        }
-    </style>
+    <title>🎭 Emoji Code Mood - Tableau de bord</title>
+    <meta name="description" content="Tableau de bord de navigation du projet pédagogique Emoji Code Mood">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/dashboard.css">
 </head>
-<body>
-    <nav class="main-nav">
-    <a href="index.html">🏠 Accueil</a>
-    <a href="app.html">🚀 App</a>
-    <a href="dashboard.html">📚 Formation</a>
-    <a href="checklist.html">📋 Progression</a>
-</nav>
-    <div class="welcome-container">
-        <div class="logo">🎭</div>
-        <h1>Emoji Code Mood</h1>
-        <p class="subtitle">Bienvenue ! Que souhaitez-vous faire ?</p>
-        
-        <div class="choice-buttons">
-            <a href="app.html" class="choice-btn">
-                <span class="btn-icon">🚀</span>
-                <div class="btn-title">Utiliser l'App</div>
-                <div class="btn-desc">Partager mon humeur<br>et voir celle des autres</div>
+<body class="dashboard">
+    <header class="dashboard-header">
+        <h1 class="site-title"><span class="emoji" aria-hidden="true">🎭</span><span>Emoji Code Mood</span></h1>
+        <p class="subtitle">Bienvenue ! Ce tableau de bord centralise l'accès à l'application, la formation accélérée, les 15 concepts techniques, la configuration de l'environnement, les slides de présentation et votre propre fork GitHub.</p>
+    </header>
+    <main id="dashboard" class="dashboard-main" aria-labelledby="main-navigation">
+        <h2 id="main-navigation" class="visually-hidden">Navigation principale</h2>
+        <section class="grid" aria-label="Cartes de navigation">
+            <a class="nav-card" href="app.html" data-accent>
+                <div class="icon" aria-hidden="true">🚀</div>
+                <h3>Application</h3>
+                <p>Utiliser l'app temps réel pour partager et visualiser les humeurs de la classe.</p>
+                <span class="action">Ouvrir</span>
             </a>
-            
-            <a href="dashboard.html" class="choice-btn">
-                <span class="btn-icon">📚</span>
-                <div class="btn-title">Apprendre</div>
-                <div class="btn-desc">Formation complète<br>et ressources pédagogiques</div>
+            <a class="nav-card" href="docs/formation/" data-accent>
+                <div class="icon" aria-hidden="true">📚</div>
+                <h3>Formation</h3>
+                <p>Parcours guidé 4h pas à pas : HTML/CSS moderne, JS interactif, temps réel & projet.</p>
+                <span class="action">Explorer</span>
             </a>
-        </div>
-
-        <div class="quick-nav">
-            <a href="docs/setup/">⚙️ Configuration</a>
-            <a href="docs/formation/">📖 Formation</a>
-            <a href="docs/concepts/">🧠 Concepts</a>
-            <a href="https://github.com/ggaillard/emoji-code-mood">💻 GitHub</a>
-        </div>
-    </div>
-
+            <a class="nav-card" href="docs/concepts/" data-accent>
+                <div class="icon" aria-hidden="true">🧠</div>
+                <h3>15 Concepts</h3>
+                <p>Architecture, design patterns, sécurité, base de données, RLS, monitoring...</p>
+                <span class="action">Apprendre</span>
+            </a>
+            <a class="nav-card" href="docs/setup/" data-accent>
+                <div class="icon" aria-hidden="true">⚙️</div>
+                <h3>Configuration</h3>
+                <p>Initialiser GitHub, Supabase, variables d'environnement et GitHub Actions.</p>
+                <span class="action">Configurer</span>
+            </a>
+            <a class="nav-card" href="docs/formation/Slide-Presentation.html" data-accent>
+                <div class="icon" aria-hidden="true">📊</div>
+                <h3>Présentation</h3>
+                <p>Slides dynamiques d'introduction supportant la facilitation du cours.</p>
+                <span class="action">Afficher</span>
+            </a>
+            <button class="nav-card" type="button" onclick="openMyProject()" data-accent aria-describedby="project-desc">
+                <div class="icon" aria-hidden="true">👨‍💻</div>
+                <h3>Mon Projet</h3>
+                <p id="project-desc">Accéder rapidement à mon fork GitHub personnalisé du dépôt.</p>
+                <span class="action">Ouvrir</span>
+            </button>
+        </section>
+        <section class="quick-section" aria-labelledby="quick-access-title">
+            <h2 id="quick-access-title">Accès Rapide</h2>
+            <div class="quick-links" role="list">
+                <a role="listitem" href="checklist.html">✅ Checklist Pédagogique</a>
+                <a role="listitem" href="README.md">📄 README</a>
+                <a role="listitem" href="SETUP.md">🛠 Guide Setup</a>
+                <a role="listitem" href="LICENSE">⚖️ Licence</a>
+                <a role="listitem" href="test.html">🧪 Page Test</a>
+                <a role="listitem" href="test-production.html">🧪 Test Production</a>
+                <a role="listitem" href="demo.html">🎬 Demo</a>
+                <a role="listitem" href="https://github.com/ggaillard/emoji-code-mood" target="_blank" rel="noopener">🌐 Dépôt Source</a>
+            </div>
+        </section>
+    </main>
+    <footer class="dashboard-footer">© <span id="year"></span> Emoji Code Mood • Pédagogie & Temps Réel</footer>
     <script>
-        // Auto-redirection pour les utilisateurs réguliers
-        const hasVisited = localStorage.getItem('emoji-mood-visited');
-        const isStudent = new URLSearchParams(window.location.search).get('student');
-        
-        if (hasVisited && !isStudent) {
-            // Redirection automatique vers l'app après 3 secondes
-            setTimeout(() => {
-                if (confirm("Aller directement à l'application ? (cliquez 'Annuler' pour rester sur cette page)")) {
-                    window.location.href = 'app.html';
-                }
-            }, 3000);
-        } else {
-            localStorage.setItem('emoji-mood-visited', 'true');
+        function openMyProject() {
+            const username = prompt("Entrez votre nom d'utilisateur GitHub :");
+            if (username) {
+                window.open(`https://github.com/${username}/emoji-code-mood`, '_blank');
+            }
         }
+        document.getElementById('year').textContent = new Date().getFullYear();
     </script>
 </body>
 </html>

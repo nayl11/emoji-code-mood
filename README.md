@@ -7,7 +7,7 @@
 
 *Un brise-glace sympathique pour vos cours de programmation*
 
-👉 **[Voir la démo](https://ggaillard.github.io/emoji-code-mood/)** | 📚 **[Formation](docs/formation/)** | ⚙️ **[Installation](docs/setup/)** | 📖 **[Documentation](docs/)**
+👉 **[Voir l'application](https://ggaillard.github.io/emoji-code-mood/app.html)** | 🏠 **[Tableau de bord](https://ggaillard.github.io/emoji-code-mood/)** | 📚 **[Formation](docs/formation/)** | ⚙️ **[Installation](docs/setup/)** | 📖 **[Documentation](docs/)**
 
 ---
 
@@ -145,9 +145,13 @@ Pour que tous vos étudiants voient les réponses en temps réel :
 
 ```
 emoji-code-mood/
-├── index.html              # Interface principale
+├── index.html              # Tableau de bord (navigation)
+├── app.html                # Application temps réel principale
 ├── main.js                 # Logique applicative  
-├── styles.css              # Design moderne
+├── styles.css              # Styles de l'application (feed, formulaires...)
+├── css/
+│   ├── common.css          # Variables, reset, utilitaires partagés
+│   └── dashboard.css       # Styles spécifiques au tableau de bord
 ├── supabaseClient.js       # Client base de données
 ├── private-config.js       # Configuration (générée automatiquement)
 │
@@ -159,6 +163,13 @@ emoji-code-mood/
 ├── .github/workflows/     # Automatisation GitHub
 └── test.html              # Page de test
 ```
+
+### 🧩 Organisation CSS
+- `styles.css` : styles historiques de l'application principale (interface temps réel)
+- `css/common.css` : variables, reset léger, helpers accessibilité & utilitaires
+- `css/dashboard.css` : mise en page et composants du tableau de bord (cartes, grille, animations)
+
+Objectif : séparation claire entre la logique visuelle de navigation (dashboard) et l'application interactive.
 
 ---
 

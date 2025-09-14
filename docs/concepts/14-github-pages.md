@@ -88,12 +88,13 @@ Source Options:
 #### **Fichiers Déployés :**
 ```
 github.io/emoji-code-mood/
-├── index.html              # Point d'entrée principal
-├── main.js                 # Application logic
-├── styles.css             # Styles
-├── private-config.js      # ← Généré par Actions seulement
-├── supabaseClient.js      # Client base de données
-└── assets/                # Resources statiques
+├── index.html              # Tableau de bord (navigation)
+├── app.html                # Application temps réel (point d'entrée usage)
+├── main.js                 # Logique applicative
+├── styles.css              # Styles
+├── private-config.js       # ← Généré par Actions seulement
+├── supabaseClient.js       # Client base de données
+└── assets/                 # Ressources statiques
 ```
 
 **Fichiers EXCLUS du déploiement :**
