@@ -1,16 +1,117 @@
-// supabaseClient.js
+// supabaseClient.js - Version corrigée avec attente du chargement
 // Ce module initialise et exporte le client Supabase
 
-export function getSupabaseClient() {
-    if (!window.PRIVATE_CONFIG || !window.PRIVATE_CONFIG.supabaseUrl || !window.PRIVATE_CONFIG.supabaseAnonKey) {
-        throw new Error('Configuration Supabase manquante.');
-    }
-    
-    // Utiliser window.supabase qui est chargé depuis le CDN
-    if (!window.supabase) {
-        throw new Error('Bibliothèque Supabase non chargée. Vérifiez que le script est bien chargé.');
-    }
-    
-    const { createClient } = window.supabase;
-    return createClient(window.PRIVATE_CONFIG.supabaseUrl, window.PRIVATE_CONFIG.supabaseAnonKey);
+// Fonction pour attendre que la bibliothèque soit chargée
+function waitForSupabaseLibrary() {
+    return new Promise((resolve, reject) => {
+        // Si déjà chargée, résoudre immédiatement
+        if (typeof window.supabase !== 'undefined') {
+            console.log('✅ Bibliothèque Supabase déjà chargée');
+            resolve();
+            return;
+        }
+        
+        console.log('⏳ Attente du chargement de la bibliothèque Supabase...');
+        
+        let attempts = 0;
+        const maxAttempts = 50; // 5 secondes maximum
+        
+        const checkInterval = setInterval(() => {
+            attempts++;
+            
+            if (typeof window.supabase !== 'undefined') {
+                clearInterval(checkInterval);
+                console.log('✅ Bibliothèque Supabase chargée avec succès');
+                resolve();
+            } else if (attempts >= maxAttempts) {
+                clearInterval(checkInterval);
+                console.error('❌ Timeout: Bibliothèque Supabase non chargée après 5 secondes');
+                reject(new Error('Timeout: Bibliothèque Supabase non chargée. Vérifiez que le script CDN est accessible.'));
+            }
+        }, 100); // Vérifier toutes les 100ms
+    });
 }
+
+// Fonction pour attendre que la configuration soit disponible
+function waitForConfig() {
+    return new Promise((resolve, reject) => {
+        // Si déjà disponible, résoudre immédiatement
+        if (window.PRIVATE_CONFIG?.supabaseUrl && window.PRIVATE_CONFIG?.supabaseAnonKey) {
+            console.log('✅ Configuration Supabase déjà disponible');
+            resolve();
+            return;
+        }
+        
+        console.log('⏳ Attente de la configuration Supabase...');
+        
+        let attempts = 0;
+        const maxAttempts = 30; // 3 secondes maximum
+        
+        const checkInterval = setInterval(() => {
+            attempts++;
+            
+            if (window.PRIVATE_CONFIG?.supabaseUrl && window.PRIVATE_CONFIG?.supabaseAnonKey) {
+                clearInterval(checkInterval);
+                console.log('✅ Configuration Supabase chargée avec succès');
+                resolve();
+            } else if (attempts >= maxAttempts) {
+                clearInterval(checkInterval);
+                console.error('❌ Timeout: Configuration Supabase manquante après 3 secondes');
+                reject(new Error('Configuration Supabase manquante. Vérifiez que private-config.js est bien injecté.'));
+            }
+        }, 100); // Vérifier toutes les 100ms
+    });
+}
+
+// Fonction principale pour obtenir le client Supabase
+export async function getSupabaseClient() {
+    try {
+        console.log('🔧 Initialisation du client Supabase via module...');
+        
+        // 1. Attendre que la configuration soit disponible
+        await waitForConfig();
+        
+        // 2. Attendre que la bibliothèque Supabase soit chargée
+        await waitForSupabaseLibrary();
+        
+        // 3. Vérifier que la configuration est valide
+        if (!window.PRIVATE_CONFIG || !window.PRIVATE_CONFIG.supabaseUrl || !window.PRIVATE_CONFIG.supabaseAnonKey) {
+            throw new Error('Configuration Supabase invalide ou manquante.');
+        }
+        
+        // 4. Vérifier que la bibliothèque est accessible
+        if (!window.supabase || typeof window.supabase.createClient !== 'function') {
+            throw new Error('Bibliothèque Supabase non accessible ou createClient manquant.');
+        }
+        
+        console.log('🔗 Création du client Supabase...');
+        console.log('📡 URL:', window.PRIVATE_CONFIG.supabaseUrl);
+        
+        // 5. Créer et retourner le client
+        const { createClient } = window.supabase;
+        const client = createClient(
+            window.PRIVATE_CONFIG.supabaseUrl, 
+            window.PRIVATE_CONFIG.supabaseAnonKey
+        );
+        
+        console.log('✅ Client Supabase créé avec succès via module');
+        return client;
+        
+    } catch (error) {
+        console.error('❌ Erreur lors de la création du client Supabase:', error);
+        throw error;
+    }
+}
+
+// Fonction utilitaire pour vérifier l'état
+export function checkSupabaseStatus() {
+    return {
+        libraryLoaded: typeof window.supabase !== 'undefined',
+        configAvailable: !!(window.PRIVATE_CONFIG?.supabaseUrl && window.PRIVATE_CONFIG?.supabaseAnonKey),
+        createClientAvailable: typeof window.supabase?.createClient === 'function'
+    };
+}
+
+// Logs de débogage
+console.log('📦 Module supabaseClient.js chargé');
+console.log('🔍 État initial:', checkSupabaseStatus());
