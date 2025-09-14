@@ -16,7 +16,7 @@ Ce brise-glace interactif est conçu pour enseigner les **technologies web moder
 
 ## 🎥 Présentation Interactive
 
-### **📊 [Slides de Présentation](concepts-presentation.html)**
+### **📊 [Slides de Présentation](https://ggaillard.github.io/emoji-code-mood/concepts-presentation.html)**
 > Présentation interactive complète des 15 concepts avec navigation fluide
 
 **Contenu de la présentation :**
