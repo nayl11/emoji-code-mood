@@ -169,26 +169,9 @@ function startAutoRefresh() {
 // GESTION DES CODES HUMEUR
 // ========================================
 
-<<<<<<< HEAD
-async function addMood(mood) {
-    // Vérifier si un mood similaire a déjà été soumis récemment (protection anti-doublon)
-    const recentMood = moods.find(m => 
-        m.name === mood.name && 
-        m.emoji === mood.emoji && 
-        m.language === mood.language &&
-        Date.now() - new Date(m.created_at).getTime() < 30000 // 30 secondes
-    );
-    
-    if (recentMood) {
-        console.warn('⚠️ Mood similaire déjà soumis récemment, évitons le doublon');
-        return false;
-    }
-    
-    mood.created_at = new Date().toISOString();
-=======
 async function addHumeur(humeur) {
+    // Timestamp local immédiat (utilisé aussi en mode local)
     humeur.created_at = new Date().toISOString();
->>>>>>> 57e3340f1ac7654842fa49c482a8fa317a6ae8dc
 
     // Mode Supabase
     if (supabase) {
@@ -223,44 +206,43 @@ async function addHumeur(humeur) {
             return true;
         } catch (error) {
             console.error('❌ Erreur ajout Supabase:', error);
-            // Fallback vers le mode local seulement si c'est une erreur de réseau
-            if (error.code === 'NETWORK_ERROR' || error.message.includes('fetch')) {
+            // Fallback vers le mode local seulement si erreur réseau
+            if (error.code === 'NETWORK_ERROR' || (error.message && error.message.includes('fetch'))) {
                 console.log('🔄 Basculement vers le mode local (erreur réseau)');
-                return addMoodLocal(mood);
+                return addHumeurLocal(humeur);
             }
-            return false;
+            return false; // Ne pas stocker en local si logique métier (doublon) rejetée par Supabase
         }
     }
     
-    // Mode local (fallback)
-    return addMoodLocal(mood);
+    // Mode local (fallback explicite ou si supabase non init)
+    return addHumeurLocal(humeur);
 }
-
-function addMoodLocal(mood) {
+// Ajout local (structure alignée sur addHumeur)
+function addHumeurLocal(humeur) {
     try {
-        // Vérifier si un mood identique existe déjà en local
-        const existingMood = moods.find(m => 
-            m.name === mood.name && 
-            m.emoji === mood.emoji && 
-            m.language === mood.language &&
-            m.comment === mood.comment
+        // Détection doublon simple (mêmes champs et < 5 minutes)
+        const existing = humeurs.find(h => 
+            h.nom === humeur.nom &&
+            h.emoji === humeur.emoji &&
+            h.langage_prefere === humeur.langage_prefere &&
+            h.autre_preference === humeur.autre_preference &&
+            h.commentaire === (humeur.commentaire || null) &&
+            (Date.now() - new Date(h.created_at).getTime()) < 5 * 60 * 1000
         );
-        
-        if (existingMood) {
-            console.warn('⚠️ Mood identique déjà présent en local');
+        if (existing) {
+            console.warn('⚠️ Humeur identique déjà présente en local (5 min)');
             return false;
         }
-        
-        mood.id = Date.now(); // ID unique simple
-        moods.unshift(mood);
-        
-        // Sauvegarder en localStorage
-        localStorage.setItem('emojiMoodLocal', JSON.stringify(moods));
-        
-        console.log('✅ Mood ajouté en local');
+
+        humeur.id = Date.now();
+        humeurs.unshift(humeur);
+        localStorage.setItem('emojiMoodLocal', JSON.stringify(humeurs));
+        updateDisplay();
+        console.log('✅ Humeur ajoutée en local');
         return true;
-    } catch (error) {
-        console.error('❌ Erreur ajout local:', error);
+    } catch (e) {
+        console.error('❌ Erreur ajout local:', e);
         return false;
     }
 }
@@ -286,16 +268,11 @@ function setupEventListeners() {
         });
     });
 
-    // Timer de session
+    // Timer de session (une seule instance)
     setInterval(() => {
         const minutes = Math.floor((new Date() - sessionStartTime) / 60000);
-        document.getElementById('sessionTime').textContent = minutes;
-    }, 60000);
-
-    // Timer de session
-    setInterval(() => {
-        const minutes = Math.floor((new Date() - sessionStartTime) / 60000);
-        document.getElementById('sessionTime').textContent = minutes;
+        const el = document.getElementById('sessionTime');
+        if (el) el.textContent = minutes;
     }, 60000);
 
     // Raccourci clavier pour panneau de contrôle (Ctrl+Shift+A)
@@ -839,7 +816,7 @@ async function initApp() {
 
         console.log('✅ Application initialisée avec succès');
         console.log('📊 Mode actuel:', supabaseSuccess ? 'Supabase' : 'Local');
-        console.log('📈 Mood codes chargés:', moods.length);
+    console.log('📈 Humeurs chargées:', humeurs.length);
     } catch (error) {
         console.error('❌ Erreur lors de l\'initialisation:', error);
         console.log('🔄 Tentative de récupération en mode local...');
@@ -865,41 +842,20 @@ function setupLocalMode() {
     if (savedMoods) {
         try {
             moods = JSON.parse(savedMoods);
-            console.log(`📊 ${moods.length} mood codes chargés depuis localStorage`);
+            console.log(`📊 ${humeurs.length} humeurs chargées depuis localStorage`);
         } catch (error) {
             console.error('Erreur chargement localStorage:', error);
-            moods = [];
+            humeurs = [];
         }
     }
     
     // Modifier la fonction addMood pour le mode local
-    window.addMoodLocal = function(mood) {
-        mood.id = Date.now(); // ID unique simple
-        mood.created_at = new Date().toISOString();
-        moods.unshift(mood);
-        
-        // Sauvegarder en localStorage
-        localStorage.setItem('emojiMoodLocal', JSON.stringify(moods));
-        
-        updateDisplay();
-        return true;
-    };
+    // Exposer pour compat éventuelle
+    window.addHumeurLocal = addHumeurLocal;
     
     // S'assurer que les event listeners sont configurés en mode local
     console.log('🔧 Configuration des event listeners en mode local...');
-    setupEventListeners();
-
-
-    // Initialisation Supabase obligatoire
-    await initSupabase();
-
-    // Mise à jour initiale de l'affichage
-    updateDisplay();
-
-    console.log('✅ Application initialisée avec succès');
-    console.log('📊 Mode actuel:', CONFIG.mode);
-    console.log('🔄 Auto-actualisation activée');
-    console.log('📈 Codes humeur chargés:', humeurs.length);
+    setupEventListeners(); // sécurité
 
 }
 
