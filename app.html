@@ -3,70 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎭 Emoji Code Mood - App</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .welcome-container { text-align: center; max-width: 600px; }
-        .logo { font-size: 8em; margin-bottom: 30px; animation: bounce 2s infinite; }
-        @keyframes bounce { 0%, 20%, 50%, 80%, 100% { transform: translateY(0); } 40% { transform: translateY(-20px); } 60% { transform: translateY(-10px); } }
-        h1 { font-size: 3em; margin-bottom: 20px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
-        .subtitle { font-size: 1.3em; opacity: 0.9; margin-bottom: 50px; }
-        .choice-buttons { display: flex; gap: 30px; justify-content: center; flex-wrap: wrap; }
-        .choice-btn { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 20px; padding: 30px 40px; text-decoration: none; color: white; transition: all 0.3s ease; text-align: center; min-width: 250px; }
-        .choice-btn:hover { transform: translateY(-10px); background: rgba(255, 255, 255, 0.25); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
-        .btn-icon { font-size: 3em; display: block; margin-bottom: 15px; }
-        .btn-title { font-size: 1.5em; font-weight: bold; margin-bottom: 10px; }
-        .btn-desc { opacity: 0.9; font-size: 0.9em; }
-        .quick-nav { margin-top: 40px; opacity: 0.8; }
-        .quick-nav a { color: white; text-decoration: none; margin: 0 15px; font-size: 0.9em; }
-        .quick-nav a:hover { text-decoration: underline; }
-        @media (max-width: 768px) { .logo { font-size: 6em; } h1 { font-size: 2.5em; } .choice-buttons { flex-direction: column; align-items: center; } .choice-btn { min-width: 280px; } }
-    </style>
+    <title>🎭 Emoji Code Mood - Application</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body class="page-content gradient-bg">
     <nav class="main-nav">
-        <a href="index.html">🏠 Accueil</a>
-        <a href="app.html" aria-current="page">🚀 App</a>
-        <a href="dashboard.html">📚 Formation</a>
-        <a href="checklist.html">📋 Progression</a>
+        <a class="nav-link" href="index.html">🏠 Accueil</a>
+        <a class="nav-link active" href="app.html" aria-current="page">🚀 App</a>
+        <a class="nav-link" href="docs/formation/">📚 Formation</a>
+        <a class="nav-link" href="checklist.html">📋 Progression</a>
     </nav>
-    <div class="welcome-container">
-        <div class="logo">🎭</div>
-        <h1>Emoji Code Mood</h1>
-        <p class="subtitle">Bienvenue ! Que souhaitez-vous faire ?</p>
-        <div class="choice-buttons">
-            <a href="app.html" class="choice-btn">
-                <span class="btn-icon">🚀</span>
-                <div class="btn-title">Utiliser l'App</div>
-                <div class="btn-desc">Partager mon humeur<br>et voir celle des autres</div>
-            </a>
-            <a href="dashboard.html" class="choice-btn">
-                <span class="btn-icon">📚</span>
-                <div class="btn-title">Apprendre</div>
-                <div class="btn-desc">Formation complète<br>et ressources pédagogiques</div>
-            </a>
-        </div>
-        <div class="quick-nav">
-            <a href="docs/setup/">⚙️ Configuration</a>
-            <a href="docs/formation/">📖 Formation</a>
-            <a href="docs/concepts/">🧠 Concepts</a>
-            <a href="https://github.com/ggaillard/emoji-code-mood">💻 GitHub</a>
-        </div>
+    <div class="main-container">
+        <header class="page-header">
+            <h1 class="page-title animate-bounce">🎭 Emoji Code Mood</h1>
+            <p class="page-subtitle">Exprime ton humeur avec du code et découvre l’ambiance de la classe en temps réel !</p>
+        </header>
+        <section class="card section">
+            <form id="moodForm" class="flex-col items-center">
+                <div class="form-group">
+                    <label class="form-label" for="emoji">Ton humeur du jour :</label>
+                    <select id="emoji" class="form-select" required>
+                        <option value="">Choisis un emoji…</option>
+                        <option value="🚀">🚀 Enthousiaste</option>
+                        <option value="🤔">🤔 Pensif</option>
+                        <option value="😴">😴 Fatigué</option>
+                        <option value="😃">😃 Joyeux</option>
+                        <option value="😡">😡 Énervé</option>
+                        <option value="😎">� Confiant</option>
+                        <option value="😱">� Stressé</option>
+                        <option value="🥳">🥳 Festif</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="language">Langage préféré :</label>
+                    <select id="language" class="form-select" required>
+                        <option value="">Choisis un langage…</option>
+                        <option value="Python">Python</option>
+                        <option value="JavaScript">JavaScript</option>
+                        <option value="Java">Java</option>
+                        <option value="C#">C#</option>
+                        <option value="PHP">PHP</option>
+                        <option value="Go">Go</option>
+                        <option value="Rust">Rust</option>
+                        <option value="TypeScript">TypeScript</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="comment">Commentaire (optionnel) :</label>
+                    <textarea id="comment" class="form-textarea" rows="2" placeholder="Un mot, une idée, un ressenti…"></textarea>
+                </div>
+                <button type="submit" class="btn btn--primary btn--large">Envoyer mon humeur</button>
+            </form>
+        </section>
+        <section class="section">
+            <h2 class="font-bold text-center mb-lg">💻 Ambiance de la classe</h2>
+            <div id="moodList" class="layout-grid"></div>
+        </section>
     </div>
+    <footer class="dashboard-footer">© <span id="year"></span> Emoji Code Mood • Pédagogie & Temps Réel</footer>
+    <script src="private-config.js"></script>
+    <script src="supabaseClient.js" type="module"></script>
+    <script src="main.js" type="module"></script>
     <script>
-        // Conservation du comportement de redirection si nécessaire
-        const hasVisited = localStorage.getItem('emoji-mood-visited');
-        const isStudent = new URLSearchParams(window.location.search).get('student');
-        if (hasVisited && !isStudent) {
-            setTimeout(() => {
-                if (confirm("Aller directement à l'application ? (cliquez 'Annuler' pour rester sur cette page)")) {
-                    window.location.href = 'app.html';
-                }
-            }, 3000);
-        } else {
-            localStorage.setItem('emoji-mood-visited', 'true');
-        }
+        document.getElementById('year').textContent = new Date().getFullYear();
     </script>
 </body>
 </html>
