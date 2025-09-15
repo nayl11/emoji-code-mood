@@ -267,140 +267,136 @@ ApiClient .up.|> IApi
 ## 4️⃣ Diagramme de Séquence - Scénario Principal
 
 ```mermaid
-@startuml
-!theme cerulean-outline
+sequenceDiagram
+    participant Student as 👨‍🎓 Étudiant
+    participant UI as 📱 Interface Web
+    participant Controller as 🎯 Contrôleur App
+    participant Validator as ✅ Validateur
+    participant CodeGen as 💻 Générateur Code
+    participant ApiClient as 🌐 Client API
+    participant Database as 🗄️ Base Supabase
+    participant WebSocket as 🔌 WebSocket
+    participant StatsService as 📊 Service Stats
 
-participant "👨‍🎓 Étudiant" as Student
-participant "📱 Interface Web" as UI
-participant "🎯 Contrôleur App" as Controller
-participant "✅ Validateur" as Validator
-participant "💻 Générateur Code" as CodeGen
-participant "🌐 Client API" as ApiClient
-participant "🗄️ Base Supabase" as Database
-participant "🔌 WebSocket" as WebSocket
-participant "📊 Service Stats" as StatsService
+    Note over Student,StatsService: Phase Initialisation
 
-== Phase Initialisation ==
-
-Student -> UI : Accède à l'application
-activate UI
-
-UI -> Controller : initializeApp()
-activate Controller
-
-Controller -> ApiClient : loadRecentEntries()
-activate ApiClient
-
-ApiClient -> Database : SELECT * FROM moods\nORDER BY created_at DESC\nLIMIT 10
-activate Database
-Database --> ApiClient : List<MoodEntry>
-deactivate Database
-
-ApiClient --> Controller : recentEntries
-deactivate ApiClient
-
-Controller -> StatsService : calculateStats(recentEntries)
-activate StatsService
-StatsService --> Controller : Statistics
-deactivate StatsService
-
-Controller --> UI : displayInitialData(entries, stats)
-UI --> Student : Page chargée avec données
-deactivate Controller
-
-== Phase Saisie Utilisateur ==
-
-Student -> UI : Saisit informations personnelles
-Student -> UI : Sélectionne emoji humeur
-Student -> UI : Choisit langage programmation
-Student -> UI : Définit domaine d'intérêt
-Student -> UI : Ajoute commentaire (optionnel)
-Student -> UI : Clique "Partager humeur"
-
-== Phase Validation et Traitement ==
-
-UI -> Controller : submitMoodEntry(formData)
-activate Controller
-
-Controller -> Validator : validateMoodData(formData)
-activate Validator
-
-alt Données invalides
-    Validator --> Controller : ValidationError
-    Controller --> UI : displayValidationErrors()
-    UI --> Student : "Veuillez corriger les erreurs"
-else Données valides
-    Validator --> Controller : ValidationSuccess
-    deactivate Validator
+    Student->>UI: Accède à l'application
+    activate UI
     
-    == Phase Génération Code ==
+    UI->>Controller: initializeApp()
+    activate Controller
     
-    Controller -> CodeGen : generateCode(formData)
-    activate CodeGen
-    
-    CodeGen -> CodeGen : selectTemplate(language)
-    CodeGen -> CodeGen : injectUserData(template, data)
-    CodeGen --> Controller : generatedCode
-    deactivate CodeGen
-    
-    Controller --> UI : displayGeneratedCode(code)
-    UI --> Student : Affiche code personnalisé
-    
-    == Phase Sauvegarde ==
-    
-    Controller -> ApiClient : saveMoodEntry(moodEntry)
+    Controller->>ApiClient: loadRecentEntries()
     activate ApiClient
     
-    ApiClient -> Database : INSERT INTO moods\n(name, mood, language, interest, comment, created_at)\nVALUES (?, ?, ?, ?, ?, NOW())
+    ApiClient->>Database: SELECT * FROM moods<br/>ORDER BY created_at DESC<br/>LIMIT 10
     activate Database
-    Database --> ApiClient : insertedId
+    Database-->>ApiClient: List<MoodEntry>
     deactivate Database
     
-    ApiClient --> Controller : saveSuccess(entryId)
+    ApiClient-->>Controller: recentEntries
     deactivate ApiClient
     
-    == Phase Notification Temps Réel ==
+    Controller->>StatsService: calculateStats(recentEntries)
+    activate StatsService
+    StatsService-->>Controller: Statistics
+    deactivate StatsService
     
-    Database -> WebSocket : triggerRealtimeNotification(newEntry)
-    activate WebSocket
+    Controller-->>UI: displayInitialData(entries, stats)
+    UI-->>Student: Page chargée avec données
+    deactivate Controller
+
+    Note over Student,StatsService: Phase Saisie Utilisateur
+
+    Student->>UI: Saisit informations personnelles
+    Student->>UI: Sélectionne emoji humeur
+    Student->>UI: Choisit langage programmation
+    Student->>UI: Définit domaine d'intérêt
+    Student->>UI: Ajoute commentaire (optionnel)
+    Student->>UI: Clique "Partager humeur"
+
+    Note over Student,StatsService: Phase Validation et Traitement
+
+    UI->>Controller: submitMoodEntry(formData)
+    activate Controller
     
-    par Notification broadcast
-        WebSocket -> UI : broadcastNewEntry(entry)
-        UI -> UI : updateFeedDisplay()
-        UI -> StatsService : updateStatistics()
-        activate StatsService
-        StatsService --> UI : updatedStats
-        deactivate StatsService
-        UI --> Student : Affichage mis à jour temps réel
-    and Confirmation locale
-        Controller --> UI : showSuccessMessage()
-        UI -> UI : resetForm()
-        UI --> Student : "Humeur partagée avec succès! 🎉"
+    Controller->>Validator: validateMoodData(formData)
+    activate Validator
+    
+    alt Données invalides
+        Validator-->>Controller: ValidationError
+        Controller-->>UI: displayValidationErrors()
+        UI-->>Student: "Veuillez corriger les erreurs"
+    else Données valides
+        Validator-->>Controller: ValidationSuccess
+        deactivate Validator
+        
+        Note over Student,StatsService: Phase Génération Code
+        
+        Controller->>CodeGen: generateCode(formData)
+        activate CodeGen
+        
+        CodeGen->>CodeGen: selectTemplate(language)
+        CodeGen->>CodeGen: injectUserData(template, data)
+        CodeGen-->>Controller: generatedCode
+        deactivate CodeGen
+        
+        Controller-->>UI: displayGeneratedCode(code)
+        UI-->>Student: Affiche code personnalisé
+        
+        Note over Student,StatsService: Phase Sauvegarde
+        
+        Controller->>ApiClient: saveMoodEntry(moodEntry)
+        activate ApiClient
+        
+        ApiClient->>Database: INSERT INTO moods<br/>(name, mood, language, interest, comment, created_at)<br/>VALUES (?, ?, ?, ?, ?, NOW())
+        activate Database
+        Database-->>ApiClient: insertedId
+        deactivate Database
+        
+        ApiClient-->>Controller: saveSuccess(entryId)
+        deactivate ApiClient
+        
+        Note over Student,StatsService: Phase Notification Temps Réel
+        
+        Database->>WebSocket: triggerRealtimeNotification(newEntry)
+        activate WebSocket
+        
+        par Notification broadcast
+            WebSocket->>UI: broadcastNewEntry(entry)
+            UI->>UI: updateFeedDisplay()
+            UI->>StatsService: updateStatistics()
+            activate StatsService
+            StatsService-->>UI: updatedStats
+            deactivate StatsService
+            UI-->>Student: Affichage mis à jour temps réel
+        and Confirmation locale
+            Controller-->>UI: showSuccessMessage()
+            UI->>UI: resetForm()
+            UI-->>Student: "Humeur partagée avec succès! 🎉"
+        end
+        
+        deactivate WebSocket
     end
     
-    deactivate WebSocket
-end
+    deactivate Controller
+    deactivate UI
 
-deactivate Controller
-deactivate UI
+    Note over Student,StatsService: Gestion d'Erreurs
 
-== Gestion d'Erreurs ==
+    opt Erreur réseau
+        ApiClient-xDatabase: Échec connexion
+        ApiClient-->>Controller: NetworkError
+        Controller-->>UI: enableOfflineMode()
+        UI-->>Student: "Mode hors ligne activé"
+    end
 
-opt Erreur réseau
-    ApiClient -X Database : Échec connexion
-    ApiClient --> Controller : NetworkError
-    Controller --> UI : enableOfflineMode()
-    UI --> Student : "Mode hors ligne activé"
-end
-
-opt Erreur serveur
-    Database -X ApiClient : Erreur SQL
-    ApiClient --> Controller : ServerError
-    Controller --> UI : displayErrorMessage()
-    UI --> Student : "Erreur temporaire, veuillez réessayer"
-end
-
-@enduml
+    opt Erreur serveur
+        Database-xApiClient: Erreur SQL
+        ApiClient-->>Controller: ServerError
+        Controller-->>UI: displayErrorMessage()
+        UI-->>Student: "Erreur temporaire, veuillez réessayer"
+    end
 ```
 
 ---
