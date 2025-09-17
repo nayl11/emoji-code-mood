@@ -3,86 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🌡️ Baromètre des humeurs des employés</title>
+    <title>Baromètre des humeurs des employés</title>
     <link rel="stylesheet" href="styles.css">
+    <!-- Supabase JS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.35.1/dist/supabase.min.js"></script>
+    <!-- Configuration Supabase -->
+    <script>
+        window.PRIVATE_CONFIG = {
+            supabaseUrl: "VOTRE_SUPABASE_URL",
+            supabaseAnonKey: "VOTRE_SUPABASE_ANON_KEY"
+        };
+    </script>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <div class="security-badge" style="background: #3ECF8E; color: white;">
-                🚀 Baromètre des humeurs
-            </div>
-            <h1>🌡️ Baromètre des humeurs des employés</h1>
-            <p>Partagez votre ressenti du matin et du soir en toute sécurité</p>
-        </div>
+        <header class="header">
+            <h1>Baromètre des humeurs des employés</h1>
+            <p>Exprimez votre humeur du matin et du soir !</p>
+        </header>
 
-        <!-- Formulaire principal -->
         <div class="main-content">
-            <div class="form-section">
-                <h2>📝 Indiquez votre humeur</h2>
+            <!-- Formulaire -->
+            <section class="form-section">
+                <h2>Votre humeur</h2>
                 <form id="moodForm">
                     <div class="form-group">
-                        <label for="firstName">Prénom :</label>
-                        <input type="text" id="firstName" required placeholder="Votre prénom">
+                        <label for="firstName">Prénom</label>
+                        <input type="text" id="firstName" required>
                     </div>
                     <div class="form-group">
-                        <label for="lastName">Nom :</label>
-                        <input type="text" id="lastName" required placeholder="Votre nom">
+                        <label for="lastName">Nom</label>
+                        <input type="text" id="lastName" required>
                     </div>
-
                     <div class="form-group">
-                        <label>Comment vous sentez-vous ?</label>
+                        <label>Humeur (emoji)</label>
                         <div class="emoji-selector">
-                            <button type="button" class="emoji-btn" data-emoji="😀">😀</button>
-                            <button type="button" class="emoji-btn" data-emoji="😐">😐</button>
-                            <button type="button" class="emoji-btn" data-emoji="😔">😔</button>
-                            <button type="button" class="emoji-btn" data-emoji="😡">😡</button>
-                            <button type="button" class="emoji-btn" data-emoji="🤩">🤩</button>
+                            <button type="button" class="emoji-btn" data-emoji="😀" title="Très joyeux">😀</button>
+                            <button type="button" class="emoji-btn" data-emoji="😐" title="Neutre">😐</button>
+                            <button type="button" class="emoji-btn" data-emoji="😔" title="Triste">😔</button>
+                            <button type="button" class="emoji-btn" data-emoji="😡" title="En colère">😡</button>
+                            <button type="button" class="emoji-btn" data-emoji="😴" title="Fatigué">😴</button>
+                            <button type="button" class="emoji-btn" data-emoji="🤯" title="Stressé">🤯</button>
                         </div>
                     </div>
-
                     <div class="form-group">
-                        <label for="favoriteColor">Votre couleur préférée :</label>
+                        <label for="favoriteColor">Couleur préférée</label>
                         <input type="color" id="favoriteColor" value="#3ECF8E">
                     </div>
-
                     <div class="form-group">
-                        <label for="morningComment">Comment s’est passé votre matin ?</label>
-                        <textarea id="morningComment" rows="2" placeholder="Votre ressenti du matin"></textarea>
+                        <label for="morningComment">Commentaire du matin</label>
+                        <textarea id="morningComment" rows="2"></textarea>
                     </div>
-
                     <div class="form-group">
-                        <label for="eveningComment">Comment s’est passée votre journée ?</label>
-                        <textarea id="eveningComment" rows="2" placeholder="Votre ressenti du soir"></textarea>
+                        <label for="eveningComment">Commentaire du soir</label>
+                        <textarea id="eveningComment" rows="2"></textarea>
                     </div>
-
-                    <button type="submit" class="submit-btn">Envoyer ✅</button>
+                    <button type="submit" class="submit-btn">Envoyer</button>
                 </form>
-            </div>
+            </section>
 
-            <!-- Section affichage -->
-            <div class="display-section" id="moodList">
-                <h2>📊 Humeurs des employés</h2>
-                <div class="stats-section">
-                    <h3>📈 Statistiques</h3>
-                    <div class="stats-grid">
-                        <div class="stat-item">
-                            <span class="stat-label">Total participants :</span>
-                            <span id="totalParticipants" class="stat-value">0</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-label">Variété d'humeurs :</span>
-                            <span id="moodVariety" class="stat-value">0</span>
-                        </div>
-                    </div>
+            <!-- Affichage des participants -->
+            <section class="display-section">
+                <h2>Participants <span class="feed-subtitle">Dernières soumissions</span></h2>
+                <div id="moodList" class="social-feed">
+                    <p>Chargement...</p>
                 </div>
-            </div>
+            </section>
         </div>
-
-        <!-- Configuration privée (GitHub Actions injecte le fichier) -->
-        <script src="private-config.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-        <script type="module" src="main.js"></script>
     </div>
+
+    <!-- Main JS -->
+    <script src="main.js"></script>
 </body>
 </html>

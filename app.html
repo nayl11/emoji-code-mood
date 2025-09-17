@@ -2,19 +2,77 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>🔍 Test Baromètre Humeurs</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baromètre des humeurs des employés</title>
     <link rel="stylesheet" href="styles.css">
+    <!-- Supabase JS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.35.1/dist/supabase.min.js"></script>
+    <!-- Configuration Supabase -->
+    <script>
+        window.PRIVATE_CONFIG = {
+            supabaseUrl: "VOTRE_SUPABASE_URL",
+            supabaseAnonKey: "VOTRE_SUPABASE_ANON_KEY"
+        };
+    </script>
 </head>
 <body>
     <div class="container">
-        <h1>🧪 Test du Baromètre des humeurs</h1>
-        <p>Vérifiez que vos humeurs et la couleur sont correctement enregistrées</p>
-        <div id="moodList"></div>
+        <header class="header">
+            <h1>Baromètre des humeurs des employés</h1>
+            <p>Exprimez votre humeur du matin et du soir !</p>
+        </header>
 
-        <!-- Configuration privée -->
-        <script src="private-config.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-        <script type="module" src="main.js"></script>
+        <div class="main-content">
+            <!-- Formulaire -->
+            <section class="form-section">
+                <h2>Votre humeur</h2>
+                <form id="moodForm">
+                    <div class="form-group">
+                        <label for="firstName">Prénom</label>
+                        <input type="text" id="firstName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Nom</label>
+                        <input type="text" id="lastName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Humeur (emoji)</label>
+                        <div class="emoji-selector">
+                            <button type="button" class="emoji-btn" data-emoji="😀" title="Très joyeux">😀</button>
+                            <button type="button" class="emoji-btn" data-emoji="😐" title="Neutre">😐</button>
+                            <button type="button" class="emoji-btn" data-emoji="😔" title="Triste">😔</button>
+                            <button type="button" class="emoji-btn" data-emoji="😡" title="En colère">😡</button>
+                            <button type="button" class="emoji-btn" data-emoji="😴" title="Fatigué">😴</button>
+                            <button type="button" class="emoji-btn" data-emoji="🤯" title="Stressé">🤯</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="favoriteColor">Couleur préférée</label>
+                        <input type="color" id="favoriteColor" value="#3ECF8E">
+                    </div>
+                    <div class="form-group">
+                        <label for="morningComment">Commentaire du matin</label>
+                        <textarea id="morningComment" rows="2"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="eveningComment">Commentaire du soir</label>
+                        <textarea id="eveningComment" rows="2"></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn">Envoyer</button>
+                </form>
+            </section>
+
+            <!-- Affichage des participants -->
+            <section class="display-section">
+                <h2>Participants <span class="feed-subtitle">Dernières soumissions</span></h2>
+                <div id="moodList" class="social-feed">
+                    <p>Chargement...</p>
+                </div>
+            </section>
+        </div>
     </div>
+
+    <!-- Main JS -->
+    <script src="main.js"></script>
 </body>
 </html>
