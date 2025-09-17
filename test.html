@@ -2,26 +2,69 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Test Connexion Supabase</title>
+    <title>Test Baromètre des Humeurs</title>
     <style>
-        body { font-family: Arial, sans-serif; background: #f8f8f8; padding: 30px; }
-        .test-container { background: #fff; border-radius: 8px; box-shadow: 0 2px 8px #0001; padding: 24px; max-width: 600px; margin: auto; }
+        body { font-family: Arial, sans-serif; background: #f4f4f9; padding: 30px; }
+        .test-container { background: #fff; border-radius: 8px; box-shadow: 0 2px 10px #0002; padding: 24px; max-width: 700px; margin: auto; }
         h1 { color: #3ECF8E; }
-        #testOutput { margin-top: 20px; font-size: 1.1em; }
-        .ok { color: #3ECF8E; }
-        .err { color: #e74c3c; }
-        pre { background: #eee; padding: 8px; border-radius: 4px; }
+        .emoji-btn { font-size: 1.5em; margin: 5px; cursor: pointer; }
+        .emoji-btn.selected { border: 2px solid #007bff; border-radius: 4px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input, select, textarea { width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #ccc; }
+        button { padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; background: #28a745; color: white; font-weight: bold; }
+        #moodList { margin-top: 20px; }
+        .employee-entry { border-bottom: 1px solid #ddd; padding: 10px 0; }
     </style>
 </head>
 <body>
     <div class="test-container">
-        <h1>🔎 Test Connexion Supabase</h1>
-        <p>Ce test vérifie chaque étape de la connexion à Supabase.<br>
-        <b>Assurez-vous que le fichier <code>private-config.js</code> est bien injecté avant ce script.</b></p>
-        <div id="testOutput"></div>
+        <h1>🔎 Test Baromètre des Humeurs</h1>
+        <p>Vérifie l’envoi et l’affichage des humeurs des employés.</p>
+
+        <form id="moodForm">
+            <div class="form-group">
+                <label for="firstName">Prénom :</label>
+                <input type="text" id="firstName" required placeholder="Votre prénom">
+            </div>
+            <div class="form-group">
+                <label for="lastName">Nom :</label>
+                <input type="text" id="lastName" required placeholder="Votre nom">
+            </div>
+            <div class="form-group">
+                <label>Emoji :</label>
+                <div>
+                    <button type="button" class="emoji-btn" data-emoji="😀">😀</button>
+                    <button type="button" class="emoji-btn" data-emoji="😐">😐</button>
+                    <button type="button" class="emoji-btn" data-emoji="😔">😔</button>
+                    <button type="button" class="emoji-btn" data-emoji="😡">😡</button>
+                    <button type="button" class="emoji-btn" data-emoji="🥳">🥳</button>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="favoriteColor">Couleur préférée :</label>
+                <input type="color" id="favoriteColor" value="#3ECF8E">
+            </div>
+            <div class="form-group">
+                <label for="morningComment">Commentaire du matin :</label>
+                <textarea id="morningComment" placeholder="Comment s'est passé votre matinée ?" rows="2"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="eveningComment">Commentaire du soir :</label>
+                <textarea id="eveningComment" placeholder="Comment s'est passée votre journée ?" rows="2"></textarea>
+            </div>
+            <button type="submit">Envoyer l'humeur ✅</button>
+        </form>
+
+        <div id="moodList">
+            <h2>📊 Humeurs enregistrées</h2>
+            <p>Les humeurs apparaîtront ici après envoi.</p>
+        </div>
     </div>
-    <!-- Configuration privée injectée automatiquement par GitHub Actions -->
-    <!-- PRIVATE_CONFIG_PLACEHOLDER -->
-    <script src="testSupabaseConnection.js"></script>
+
+    <!-- Configuration privée -->
+    <script src="private-config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script type="module" src="main.js"></script>
 </body>
 </html>
