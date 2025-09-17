@@ -3,14 +3,11 @@ const supabase = window.PRIVATE_CONFIG
   ? supabase.createClient(window.PRIVATE_CONFIG.supabaseUrl, window.PRIVATE_CONFIG.supabaseAnonKey)
   : null;
 
-if (!supabase) {
-  console.error("❌ Supabase non configuré !");
-}
+if (!supabase) console.error("❌ Supabase non configuré !");
 
-// Variables globales
 let selectedEmoji = null;
 
-// Gestion de la sélection d'emoji
+// Sélection d'emoji
 document.querySelectorAll('.emoji-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     selectedEmoji = btn.dataset.emoji;
@@ -19,41 +16,30 @@ document.querySelectorAll('.emoji-btn').forEach(btn => {
   });
 });
 
-// Fonction pour ajouter un mood
+// Ajouter un mood
 window.addMood = async function(mood) {
   if (!supabase) return false;
-
-  // Vérification anti-doublon (Nom + Prénom + Date)
   const today = new Date().toISOString().split('T')[0];
-  const { data: existing, error } = await supabase
+
+  const { data: existing } = await supabase
     .from('employee_moods')
     .select('*')
     .eq('firstName', mood.firstName)
     .eq('lastName', mood.lastName)
     .eq('date', today);
 
-  if (existing && existing.length > 0) {
-    console.warn("⚠️ Doublon détecté :", mood.firstName, mood.lastName);
-    return false;
-  }
+  if (existing && existing.length > 0) return false;
 
-  // Insertion dans Supabase
-  const { data, error: insertError } = await supabase
+  const { error } = await supabase
     .from('employee_moods')
     .insert([{ ...mood, date: today }]);
 
-  if (insertError) {
-    console.error("❌ Erreur lors de l'ajout du mood :", insertError);
-    return false;
-  }
-
-  return true;
+  return !error;
 };
 
 // Gestion du formulaire
-document.getElementById('moodForm').addEventListener('submit', async (e) => {
+document.getElementById('moodForm').addEventListener('submit', async e => {
   e.preventDefault();
-
   const mood = {
     firstName: document.getElementById('firstName').value.trim(),
     lastName: document.getElementById('lastName').value.trim(),
@@ -63,10 +49,7 @@ document.getElementById('moodForm').addEventListener('submit', async (e) => {
     eveningComment: document.getElementById('eveningComment').value.trim(),
   };
 
-  if (!mood.emoji) {
-    alert("Veuillez sélectionner votre humeur !");
-    return;
-  }
+  if (!mood.emoji) return alert("Veuillez sélectionner votre humeur !");
 
   const result = await window.addMood(mood);
   if (result) {
@@ -74,34 +57,28 @@ document.getElementById('moodForm').addEventListener('submit', async (e) => {
     e.target.reset();
     selectedEmoji = null;
     document.querySelectorAll('.emoji-btn').forEach(b => b.style.border = 'none');
-    loadMoods(); // Met à jour la liste
+    loadMoods();
   } else {
     alert("⚠️ Vous avez déjà soumis votre humeur aujourd'hui !");
   }
 });
 
-// Fonction pour charger les moods
+// Charger et afficher les moods
 window.loadMoods = async function() {
   if (!supabase) return;
-
-  const { data, error } = await supabase
+  const { data } = await supabase
     .from('employee_moods')
     .select('*')
     .order('id', { ascending: false });
 
   const moodList = document.getElementById('moodList');
-  if (error) {
-    moodList.innerHTML = `<p>❌ Erreur lors du chargement des humeurs</p>`;
-    return;
-  }
-
   if (!data || data.length === 0) {
     moodList.innerHTML = `<p>Pas encore d'humeurs enregistrées...</p>`;
     return;
   }
 
-  // Affichage des humeurs
-  moodList.innerHTML = '';
+  // Affichage
+  const listDiv = document.createElement('div');
   data.forEach(entry => {
     const div = document.createElement('div');
     div.className = 'employee-entry';
@@ -112,32 +89,16 @@ window.loadMoods = async function() {
       🌇 Soir: ${entry.eveningComment || '-'}<br>
       <small>${entry.date}</small>
     `;
-    moodList.appendChild(div);
+    listDiv.appendChild(div);
   });
+  moodList.appendChild(listDiv);
 
-  // Statistiques simples
-  updateStats(data);
+  // Stats
+  const totalParticipants = data.length;
+  const moods = [...new Set(data.map(d => d.emoji))];
+
+  document.getElementById('totalParticipants').textContent = totalParticipants;
+  document.getElementById('moodVariety').textContent = moods.length;
 };
 
-// Calcul des statistiques
-function updateStats(data) {
-  const totalParticipants = data.length;
-  const emojiCounts = {};
-  const colorCounts = {};
-
-  data.forEach(d => {
-    emojiCounts[d.emoji] = (emojiCounts[d.emoji] || 0) + 1;
-    colorCounts[d.favoriteColor] = (colorCounts[d.favoriteColor] || 0) + 1;
-  });
-
-  console.log("📊 Statistiques :", {
-    totalParticipants,
-    emojiCounts,
-    colorCounts
-  });
-}
-
-// Charger automatiquement au démarrage
-window.addEventListener('DOMContentLoaded', () => {
-  loadMoods();
-});
+window.addEventListener('DOMContentLoaded', loadMoods);

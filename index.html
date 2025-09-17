@@ -3,134 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🌡️ Baromètre des Humeurs des Employés</title>
+    <title>🌡️ Baromètre des humeurs des employés</title>
     <link rel="stylesheet" href="styles.css">
-    <style>
-        body { font-family: Arial, sans-serif; background: #f4f4f9; }
-        .container { max-width: 900px; margin: auto; padding: 20px; }
-        .header { text-align: center; margin-bottom: 30px; }
-        .header h1 { color: #3ECF8E; }
-        .form-section, .display-section, .teacher-controls { background: #fff; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 10px #0002; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; }
-        input, select, textarea { width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #ccc; }
-        .emoji-selector button { font-size: 1.5em; margin: 5px; cursor: pointer; }
-        .emoji-selector button.selected { border: 2px solid #007bff; border-radius: 4px; }
-        .submit-btn { background: #28a745; color: white; font-weight: bold; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; }
-        .stats-grid { display: flex; gap: 15px; }
-        .stat-item { flex: 1; background: #f1f1f1; padding: 10px; border-radius: 6px; text-align: center; }
-        .employee-entry { border-bottom: 1px solid #ddd; padding: 10px 0; }
-        .control-buttons button { margin-right: 10px; padding: 8px 12px; border: none; border-radius: 5px; cursor: pointer; }
-        .control-buttons .danger { background: #e74c3c; color: white; }
-        .control-buttons .control-btn { background: #007bff; color: white; }
-        #moodVisualization { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
-        .color-box { width: 30px; height: 30px; border-radius: 50%; border: 1px solid #0002; }
-    </style>
 </head>
 <body>
-<div class="container">
-    <div class="header">
-        <h1>🌡️ Baromètre des Humeurs des Employés</h1>
-        <p>Collecte et visualisation des humeurs quotidiennes</p>
-    </div>
+    <div class="container">
+        <div class="header">
+            <div class="security-badge" style="background: #3ECF8E; color: white;">
+                🚀 Baromètre des humeurs
+            </div>
+            <h1>🌡️ Baromètre des humeurs des employés</h1>
+            <p>Partagez votre ressenti du matin et du soir en toute sécurité</p>
+        </div>
 
-    <div class="form-section">
-        <h2>📝 Saisie de l'humeur</h2>
-        <form id="moodForm">
-            <div class="form-group">
-                <label for="firstName">Prénom :</label>
-                <input type="text" id="firstName" required placeholder="Votre prénom">
+        <!-- Formulaire principal -->
+        <div class="main-content">
+            <div class="form-section">
+                <h2>📝 Indiquez votre humeur</h2>
+                <form id="moodForm">
+                    <div class="form-group">
+                        <label for="firstName">Prénom :</label>
+                        <input type="text" id="firstName" required placeholder="Votre prénom">
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Nom :</label>
+                        <input type="text" id="lastName" required placeholder="Votre nom">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Comment vous sentez-vous ?</label>
+                        <div class="emoji-selector">
+                            <button type="button" class="emoji-btn" data-emoji="😀">😀</button>
+                            <button type="button" class="emoji-btn" data-emoji="😐">😐</button>
+                            <button type="button" class="emoji-btn" data-emoji="😔">😔</button>
+                            <button type="button" class="emoji-btn" data-emoji="😡">😡</button>
+                            <button type="button" class="emoji-btn" data-emoji="🤩">🤩</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="favoriteColor">Votre couleur préférée :</label>
+                        <input type="color" id="favoriteColor" value="#3ECF8E">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="morningComment">Comment s’est passé votre matin ?</label>
+                        <textarea id="morningComment" rows="2" placeholder="Votre ressenti du matin"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="eveningComment">Comment s’est passée votre journée ?</label>
+                        <textarea id="eveningComment" rows="2" placeholder="Votre ressenti du soir"></textarea>
+                    </div>
+
+                    <button type="submit" class="submit-btn">Envoyer ✅</button>
+                </form>
             </div>
-            <div class="form-group">
-                <label for="lastName">Nom :</label>
-                <input type="text" id="lastName" required placeholder="Votre nom">
-            </div>
-            <div class="form-group">
-                <label>Emoji :</label>
-                <div class="emoji-selector">
-                    <button type="button" class="emoji-btn" data-emoji="😀">😀</button>
-                    <button type="button" class="emoji-btn" data-emoji="😐">😐</button>
-                    <button type="button" class="emoji-btn" data-emoji="😔">😔</button>
-                    <button type="button" class="emoji-btn" data-emoji="😡">😡</button>
-                    <button type="button" class="emoji-btn" data-emoji="🥳">🥳</button>
+
+            <!-- Section affichage -->
+            <div class="display-section" id="moodList">
+                <h2>📊 Humeurs des employés</h2>
+                <div class="stats-section">
+                    <h3>📈 Statistiques</h3>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <span class="stat-label">Total participants :</span>
+                            <span id="totalParticipants" class="stat-value">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Variété d'humeurs :</span>
+                            <span id="moodVariety" class="stat-value">0</span>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="form-group">
-                <label for="favoriteColor">Couleur préférée :</label>
-                <input type="color" id="favoriteColor" value="#3ECF8E">
-            </div>
-            <div class="form-group">
-                <label for="morningComment">Commentaire du matin :</label>
-                <textarea id="morningComment" placeholder="Comment s'est passée votre matinée ?" rows="2"></textarea>
-            </div>
-            <div class="form-group">
-                <label for="eveningComment">Commentaire du soir :</label>
-                <textarea id="eveningComment" placeholder="Comment s'est passée votre journée ?" rows="2"></textarea>
-            </div>
-            <button type="submit" class="submit-btn">Envoyer l'humeur ✅</button>
-        </form>
+        </div>
+
+        <!-- Configuration privée (GitHub Actions injecte le fichier) -->
+        <script src="private-config.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+        <script type="module" src="main.js"></script>
     </div>
-
-    <div class="display-section">
-        <h2>📊 Humeurs enregistrées</h2>
-        <div id="moodList">
-            <p>Les humeurs apparaîtront ici après envoi.</p>
-        </div>
-
-        <h3>📈 Statistiques</h3>
-        <div class="stats-grid">
-            <div class="stat-item">Total participants: <span id="totalParticipants">0</span></div>
-            <div class="stat-item">Variété d’emojis: <span id="moodVariety">0</span></div>
-            <div class="stat-item">Couleurs préférées: <span id="colorVariety">0</span></div>
-        </div>
-
-        <div id="moodVisualization">
-            <h3>🎨 Visualisation des couleurs préférées</h3>
-        </div>
-    </div>
-
-    <div class="teacher-controls">
-        <h3>👨‍💼 Contrôles Manager</h3>
-        <div class="control-buttons">
-            <button onclick="window.loadMoods()">🔄 Actualiser</button>
-            <button onclick="window.exportMoods()">📊 Exporter CSV</button>
-            <button onclick="window.exportMoodsJSON()">📄 Exporter JSON</button>
-            <button onclick="window.clearAllMoods()" class="danger">🗑️ Tout effacer</button>
-        </div>
-    </div>
-
-    <div class="production-info">
-        <h3>🔧 Informations de production</h3>
-        <div id="productionStatus">
-            <p>Vérification de la configuration...</p>
-        </div>
-    </div>
-</div>
-
-<!-- Configuration privée -->
-<script src="private-config.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script type="module" src="main.js"></script>
-
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('🌡️ Baromètre des humeurs initialisé');
-
-    // Vérification configuration
-    const statusEl = document.getElementById('productionStatus');
-    if(window.PRIVATE_CONFIG) {
-        statusEl.innerHTML = `<div style="background: #d4edda; padding: 15px; border-radius: 8px; color: #155724;">
-            <h4>✅ Configuration valide</h4>
-            <p><strong>Mode :</strong> ${window.PRIVATE_CONFIG.mode}</p>
-            <p><strong>Supabase :</strong> Configuré et sécurisé</p>
-        </div>`;
-    } else {
-        statusEl.innerHTML = `<div style="background: #f8d7da; padding: 15px; border-radius: 8px; color: #721c24;">
-            <h4>❌ Configuration manquante</h4>
-            <p>Vérifiez que le déploiement GitHub Actions s'est bien exécuté.</p>
-        </div>`;
-    }
-});
-</script>
 </body>
 </html>
