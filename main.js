@@ -1,25 +1,9 @@
-// main.js
-
-// ⚠️ Assure-toi que tu as ce script dans ton HTML avant main.js :
-// <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.35.1/dist/supabase.min.js"></script>
-
 // Initialisation Supabase
-if (!window.PRIVATE_CONFIG) {
-    console.error("❌ PRIVATE_CONFIG n'est pas défini !");
-}
+const supabase = supabase.createClient(window.PRIVATE_CONFIG.supabaseUrl, window.PRIVATE_CONFIG.supabaseAnonKey);
 
-const supabase = window.PRIVATE_CONFIG
-    ? supabase.createClient(window.PRIVATE_CONFIG.supabaseUrl, window.PRIVATE_CONFIG.supabaseAnonKey)
-    : null;
-
-if (!supabase) {
-    console.error("❌ Supabase non configuré !");
-}
-
-// Variables globales
 let selectedEmoji = null;
 
-// Gestion de la sélection d'emoji
+// Gestion des emojis
 document.querySelectorAll('.emoji-btn').forEach(btn => {
     btn.addEventListener('click', () => {
         selectedEmoji = btn.dataset.emoji;
@@ -28,34 +12,25 @@ document.querySelectorAll('.emoji-btn').forEach(btn => {
     });
 });
 
-// Ajouter un mood dans Supabase
+// Fonction pour ajouter un mood
 async function addMood(mood) {
-    if (!supabase) return false;
-
     const today = new Date().toISOString().split('T')[0];
 
-    // Vérification doublon
-    const { data: existing, error: selErr } = await supabase
+    const { data: existing } = await supabase
         .from('employee_moods')
         .select('*')
         .eq('firstName', mood.firstName)
         .eq('lastName', mood.lastName)
         .eq('date', today);
 
-    if (selErr) console.error("Erreur check doublon:", selErr);
+    if (existing && existing.length > 0) return false;
 
-    if (existing && existing.length > 0) {
-        console.warn("⚠️ Doublon détecté :", mood.firstName, mood.lastName);
-        return false;
-    }
-
-    // Insertion
     const { data, error } = await supabase
         .from('employee_moods')
         .insert([{ ...mood, date: today }]);
 
     if (error) {
-        console.error("❌ Erreur ajout mood:", error);
+        console.error("Erreur insertion:", error);
         return false;
     }
 
@@ -63,7 +38,7 @@ async function addMood(mood) {
 }
 
 // Gestion du formulaire
-document.getElementById('moodForm').addEventListener('submit', async (e) => {
+document.getElementById('moodForm').addEventListener('submit', async e => {
     e.preventDefault();
 
     const mood = {
@@ -80,9 +55,9 @@ document.getElementById('moodForm').addEventListener('submit', async (e) => {
         return;
     }
 
-    const result = await addMood(mood);
-    if (result) {
-        alert("✅ Votre humeur a été enregistrée !");
+    const success = await addMood(mood);
+    if (success) {
+        alert("✅ Humeur enregistrée !");
         e.target.reset();
         selectedEmoji = null;
         document.querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('selected'));
@@ -92,20 +67,16 @@ document.getElementById('moodForm').addEventListener('submit', async (e) => {
     }
 });
 
-// Charger les moods
+// Chargement des moods
 async function loadMoods() {
-    if (!supabase) return;
-
     const { data, error } = await supabase
         .from('employee_moods')
         .select('*')
         .order('id', { ascending: false });
 
     const moodList = document.getElementById('moodList');
-
     if (error) {
-        moodList.innerHTML = `<p>❌ Erreur lors du chargement des humeurs</p>`;
-        console.error(error);
+        moodList.innerHTML = `<p>Erreur de chargement</p>`;
         return;
     }
 
@@ -114,7 +85,6 @@ async function loadMoods() {
         return;
     }
 
-    // Affichage des participants
     moodList.innerHTML = '';
     data.forEach(entry => {
         const div = document.createElement('div');
@@ -122,26 +92,22 @@ async function loadMoods() {
         div.innerHTML = `
             <div class="post-header">
                 <div class="user-info">
-                    <div class="avatar">
-                        <div class="avatar-letter">${entry.firstName[0]}${entry.lastName[0]}</div>
-                    </div>
+                    <div class="avatar-letter" style="background:${entry.favoriteColor}">${entry.firstName[0]}${entry.lastName[0]}</div>
                     <div class="user-details">
-                        <div class="username">${entry.firstName} ${entry.lastName}</div>
+                        <span class="username">${entry.firstName} ${entry.lastName}</span>
+                        <small class="post-time">${entry.date}</small>
                     </div>
                 </div>
-                <div class="post-mood" style="color:${entry.favoriteColor}">${entry.emoji}</div>
+                <span class="post-mood">${entry.emoji}</span>
             </div>
             <div class="post-content">
-                🌅 Matin: ${entry.morningComment || '-'}<br>
-                🌇 Soir: ${entry.eveningComment || '-'}<br>
-                <small>${entry.date}</small>
+                🌅 ${entry.morningComment || '-'}<br>
+                🌇 ${entry.eveningComment || '-'}
             </div>
         `;
         moodList.appendChild(div);
     });
 }
 
-// Charger automatiquement au démarrage
-window.addEventListener('DOMContentLoaded', () => {
-    loadMoods();
-});
+// Auto load
+window.addEventListener('DOMContentLoaded', loadMoods);
